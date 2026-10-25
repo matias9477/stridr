@@ -33,8 +33,11 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ## Open: (unresolved decisions)
 
-- Pro split: nothing is gated yet and the paywall copy is generic. Decide what Pro unlocks (candidates: All-time range, widgets, CSV export) before wiring `useIsPro()` gates.
-  - [ ] pick the Pro features  - [ ] gate them  - [ ] paywall copy in both locales
+- Pro split — decided: Pro unlocks the **90-day and All-time** Stats ranges (`ChartRange` `"quarter"` / `"all"`) and the **widgets**. Free keeps Today, Stats week/month, manual activities and pace nudges.
+  - [ ] gate the 90D / All chips in the Stats range switch with `useIsPro()` → `router.push("/paywall?variant=stats")`
+  - [ ] gate the widgets: free users get a locked state pointing to the paywall instead of their numbers (WidgetSync pushes an "Upgrade to Pro" snapshot), and a `variant=widgets` paywall entry from Settings → Widget previews
+  - [ ] decide whether CSV export is free or Pro
+  - [ ] paywall copy for both variants in en + es (mention "remove ads" if ads stay)
   - [ ] onboarding step 4 becomes the paywall (replaces the old "Read-only. On-device." slide, which now repeats step 1)
 - Ads: the AdMob slot sits at the bottom of Today. Keep (and set unit ids) or delete per CLAUDE.md → Ads.
 
