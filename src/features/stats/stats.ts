@@ -164,8 +164,13 @@ export interface WeekSummary {
   to: DayKey;
   total: number;
   validDays: number;
+  /** Last week's total over the same completed days (Mon → yesterday's weekday). */
   previousTotal: number | null;
-  /** Current week-to-date vs the SAME number of days of last week, so Tuesday isn't compared with a full week. */
+  /**
+   * Completed days of this week vs the same days of last week. Today is left
+   * out of both sides: its partial total against a finished day would read as
+   * "behind" every morning. Null on Mondays (nothing completed yet).
+   */
   changePct: number | null;
 }
 
@@ -173,18 +178,20 @@ export interface WeekSummary {
 export function weekSummary(index: DayIndex, today: DayKey): WeekSummary {
   const from = startOfWeekKey(today);
   const current = sumOf(windowTotals(index, from, today));
+  const yesterday = addDaysToKey(today, -1);
   const prevFrom = addDaysToKey(from, -7);
-  const prevTo = addDaysToKey(today, -7);
-  const previous = sumOf(windowTotals(index, prevFrom, prevTo));
   const fullPrevious = sumOf(windowTotals(index, prevFrom, addDaysToKey(from, -1)));
-  const enough = fullPrevious.validDays >= STATS_RULES.minValidDaysForWeekCompare;
+  const enough =
+    from <= yesterday && fullPrevious.validDays >= STATS_RULES.minValidDaysForWeekCompare;
+  const completed = sumOf(windowTotals(index, from, yesterday));
+  const previous = sumOf(windowTotals(index, prevFrom, addDaysToKey(yesterday, -7)));
   return {
     from,
     to: today,
     total: current.total,
     validDays: current.validDays,
     previousTotal: enough ? previous.total : null,
-    changePct: enough ? percentChange(current.total, previous.total) : null,
+    changePct: enough ? percentChange(completed.total, previous.total) : null,
   };
 }
 

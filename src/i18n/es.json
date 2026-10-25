@@ -35,8 +35,8 @@
     "readyTitle": "Solo lectura. En tu dispositivo.",
     "readyBody": "Stridr solo lee tus pasos. Nada sale de tu teléfono — sin cuenta, sin rastreo.",
     "calibrate": {
-      "title": "Calibra tu zancada.",
-      "body": "Tu altura define el largo de tu zancada, que convierte las caminatas que registras por distancia en pasos estimados — sin GPS.",
+      "title": "Calibra tu largo de paso.",
+      "body": "Tu altura define el largo de tu paso, que convierte las caminatas que registras por distancia en pasos estimados — sin GPS.",
       "height": "Tu altura",
       "unit": "Unidad de altura",
       "fine": "Ajuste fino",
@@ -44,7 +44,7 @@
       "increase": "Uno más",
       "cmA11y": "{{value}} centímetros",
       "ftInA11y": "{{feet}} pies {{inches}} pulgadas",
-      "stride": "Zancada estimada",
+      "stride": "Largo de paso estimado",
       "formula": "Fórmula: altura × {{ratio}}",
       "confirm": "Confirmar altura →",
       "later": "Puedes ajustarlo luego en Ajustes"
@@ -118,10 +118,10 @@
       "averageDays_other": "De {{count}} días",
       "averageEmpty": "Necesita unos días de historial.",
       "distance": "Distancia est.",
-      "stride": "Zancada {{value}} cm",
+      "stride": "Paso {{value}} cm",
       "noStepsYet": "Aún no hay pasos hoy.",
-      "activeTime": "Tiempo activo",
-      "cadence": "{{value}} pasos/min prom.",
+      "activeTime": "Tiempo activo est.",
+      "cadence": "~{{value}} pasos/min prom.",
       "activeEmpty": "Aún no caminaste a buen ritmo hoy.",
       "peak": "Hora pico",
       "peakCaption": "{{steps}} pasos en 60 min",
@@ -136,7 +136,7 @@
       "barEmptyA11y": "{{time}}: sin pasos"
     },
     "stride": {
-      "title": "Zancada {{cm}} cm",
+      "title": "Paso {{cm}} cm",
       "manual": "Fijada a mano",
       "height": "Según tu altura ({{height}} cm)",
       "default": "Promedio por defecto — indica tu altura",
@@ -170,6 +170,7 @@
       "peak": "Pico",
       "today": "Hoy",
       "perDay": "Por día",
+      "bestWeek": "Mejor semana · por día",
       "steps": "Pasos",
       "barA11y": "{{date}}: {{steps}} pasos",
       "barEmptyA11y": "{{date}}: sin datos"
@@ -197,7 +198,7 @@
       "streak": "Racha",
       "days_one": "{{count}} día",
       "days_other": "{{count}} días",
-      "streakCaption": "≥ {{goal}} · mejor {{best}}",
+      "streakCaption": "Mejor {{best}}",
       "streakNoGoal": "Fija una meta diaria para empezar una racha.",
       "trend": "Tendencia 30 días",
       "trendCaption": "{{diff}}/día vs 30 previos",
@@ -213,8 +214,8 @@
       "steps": "Pasos",
       "noData": "Sin datos",
       "stepsA11y": "{{steps}} pasos",
-      "activeMins_one": "{{count}} min activo",
-      "activeMins_other": "{{count}} min activos",
+      "activeMins_one": "~{{count}} min activo",
+      "activeMins_other": "~{{count}} min activos",
       "minutes_one": "{{count}} min",
       "minutes_other": "{{count}} min",
       "inclManual": "incl. {{steps}} manuales",
@@ -245,7 +246,7 @@
       "duration": "Duración",
       "estimate": "Pasos estimados",
       "estimateEmpty": "Ingresa una distancia, una duración o ambas.",
-      "basisDistance": "Estimación · distancia ÷ zancada de {{cm}} cm",
+      "basisDistance": "Estimación · distancia ÷ paso de {{cm}} cm",
       "basisDuration": "Estimación · duración × {{spm}} pasos/min",
       "finalSteps": "Pasos a añadir",
       "useEstimate": "Usar estimación",
@@ -308,14 +309,14 @@
     },
     "metrics": {
       "title": "Biomecánica y métricas",
-      "stride": "Longitud de zancada",
-      "strideManual": "Fijada a mano",
-      "strideHeight": "Calculada por altura",
+      "stride": "Largo de paso",
+      "strideManual": "Fijado a mano",
+      "strideHeight": "Calculado por altura",
       "strideDefault": "Promedio por defecto",
-      "strideTitle": "Longitud de zancada",
+      "strideTitle": "Largo de paso",
       "strideBody": "Se usa para estimar distancia y pasos de caminatas.",
       "setHeight": "Calcular por altura",
-      "setStride": "Ingresar zancada",
+      "setStride": "Ingresar largo de paso",
       "useDefault": "Usar promedio",
       "heightTitle": "Tu altura",
       "heightBody": "En centímetros ({{min}}–{{max}}).",
@@ -403,7 +404,7 @@
     "cadence": "Cadencia",
     "kilometers": "Kilómetros",
     "miles": "Millas",
-    "movingTime": "En movimiento",
+    "movingTime": "En movimiento est.",
     "perMin": "Pasos / min",
     "spm": "ppm",
     "inlinePace": "{{steps}} pasos · {{pace}}"
@@ -411,7 +412,7 @@
   "nudges": {
     "notification": {
       "title": "Vas por detrás del ritmo de hoy",
-      "body": "Te faltan unos {{remaining}} pasos para tu objetivo. Una caminata por la tarde aún lo cierra."
+      "body": "Vas por detrás del ritmo de tu objetivo. Una caminata por la tarde aún lo cierra."
     },
     "rules": "Las reglas",
     "rule": {

@@ -90,9 +90,8 @@ function StreakTile({ stats }: { stats: StepStats }) {
       accessory={<MaterialIcons name="bolt" size={14} color={c.textPrimary} />}
       value={t("stats.milestones.days", { count: current })}
       caption={
-        goal !== null
-          ? t("stats.milestones.streakCaption", { goal: formatSteps(goal), best: longest })
-          : undefined
+        // No goal value: the streak judges each day by the goal in effect that day.
+        goal !== null ? t("stats.milestones.streakCaption", { best: longest }) : undefined
       }
       status={status}
     />

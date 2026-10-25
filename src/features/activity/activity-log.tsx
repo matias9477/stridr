@@ -134,7 +134,8 @@ function DayRow({ day, stats }: { day: DailyTotal; stats: StepStats }) {
   const details: string[] = [];
   if (day.total !== null) {
     details.push(
-      `${formatDistance(distanceForSteps(day.total, strideMeters), unit, 2)} ${unit === "km" ? "km" : "mi"}`,
+      // Estimated from today's step length, hence the "~".
+      `~${formatDistance(distanceForSteps(day.total, strideMeters), unit, 2)} ${unit === "km" ? "km" : "mi"}`,
     );
   }
   if (activity) details.push(t("stats.log.activeMins", { count: activity.activeMinutes }));

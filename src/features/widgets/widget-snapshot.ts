@@ -1,13 +1,13 @@
 import { distanceForSteps } from "@/src/features/activity/estimate";
-import { rangeDays, todayProgress } from "@/src/features/stats/stats";
+import { averageOf, rangeDays, todayProgress } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
 import { addDaysToKey } from "@/src/lib/day";
 import {
   dayLabel,
   formatCompact,
   formatDistance,
+  formatGoalPercent,
   formatMinutes,
-  formatPercent,
   formatSteps,
   timeLabel,
 } from "@/src/lib/format";
@@ -28,7 +28,7 @@ export function normalizeSeries(values: readonly (number | null)[]): number[] {
 export interface WidgetSnapshotInput {
   stats: Pick<
     StepStats,
-    "todayTotal" | "currentGoal" | "days" | "today" | "access" | "hourly" | "activity" | "sevenDay"
+    "todayTotal" | "currentGoal" | "days" | "today" | "access" | "hourly" | "activity"
   >;
   unit: DistanceUnit;
   strideMeters: number;
@@ -62,13 +62,21 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
           }),
         );
   const percentText =
-    total === null || goal === null ? "" : formatPercent(progress.percent ?? 0, 0);
+    total === null || goal === null
+      ? ""
+      : formatGoalPercent(progress.percent ?? 0, progress.goalMet, 0);
 
   // Week bars share one scale with the goal line so "over the line" reads at a glance.
   const week = rangeDays(stats.days, "week", stats.today);
   const weekScale = Math.max(1, goal ?? 0, ...week.map((d) => d.total ?? 0));
   const weekBars = week.map((d) => (d.total === null || d.total <= 0 ? -1 : d.total / weekScale));
-  const weekMet = week.map((d) => goal !== null && d.total !== null && d.total >= goal);
+  // Each day against the goal in effect that day, not today's.
+  const weekMet = week.map((d) => d.goalMet === true);
+  // "Avg / day" over the bars it sits under, completed days only.
+  const weekAvg = (days: typeof week) => {
+    const { average } = averageOf(days.map((d) => d.total));
+    return average === null ? "" : upper(t("widget.avg", { steps: formatSteps(average) }));
+  };
 
   const activity = stats.activity[stats.today];
   const metrics = (today: boolean): WidgetMetric[] => [
@@ -76,21 +84,24 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
       icon: "ruler",
       label: upper(t("today.metrics.distance")),
       value:
-        today && total !== null ? formatDistance(distanceForSteps(total, strideMeters), unit) : "—",
+        // "~": distance, active time and cadence are estimates, not measurements.
+        today && total !== null
+          ? `~${formatDistance(distanceForSteps(total, strideMeters), unit)}`
+          : "—",
       unit: unit === "km" ? "KM" : "MI",
       caption: upper(t(unit === "km" ? "widget.kilometers" : "widget.miles")),
     },
     {
       icon: "stopwatch",
       label: upper(t("widget.active")),
-      value: today && activity ? formatMinutes(activity.activeMinutes) : "—",
+      value: today && activity ? `~${formatMinutes(activity.activeMinutes)}` : "—",
       unit: "",
       caption: upper(t("widget.movingTime")),
     },
     {
       icon: "speedometer",
       label: upper(t("widget.cadence")),
-      value: today && activity?.cadence != null ? String(activity.cadence) : "—",
+      value: today && activity?.cadence != null ? `~${activity.cadence}` : "—",
       unit: upper(t("widget.spm")),
       caption: upper(t("widget.perMin")),
     },
@@ -122,10 +133,7 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
     weekGoalText: goal === null ? "" : formatCompact(goal),
     dayLetters: week.map((d) => dayLabel(d.day, "EEEEE")),
     weekLabel: upper(t("widget.week")),
-    weekAvgText:
-      stats.sevenDay.average === null
-        ? ""
-        : upper(t("widget.avg", { steps: formatSteps(stats.sevenDay.average) })),
+    weekAvgText: weekAvg(week.slice(0, -1)),
     metrics: metrics(true),
     inlineText:
       total === null
@@ -152,6 +160,8 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
     // Shift the week left by one and add an empty "today".
     weekBars: [...weekBars.slice(1), -1],
     weekMet: [...weekMet.slice(1), false],
+    // After midnight the shown days are the old today and the five before it.
+    weekAvgText: weekAvg(week.slice(1)),
     dayLetters: [...current.dayLetters.slice(1), dayLabel(tomorrow, "EEEEE")],
     metrics: metrics(false),
     inlineText: "",

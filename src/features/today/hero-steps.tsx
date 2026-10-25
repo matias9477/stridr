@@ -13,7 +13,7 @@ import { useHealthStore } from "@/src/features/health/health-store";
 import { baseCardStatus } from "@/src/features/stats/card-status";
 import { todayProgress } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
-import { formatPercent, formatSteps } from "@/src/lib/format";
+import { formatGoalPercent, formatSteps } from "@/src/lib/format";
 import { ActionButton } from "@/src/ui/action-button";
 import { CardStateMessage, Skeleton } from "@/src/ui/card-state";
 import { DURATION } from "@/src/ui/motion";
@@ -40,7 +40,10 @@ export function HeroSteps({ stats, now }: { stats: StepStats; now: Date }) {
           {t("today.hero.label")}
         </T>
         {progress.percent !== null && !base ? (
-          <RollingNumber variant="label" value={formatPercent(progress.percent)} />
+          <RollingNumber
+            variant="label"
+            value={formatGoalPercent(progress.percent, progress.goalMet)}
+          />
         ) : null}
       </View>
 

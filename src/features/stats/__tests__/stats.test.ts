@@ -113,11 +113,19 @@ describe("weekSummary", () => {
     const sparse = build({ [ago(9)]: 1000, [TODAY]: 2000 });
     expect(weekSummary(indexDays(sparse), TODAY).changePct).toBeNull();
 
-    const full = build({ ...run(7, 1000, 3), [TODAY]: 3000 }); // last week Mon–Sun = ago(3..9)
+    // Last week Mon–Sun = ago(3..9) at 1000; this week Mon/Tue at 1000, today partial.
+    const full = build({ ...run(7, 1000, 3), ...run(2, 1000, 1), [TODAY]: 300 });
     const week = weekSummary(indexDays(full), TODAY);
-    // Last week Mon–Wed = 3000; this week = 3000 (today only).
-    expect(week.previousTotal).toBe(3000);
+    // Completed Mon–Tue vs last Mon–Tue: same pace, so 0% — today's 300 doesn't drag it down.
+    expect(week.total).toBe(2300);
+    expect(week.previousTotal).toBe(2000);
     expect(week.changePct).toBe(0);
+  });
+
+  it("has nothing to compare on a Monday", () => {
+    const monday = ago(2);
+    const days = build({ ...run(7, 1000, 3), [monday]: 500 });
+    expect(weekSummary(indexDays(days), monday).changePct).toBeNull();
   });
 });
 

@@ -35,8 +35,8 @@
     "readyTitle": "Read-only. On-device.",
     "readyBody": "Stridr only reads step counts. Nothing leaves your phone — no account, no tracking.",
     "calibrate": {
-      "title": "Calibrate your stride.",
-      "body": "Your height sets your stride length, which turns walks you log by distance into step estimates — no GPS needed.",
+      "title": "Calibrate your step length.",
+      "body": "Your height sets your step length, which turns walks you log by distance into step estimates — no GPS needed.",
       "height": "Your height",
       "unit": "Height unit",
       "fine": "Fine adjust",
@@ -44,7 +44,7 @@
       "increase": "One more",
       "cmA11y": "{{value}} centimeters",
       "ftInA11y": "{{feet}} feet {{inches}} inches",
-      "stride": "Estimated stride",
+      "stride": "Estimated step length",
       "formula": "Formula: height × {{ratio}}",
       "confirm": "Confirm height →",
       "later": "Adjust manually later in Settings"
@@ -118,10 +118,10 @@
       "averageDays_other": "From {{count}} days",
       "averageEmpty": "Needs a few days of history.",
       "distance": "Distance est.",
-      "stride": "{{value}} cm stride",
+      "stride": "{{value}} cm step",
       "noStepsYet": "No steps yet today.",
-      "activeTime": "Active time",
-      "cadence": "{{value}} steps/min avg",
+      "activeTime": "Active time est.",
+      "cadence": "~{{value}} steps/min avg",
       "activeEmpty": "No brisk walking yet today.",
       "peak": "Peak interval",
       "peakCaption": "{{steps}} steps in 60m",
@@ -136,7 +136,7 @@
       "barEmptyA11y": "{{time}}: no steps"
     },
     "stride": {
-      "title": "Stride {{cm}} cm",
+      "title": "Step {{cm}} cm",
       "manual": "Set manually",
       "height": "From your height ({{height}} cm)",
       "default": "Average default — set your height",
@@ -170,6 +170,7 @@
       "peak": "Peak",
       "today": "Today",
       "perDay": "Per day",
+      "bestWeek": "Best week · per day",
       "steps": "Steps",
       "barA11y": "{{date}}: {{steps}} steps",
       "barEmptyA11y": "{{date}}: no data"
@@ -197,7 +198,7 @@
       "streak": "Streak",
       "days_one": "{{count}} day",
       "days_other": "{{count}} days",
-      "streakCaption": "≥ {{goal}} · best {{best}}",
+      "streakCaption": "Best {{best}}",
       "streakNoGoal": "Set a daily target to start a streak.",
       "trend": "30-day trend",
       "trendCaption": "{{diff}}/day vs prev 30",
@@ -213,8 +214,8 @@
       "steps": "Steps",
       "noData": "No data",
       "stepsA11y": "{{steps}} steps",
-      "activeMins_one": "{{count}} active min",
-      "activeMins_other": "{{count}} active mins",
+      "activeMins_one": "~{{count}} active min",
+      "activeMins_other": "~{{count}} active mins",
       "minutes_one": "{{count}} min",
       "minutes_other": "{{count}} min",
       "inclManual": "incl. {{steps}} manual",
@@ -245,7 +246,7 @@
       "duration": "Duration",
       "estimate": "Estimated steps",
       "estimateEmpty": "Enter a distance, a duration, or both.",
-      "basisDistance": "Estimate · distance ÷ {{cm}} cm stride",
+      "basisDistance": "Estimate · distance ÷ {{cm}} cm step",
       "basisDuration": "Estimate · duration × {{spm}} steps/min",
       "finalSteps": "Steps to add",
       "useEstimate": "Use estimate",
@@ -308,14 +309,14 @@
     },
     "metrics": {
       "title": "Biomechanics & metrics",
-      "stride": "Stride length",
+      "stride": "Step length",
       "strideManual": "Set manually",
       "strideHeight": "Auto-calculated via height",
       "strideDefault": "Average default",
-      "strideTitle": "Stride length",
+      "strideTitle": "Step length",
       "strideBody": "Used to estimate distance and walk steps.",
       "setHeight": "Calculate from height",
-      "setStride": "Enter stride",
+      "setStride": "Enter step length",
       "useDefault": "Use average default",
       "heightTitle": "Your height",
       "heightBody": "In centimeters ({{min}}–{{max}}).",
@@ -403,7 +404,7 @@
     "cadence": "Cadence",
     "kilometers": "Kilometers",
     "miles": "Miles",
-    "movingTime": "Moving time",
+    "movingTime": "Moving time est.",
     "perMin": "Steps / min",
     "spm": "spm",
     "inlinePace": "{{steps}} steps · {{pace}}"
@@ -411,7 +412,7 @@
   "nudges": {
     "notification": {
       "title": "Behind today's pace",
-      "body": "About {{remaining}} steps to your target. An evening walk still closes it."
+      "body": "You're behind your target's pace. An evening walk still closes it."
     },
     "rules": "The rules",
     "rule": {

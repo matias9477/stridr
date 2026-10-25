@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useStepStats } from "@/src/features/stats/use-step-stats";
-import { formatSteps } from "@/src/lib/format";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import {
   cancelPaceNudge,
@@ -37,7 +36,7 @@ export function NudgeSync(): null {
       await schedulePaceNudge({
         fireAt: plan.fireAt,
         title: t("nudges.notification.title"),
-        body: t("nudges.notification.body", { remaining: formatSteps(plan.remaining) }),
+        body: t("nudges.notification.body"), // No step count: the copy is baked at schedule time and would be stale by 18:00.
         day: stats.today,
       });
     })();

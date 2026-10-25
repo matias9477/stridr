@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Share, View } from "react-native";
 import { todayProgress } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
-import { formatPercent, formatSteps } from "@/src/lib/format";
+import { formatGoalPercent, formatSteps } from "@/src/lib/format";
 import { ActionButton, IconButton } from "@/src/ui/action-button";
 
 /** Log a walk (primary) + share today's numbers (system share sheet, text only). */
@@ -19,7 +19,7 @@ export function TodayActions({ stats, now }: { stats: StepStats; now: Date }) {
       progress.goal !== null && progress.percent !== null
         ? t("today.share.withGoal", {
             steps,
-            percent: formatPercent(progress.percent, 0),
+            percent: formatGoalPercent(progress.percent, progress.goalMet, 0),
             goal: formatSteps(progress.goal),
           })
         : t("today.share.plain", { steps });

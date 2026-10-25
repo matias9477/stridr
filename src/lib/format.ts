@@ -22,20 +22,39 @@ export function formatSteps(value: number): string {
   return new Intl.NumberFormat(locale(), { maximumFractionDigits: 0 }).format(value);
 }
 
-/** 10500 → "10.5K". For tight spots (baselines, goal labels, widget). */
+/**
+ * 10500 → "10.5K". For tight spots (baselines, goal labels, widget).
+ * Truncates instead of rounding so 9,960 reads "9.9K", never "10K" next to a
+ * 10K goal it hasn't reached.
+ */
 export function formatCompact(value: number): string {
+  const abs = Math.abs(value);
+  const magnitude = abs >= 1e6 ? 1e6 : abs >= 1e3 ? 1e3 : 1;
+  // One decimal of the K/M unit; below 1,000 the number shows whole.
+  const step = magnitude === 1 ? 1 : magnitude / 10;
+  const truncated = Math.sign(value) * Math.floor(abs / step) * step;
   return new Intl.NumberFormat(locale(), { notation: "compact", maximumFractionDigits: 1 })
-    .format(value)
+    .format(truncated)
     .toUpperCase();
 }
 
-/** 8.4 → "+8.4%", -3 → "−3.0%". */
+/** 8.4 → "+8.4%", -3 → "−3.0%", -0.04 → "0.0%" (no sign on what rounds to zero). */
 export function formatSignedPercent(value: number, digits = 1): string {
-  const sign = value > 0 ? "+" : value < 0 ? "−" : "";
+  const rounded = Math.round(value * 10 ** digits);
+  const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "";
   return `${sign}${new Intl.NumberFormat(locale(), {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   }).format(Math.abs(value))}%`;
+}
+
+/**
+ * Goal progress: floors until the goal is met, so 99.6% never shows "100%"
+ * while steps are still to go.
+ */
+export function formatGoalPercent(value: number, goalMet: boolean, digits = 1): string {
+  const f = 10 ** digits;
+  return formatPercent(goalMet ? value : Math.floor(value * f) / f, digits);
 }
 
 export function formatPercent(value: number, digits = 1): string {

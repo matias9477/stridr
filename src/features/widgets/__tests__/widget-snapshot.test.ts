@@ -62,7 +62,7 @@ describe("buildWidgetTimeline", () => {
     expect(now.hourly[18 - 6]).toBe(1);
     expect(now.hourly[8 - 6]).toBe(0.5);
     expect(now.metrics.map((m) => m.icon)).toEqual(["ruler", "stopwatch", "speedometer"]);
-    expect(now.metrics[2]?.value).toBe("110");
+    expect(now.metrics[2]?.value).toBe("~110");
     expect(now.goalStatus).toContain("WIDGET.OFGOAL");
     expect(now.inlineText).toContain("WIDGET.INLINEPACE");
   });

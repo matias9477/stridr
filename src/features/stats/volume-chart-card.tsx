@@ -160,7 +160,8 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
                 {selected.value === null
                   ? t("stats.chart.noData")
                   : selected.isPeak
-                    ? t("stats.chart.peak")
+                    ? // Weekly bars peak on the best week's average, not the best day in the header.
+                      t(selected.aggregated ? "stats.chart.bestWeek" : "stats.chart.peak")
                     : selected.containsToday && !selected.aggregated
                       ? t("stats.chart.today")
                       : selected.aggregated

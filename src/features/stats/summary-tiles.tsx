@@ -17,7 +17,11 @@ const RANGE_SHORT: Record<ChartRange, string> = {
   all: "ALL",
 };
 
-/** Week total (Mon → today, spec §6.4) + average per valid day over the selected range. */
+/**
+ * Week total (Mon → today, spec §6.4) + average per valid day over the selected
+ * range's completed days — today's partial total would drag it down (and
+ * disagree with Today's 7-day average).
+ */
 export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartRange }) {
   const { t } = useTranslation();
   const c = useThemeColors();
@@ -25,7 +29,12 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
   const week = stats.week;
 
   const rangeAverage = useMemo(
-    () => averageOf(rangeDays(stats.days, range, stats.today).map((d) => d.total)),
+    () =>
+      averageOf(
+        rangeDays(stats.days, range, stats.today)
+          .filter((d) => d.day !== stats.today)
+          .map((d) => d.total),
+      ),
     [stats.days, range, stats.today],
   );
 
