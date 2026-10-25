@@ -15,25 +15,40 @@ import {
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { haptics } from "@/src/features/haptics/haptics";
+import { useHealthStore } from "@/src/features/health/health-store";
+import { NudgePreview } from "@/src/features/notifications/nudge-preview";
+import { useEnableNudges } from "@/src/features/notifications/use-enable-nudges";
+import { HealthContract } from "@/src/features/onboarding/health-contract";
+import { OnboardingSlide } from "@/src/features/onboarding/onboarding-slide";
+import { StrideCalibration } from "@/src/features/onboarding/stride-calibration";
 import { usePreferencesStore } from "@/src/stores/preferences";
+import { ActionButton } from "@/src/ui/action-button";
 import { Button } from "@/src/ui/button";
 import { DURATION } from "@/src/ui/motion";
+import { PulseDot } from "@/src/ui/pulse-dot";
 import { useThemeColors } from "@/src/ui/theme-colors";
+import { T } from "@/src/ui/typography";
+
+/** Starting point for the height ruler when none is saved yet. */
+const DEFAULT_HEIGHT_CM = 170;
 
 type SlideIcon = keyof typeof Ionicons.glyphMap;
 
-// TODO: replace with slides that sell THIS app's value proposition.
 const SLIDES: { key: string; icon: SlideIcon }[] = [
-  { key: "welcome", icon: "sparkles-outline" },
-  { key: "organize", icon: "list-outline" },
-  { key: "ready", icon: "rocket-outline" },
+  { key: "health", icon: "heart-outline" },
+  { key: "calibrate", icon: "resize-outline" },
+  { key: "nudges", icon: "notifications-outline" },
+  { key: "ready", icon: "heart-outline" },
 ];
 
 /**
- * Skippable at all times (Skip stays visible on every slide). The last slide's
- * CTA drops the user straight into creating their first items — an
- * onboarding should end in the app's core action, not on a dead-end screen.
- * Revisits from Settings just dismiss.
+ * Skippable at all times (Skip stays visible on every slide). Step 1 explains
+ * the read-only Health contract and its CTA asks for access right there — the
+ * moment the user understands why it's needed (spec §3.1, §11). The last
+ * slide asks again only if step 1 was swiped past. Skipping leaves the
+ * connect CTA on Today. Revisits from Settings just dismiss. The calibrate
+ * slide only saves the height on "Confirm" — swiping past it keeps the default
+ * stride (spec decision 4).
  */
 export default function OnboardingScreen() {
   const { t } = useTranslation();
@@ -44,9 +59,21 @@ export default function OnboardingScreen() {
   const [page, setPage] = useState(0);
   const onboardingDone = usePreferencesStore((s) => s.onboardingDone);
   const setOnboardingDone = usePreferencesStore((s) => s.setOnboardingDone);
+  const requestHealthAccess = useHealthStore((s) => s.requestAccess);
+  const healthAccess = useHealthStore((s) => s.access);
+  const nudgesEnabled = usePreferencesStore((s) => s.paceNudgesEnabled);
+  const nudges = useEnableNudges();
+  const [connecting, setConnecting] = useState(false);
+  const storedHeightCm = usePreferencesStore((s) => s.heightCm);
+  const setHeightCm = usePreferencesStore((s) => s.setHeightCm);
+  const setStrideCm = usePreferencesStore((s) => s.setStrideCm);
+  const [heightCm, setDraftHeightCm] = useState(storedHeightCm ?? DEFAULT_HEIGHT_CM);
   const isLast = page === SLIDES.length - 1;
+  const slideKey = SLIDES[page]?.key;
+  // Already asked (or no HealthKit at all): connecting again would be a no-op.
+  const canConnect = healthAccess === "notRequested";
 
-  const finish = (startCreating: boolean) => {
+  const finish = (connectHealth: boolean) => {
     if (onboardingDone) {
       if (router.canGoBack()) router.back();
       else router.replace("/");
@@ -54,15 +81,36 @@ export default function OnboardingScreen() {
     }
     setOnboardingDone(true);
     router.replace("/");
-    if (startCreating) router.push("/items/new");
+    if (connectHealth) void requestHealthAccess();
   };
 
   const onNext = () => {
     if (isLast) {
-      finish(true);
+      finish(canConnect);
       return;
     }
     scrollRef.current?.scrollTo({ x: (page + 1) * width, animated: true });
+  };
+
+  const onConnect = async () => {
+    if (canConnect) {
+      setConnecting(true);
+      await requestHealthAccess();
+      setConnecting(false);
+    }
+    onNext();
+  };
+
+  const onEnableNudges = async () => {
+    if (!nudgesEnabled) await nudges.enable();
+    onNext();
+  };
+
+  const onConfirmHeight = () => {
+    setHeightCm(heightCm);
+    // Same as Settings → stride → height: height only drives stride with no manual override.
+    setStrideCm(null);
+    onNext();
   };
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -74,13 +122,20 @@ export default function OnboardingScreen() {
   return (
     <SafeAreaView className="flex-1 bg-surface-page">
       <View className="flex-row items-center justify-between px-6 pt-2">
-        <Text className="text-base font-semibold text-text-primary">Stridr</Text>
+        {/* Same brand mark as AppHeader; the dot holds still — nothing is live yet. */}
+        <View className="flex-row items-center gap-2" accessibilityRole="header">
+          <PulseDot size="md" />
+          <T variant="label">STRIDR</T>
+        </View>
         <Pressable
           onPress={() => finish(false)}
           hitSlop={8}
+          accessibilityRole="button"
           className="px-2 py-1 active:opacity-60"
         >
-          <Text className="text-sm font-semibold text-text-tertiary">{t("onboarding.skip")}</Text>
+          <T variant="label" tone="tertiary">
+            {t("onboarding.skip")}
+          </T>
         </Pressable>
       </View>
 
@@ -92,19 +147,38 @@ export default function OnboardingScreen() {
         onMomentumScrollEnd={onScrollEnd}
         className="flex-1"
       >
-        {SLIDES.map((slide) => (
-          <View key={slide.key} style={{ width }} className="items-center justify-center px-10">
-            <View className="h-24 w-24 items-center justify-center rounded-3xl border border-border-hairline bg-surface-card">
-              <Ionicons name={slide.icon} size={44} color={c.accentFg} />
+        {SLIDES.map((slide, i) =>
+          slide.key !== "ready" ? (
+            <OnboardingSlide
+              key={slide.key}
+              width={width}
+              step={i + 1}
+              total={SLIDES.length}
+              title={t(`onboarding.${slide.key}.title`)}
+              body={t(`onboarding.${slide.key}.body`)}
+            >
+              {slide.key === "health" ? (
+                <HealthContract />
+              ) : slide.key === "calibrate" ? (
+                <StrideCalibration heightCm={heightCm} onChange={setDraftHeightCm} />
+              ) : (
+                <NudgePreview />
+              )}
+            </OnboardingSlide>
+          ) : (
+            <View key={slide.key} style={{ width }} className="items-center justify-center px-10">
+              <View className="h-24 w-24 items-center justify-center rounded-3xl border border-border-hairline bg-surface-card">
+                <Ionicons name={slide.icon} size={44} color={c.accentFg} />
+              </View>
+              <Text className="mt-6 text-center text-3xl font-bold text-text-primary">
+                {t(`onboarding.${slide.key}Title`)}
+              </Text>
+              <Text className="mt-4 text-center text-base leading-6 text-text-secondary">
+                {t(`onboarding.${slide.key}Body`)}
+              </Text>
             </View>
-            <Text className="mt-6 text-center text-3xl font-bold text-text-primary">
-              {t(`onboarding.${slide.key}Title`)}
-            </Text>
-            <Text className="mt-4 text-center text-base leading-6 text-text-secondary">
-              {t(`onboarding.${slide.key}Body`)}
-            </Text>
-          </View>
-        ))}
+          ),
+        )}
       </ScrollView>
 
       <View className="gap-6 px-8 pb-6">
@@ -117,10 +191,51 @@ export default function OnboardingScreen() {
             />
           ))}
         </View>
-        <Button
-          label={isLast ? t("onboarding.getStarted") : t("onboarding.next")}
-          onPress={onNext}
-        />
+        {slideKey === "health" ? (
+          <ActionButton
+            label={canConnect ? t("onboarding.health.connect") : t("onboarding.next")}
+            onPress={() => void onConnect()}
+            loading={connecting}
+          />
+        ) : slideKey === "calibrate" ? (
+          <View className="gap-3">
+            <ActionButton label={t("onboarding.calibrate.confirm")} onPress={onConfirmHeight} />
+            <T variant="bodySm" tone="secondary" className="text-center">
+              {t("onboarding.calibrate.later")}
+            </T>
+          </View>
+        ) : slideKey === "nudges" ? (
+          <View className="gap-3">
+            <ActionButton
+              label={nudgesEnabled ? t("onboarding.next") : t("onboarding.nudges.enable")}
+              onPress={() => void onEnableNudges()}
+              loading={nudges.busy}
+            />
+            {nudgesEnabled ? null : (
+              <Pressable
+                onPress={onNext}
+                hitSlop={8}
+                accessibilityRole="button"
+                className="items-center py-1 active:opacity-60"
+              >
+                <T variant="label" tone="secondary">
+                  {t("onboarding.nudges.later")}
+                </T>
+              </Pressable>
+            )}
+          </View>
+        ) : (
+          <Button
+            label={
+              !isLast
+                ? t("onboarding.next")
+                : canConnect
+                  ? t("onboarding.getStarted")
+                  : t("onboarding.finish")
+            }
+            onPress={onNext}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

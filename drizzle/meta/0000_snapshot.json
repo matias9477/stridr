@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b67eaf6d-045b-4241-a1c8-d466d74ab500",
+  "id": "3af7efff-f966-412d-9a97-899c749017aa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "items": {
-      "name": "items",
+    "goal_changes": {
+      "name": "goal_changes",
       "columns": {
         "id": {
           "name": "id",
@@ -21,16 +21,16 @@
           "notNull": true,
           "autoincrement": false
         },
-        "title": {
-          "name": "title",
+        "effective_from": {
+          "name": "effective_from",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "notes": {
-          "name": "notes",
-          "type": "text",
+        "steps": {
+          "name": "steps",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -53,12 +53,130 @@
         }
       },
       "indexes": {
-        "items_uuid_unique": {
-          "name": "items_uuid_unique",
+        "goal_changes_uuid_unique": {
+          "name": "goal_changes_uuid_unique",
           "columns": [
             "uuid"
           ],
           "isUnique": true
+        },
+        "goal_changes_effective_from_unique": {
+          "name": "goal_changes_effective_from_unique",
+          "columns": [
+            "effective_from"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "manual_activity": {
+      "name": "manual_activity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "steps": {
+          "name": "steps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "estimated_steps": {
+          "name": "estimated_steps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "distance_meters": {
+          "name": "distance_meters",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_seconds": {
+          "name": "duration_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "stride_meters": {
+          "name": "stride_meters",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cadence_spm": {
+          "name": "cadence_spm",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "manual_activity_uuid_unique": {
+          "name": "manual_activity_uuid_unique",
+          "columns": [
+            "uuid"
+          ],
+          "isUnique": true
+        },
+        "manual_activity_day_idx": {
+          "name": "manual_activity_day_idx",
+          "columns": [
+            "day"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},

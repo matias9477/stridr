@@ -1,6 +1,7 @@
 {
   "tabs": {
-    "home": "Home",
+    "today": "Today",
+    "stats": "Stats",
     "settings": "Settings"
   },
   "common": {
@@ -14,34 +15,258 @@
     "viewMore": "View {{count}} more",
     "viewLess": "View less"
   },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo_one": "{{count}}m ago",
+    "minutesAgo_other": "{{count}}m ago",
+    "hoursAgo_one": "{{count}}h ago",
+    "hoursAgo_other": "{{count}}h ago"
+  },
+  "cards": {
+    "error": "Couldn't load",
+    "errorRetry": "Couldn't load · Tap to retry",
+    "healthNotConnected": "Connect Apple Health to see this.",
+    "healthUnavailable": "Needs Apple Health, which isn't available on this device."
+  },
   "onboarding": {
     "skip": "Skip",
     "next": "Next",
-    "getStarted": "Create your first one",
-    "welcomeTitle": "Welcome to Stridr",
-    "welcomeBody": "TODO: one sentence on what this app does for the user.",
-    "organizeTitle": "Everything in one place",
-    "organizeBody": "TODO: one sentence on the core organizing idea.",
-    "readyTitle": "Ready to go",
-    "readyBody": "TODO: one sentence leading into the first creation."
+    "getStarted": "Connect Apple Health",
+    "readyTitle": "Read-only. On-device.",
+    "readyBody": "Stridr only reads step counts. Nothing leaves your phone — no account, no tracking.",
+    "calibrate": {
+      "title": "Calibrate your stride.",
+      "body": "Your height sets your stride length, which turns walks you log by distance into step estimates — no GPS needed.",
+      "height": "Your height",
+      "unit": "Height unit",
+      "fine": "Fine adjust",
+      "decrease": "One less",
+      "increase": "One more",
+      "cmA11y": "{{value}} centimeters",
+      "ftInA11y": "{{feet}} feet {{inches}} inches",
+      "stride": "Estimated stride",
+      "formula": "Formula: height × {{ratio}}",
+      "confirm": "Confirm height →",
+      "later": "Adjust manually later in Settings"
+    },
+    "step": "Step {{step}} of {{total}}",
+    "finish": "Get started",
+    "health": {
+      "title": "Direct sync with Apple Health.",
+      "body": "Stridr reads your step count to build your daily totals, averages and cadence. It never writes to Health or reads anything else.",
+      "source": "Apple Health",
+      "oneWay": "One-way read",
+      "local": "On this device",
+      "flowA11y": "Apple Health to Stridr, one-way, read only",
+      "contract": "Read-only access",
+      "reads": "Reads",
+      "metrics_one": "{{count}} metric",
+      "metrics_other": "{{count}} metrics",
+      "read": {
+        "steps": "Step count",
+        "stepsCaption": "Full history and per-minute totals"
+      },
+      "never": "Never accessed",
+      "blocked": {
+        "heart": "Heart rate & ECG",
+        "location": "Location & routes",
+        "sleep": "Sleep",
+        "workouts": "Workouts"
+      },
+      "privacyTitle": "Nothing leaves your phone",
+      "privacyBody": "Everything is processed on-device. No account, no analytics, no servers.",
+      "connect": "Connect Apple Health →"
+    },
+    "nudges": {
+      "title": "Gentle nudges, never nagware.",
+      "body": "No generic encouragement. One alert in the evening, only when you're falling behind your own target's pace.",
+      "enable": "Enable smart notifications →",
+      "later": "Maybe later"
+    }
   },
-  "home": {
-    "title": "Stridr",
-    "empty": "Nothing here yet. Create your first one!",
-    "new": "New"
+  "today": {
+    "dateLabel": "Today, {{date}}",
+    "sync": {
+      "synced": "Synced {{ago}} · Apple Health",
+      "connect": "Connect Apple Health",
+      "failed": "Sync failed · Tap to retry",
+      "unavailable": "Manual logging only",
+      "chipActive": "Health active",
+      "chipOff": "Health off",
+      "chipManual": "Manual only"
+    },
+    "hero": {
+      "label": "Today's accumulation",
+      "stepsToday": "Steps today",
+      "target": "Target {{goal}}",
+      "a11y": "{{steps}} steps today",
+      "noDataA11y": "No steps recorded today yet",
+      "connect": "Connect Apple Health",
+      "connectBody": "Stridr reads your step count from Apple Health. You can also log walks by hand.",
+      "setTarget": "Set a daily target",
+      "ahead": "{{steps}} steps ahead of pace",
+      "behind": "{{steps}} steps behind pace",
+      "onPace": "On pace",
+      "goalExceeded": "Goal exceeded",
+      "goalReached": "Goal reached",
+      "toGo": "{{steps}} to go"
+    },
+    "metrics": {
+      "average": "7-day average",
+      "baseline": "Prev. 7 days {{value}}",
+      "averageDays_one": "From {{count}} day",
+      "averageDays_other": "From {{count}} days",
+      "averageEmpty": "Needs a few days of history.",
+      "distance": "Distance est.",
+      "stride": "{{value}} cm stride",
+      "noStepsYet": "No steps yet today.",
+      "activeTime": "Active time",
+      "cadence": "{{value}} steps/min avg",
+      "activeEmpty": "No brisk walking yet today.",
+      "peak": "Peak interval",
+      "peakCaption": "{{steps}} steps in 60m",
+      "peakEmpty": "No hourly data yet."
+    },
+    "cadence": {
+      "title": "Temporal cadence",
+      "subtitle": "24-hour radar",
+      "current": "{{time}} current",
+      "empty": "No steps recorded yet today.",
+      "barA11y": "{{time}}: {{steps}} steps",
+      "barEmptyA11y": "{{time}}: no steps"
+    },
+    "stride": {
+      "title": "Stride {{cm}} cm",
+      "manual": "Set manually",
+      "height": "From your height ({{height}} cm)",
+      "default": "Average default — set your height",
+      "calibrate": "Calibrate"
+    },
+    "logWalk": "Log manual walk",
+    "share": {
+      "a11y": "Share today's steps",
+      "withGoal": "{{steps}} steps today — {{percent}} of my {{goal}} target. Tracked with Stridr.",
+      "plain": "{{steps}} steps today. Tracked with Stridr."
+    }
   },
-  "form": {
-    "titleLabel": "Title",
-    "titlePlaceholder": "Give it a name",
-    "notesLabel": "Notes",
-    "notesPlaceholder": "Optional notes",
-    "create": "Create",
-    "update": "Save changes"
+  "stats": {
+    "range": {
+      "a11y": "Chart range",
+      "week": "7D",
+      "month": "30D",
+      "quarter": "90D",
+      "all": "All"
+    },
+    "chart": {
+      "title": "Cadence volume",
+      "peakUnit": "Steps / peak",
+      "empty": "No steps in this range yet.",
+      "goal": "Goal {{value}}",
+      "max": "Max",
+      "daily": "Daily",
+      "weekly": "Weekly avg",
+      "weekOf": "Week of {{date}}",
+      "noData": "No data",
+      "peak": "Peak",
+      "today": "Today",
+      "perDay": "Per day",
+      "steps": "Steps",
+      "barA11y": "{{date}}: {{steps}} steps",
+      "barEmptyA11y": "{{date}}: no data"
+    },
+    "summary": {
+      "week": "Week total",
+      "weekSpan": "Mon – today",
+      "weekVsLast": "{{value}} vs last week",
+      "weekEmpty": "No steps this week yet.",
+      "avg": "Daily avg",
+      "avgCaption_one": "{{range}} · {{count}} day",
+      "avgCaption_other": "{{range}} · {{count}} days",
+      "avgEmpty": "No data in this range."
+    },
+    "milestones": {
+      "title": "Metric milestones",
+      "allTime": "All-time log",
+      "record": "Personal record",
+      "recordValue": "{{steps}} steps",
+      "recordA11y": "Personal record: {{steps}} steps on {{date}}",
+      "recordEmpty": "Your best day will show up here.",
+      "ath": "ATH",
+      "since": "since {{date}}",
+      "limitedSince": "limited access since {{date}}",
+      "streak": "Streak",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "streakCaption": "≥ {{goal}} · best {{best}}",
+      "streakNoGoal": "Set a daily target to start a streak.",
+      "trend": "30-day trend",
+      "trendCaption": "{{diff}}/day vs prev 30",
+      "trendEmpty": "Needs about two months of data."
+    },
+    "log": {
+      "title": "Activity log",
+      "recent_one": "Last {{count}} day",
+      "recent_other": "Last {{count}} days",
+      "empty": "No activity yet. Walk with your phone, or log a walk.",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "steps": "Steps",
+      "noData": "No data",
+      "stepsA11y": "{{steps}} steps",
+      "activeMins_one": "{{count}} active min",
+      "activeMins_other": "{{count}} active mins",
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "inclManual": "incl. {{steps}} manual",
+      "manual": "Manual",
+      "manualWalk": "Walk",
+      "manualSteps": "Added steps",
+      "editHint": "Opens the entry to edit or delete it"
+    },
+    "footer": {
+      "synced": "Synced {{ago}}",
+      "manualOnly": "Manual data only",
+      "export": "Raw export"
+    }
   },
-  "detail": {
-    "notFound": "Not found",
-    "deleteConfirmTitle": "Delete this?",
-    "deleteConfirmMessage": "This cannot be undone."
+  "activity": {
+    "newTitle": "Add activity",
+    "editTitle": "Edit activity",
+    "notFound": "This entry no longer exists.",
+    "mode": {
+      "a11y": "Activity type",
+      "walk": "Log a walk",
+      "steps": "Add steps"
+    },
+    "form": {
+      "day": "Day",
+      "steps": "Steps",
+      "distance": "Distance",
+      "duration": "Duration",
+      "estimate": "Estimated steps",
+      "estimateEmpty": "Enter a distance, a duration, or both.",
+      "basisDistance": "Estimate · distance ÷ {{cm}} cm stride",
+      "basisDuration": "Estimate · duration × {{spm}} steps/min",
+      "finalSteps": "Steps to add",
+      "useEstimate": "Use estimate",
+      "stepsHint": "Only add activity your iPhone or Apple Watch didn't record, or it will count twice.",
+      "save": "Add activity",
+      "update": "Save changes",
+      "stepsUnit": "steps"
+    },
+    "confirm": {
+      "title": "Not already recorded?",
+      "body": "These steps are added on top of Apple Health. Add them only if your iPhone or Apple Watch missed this activity.",
+      "add": "Add"
+    },
+    "delete": {
+      "title": "Delete this entry?",
+      "body": "Its steps will be removed from that day's total."
+    }
+  },
+  "export": {
+    "failedTitle": "Export failed",
+    "failedBody": "The CSV couldn't be created. Try again."
   },
   "settings": {
     "title": "Settings",
@@ -50,10 +275,7 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "language": "Language",
-    "languageEnglish": "English",
-    "languageSpanish": "Spanish",
     "languageSystem": "System",
-    "feel": "Feel",
     "haptics": "Haptics",
     "hapticsCaption": "Taps as you use the app",
     "pro": "Pro",
@@ -67,13 +289,83 @@
     "leaveReview": "Leave a review",
     "privacyPolicy": "Privacy policy",
     "viewOnboarding": "View intro again",
-    "version": "Version"
+    "version": "Version",
+    "display": "Display & feel",
+    "target": {
+      "title": "Daily baseline target",
+      "on": "Active",
+      "off": "Off",
+      "toggleA11y": "Daily target",
+      "steps": "Steps",
+      "decrease": "Decrease target by 500",
+      "increase": "Increase target by 500",
+      "a11y": "Daily target {{steps}} steps",
+      "offA11y": "No daily target",
+      "median": "Use your 7-day median",
+      "medianEmpty": "Median appears after a few days",
+      "medianValue": "{{steps}} steps",
+      "useMedianHint": "Sets the target to your recent median"
+    },
+    "metrics": {
+      "title": "Biomechanics & metrics",
+      "stride": "Stride length",
+      "strideManual": "Set manually",
+      "strideHeight": "Auto-calculated via height",
+      "strideDefault": "Average default",
+      "strideTitle": "Stride length",
+      "strideBody": "Used to estimate distance and walk steps.",
+      "setHeight": "Calculate from height",
+      "setStride": "Enter stride",
+      "useDefault": "Use average default",
+      "heightTitle": "Your height",
+      "heightBody": "In centimeters ({{min}}–{{max}}).",
+      "strideInputBody": "Step length in centimeters ({{min}}–{{max}}).",
+      "cadence": "Walking cadence",
+      "cadenceCaption": "For duration-only walks",
+      "cadenceTitle": "Walking cadence",
+      "cadenceBody": "Steps per minute ({{min}}–{{max}}). Default {{default}}.",
+      "unit": "Distance unit",
+      "unitCaption": "Display preference",
+      "miles": "Miles",
+      "invalid": "That number is out of range.",
+      "editHint": "Opens an editor"
+    },
+    "health": {
+      "title": "System integration",
+      "active": "Active",
+      "off": "Not connected",
+      "unavailable": "Unavailable",
+      "name": "Apple Health",
+      "readOnly": "Read-only step count",
+      "connect": "Connect",
+      "synced": "Synced",
+      "syncFailed": "Sync failed",
+      "unavailableBody": "Apple Health isn't available on this device. Manual logging still works.",
+      "noDataBody": "No steps are visible. Check Health › Sharing › Apps › Stridr and allow Steps.",
+      "openHealth": "Open Health",
+      "privacy": "Stridr only reads step counts. No heart rate, GPS routes or calorie data is ever collected, and nothing leaves your device."
+    },
+    "widgets": {
+      "title": "Widget previews",
+      "lock": "Lock screen",
+      "home": "Home screen",
+      "rectangular": "Rectangular",
+      "small": "Small square",
+      "lockA11y": "Lock screen widget preview",
+      "homeA11y": "Home screen widget preview"
+    },
+    "data": {
+      "export": "Export steps as CSV",
+      "privacy": "Privacy & zero analytics"
+    },
+    "nudges": "Pace nudges",
+    "nudgesCaption": "One evening alert when you're behind your target"
   },
   "paywall": {
     "title": "Go Pro",
     "subtitle": "Unlock everything, forever.",
-    "featureOne": "Unlimited entries",
-    "featureTwo": "Home-screen widget",
+    "featureOne": "Every chart range, all-time history",
+    "featureTwo": "Home and lock screen widgets",
     "featureThree": "Support an indie developer",
     "purchase": "Continue",
     "restore": "Restore purchases",
@@ -83,10 +375,53 @@
     "terms": "Payment is charged to your Apple ID. Subscriptions renew automatically unless cancelled."
   },
   "validation": {
-    "titleRequired": "Title is required",
-    "titleTooLong": "Title must be under 120 characters"
+    "stepsRequired": "Enter a step count",
+    "stepsTooMany": "That's more than 100,000 steps",
+    "numberInvalid": "Enter a number",
+    "durationInvalid": "Duration must be under 24 hours",
+    "distanceTooLong": "That's longer than 100 km",
+    "walkNeedsInput": "Enter a distance or a duration",
+    "dayInvalid": "Pick a day",
+    "dayInFuture": "That day hasn't happened yet"
   },
   "widget": {
-    "empty": "No items yet"
+    "empty": "No steps yet",
+    "connect": "Open Stridr to connect",
+    "newDay": "New day · no steps yet",
+    "week": "Last 7 days",
+    "inline": "{{steps}} steps",
+    "steps": "Steps",
+    "total": "Today's total",
+    "updated": "Updated {{time}}",
+    "ahead": "+{{steps}} ahead",
+    "behind": "−{{steps}} behind",
+    "goal": "Goal {{goal}}",
+    "reached": "{{percent}} reached",
+    "ofGoal": "{{percent}} of goal",
+    "avg": "Avg {{steps}} / day",
+    "active": "Active",
+    "cadence": "Cadence",
+    "kilometers": "Kilometers",
+    "miles": "Miles",
+    "movingTime": "Moving time",
+    "perMin": "Steps / min",
+    "spm": "spm",
+    "inlinePace": "{{steps}} steps · {{pace}}"
+  },
+  "nudges": {
+    "notification": {
+      "title": "Behind today's pace",
+      "body": "About {{remaining}} steps to your target. An evening walk still closes it."
+    },
+    "rules": "The rules",
+    "rule": {
+      "once": "At most one a day, at {{time}}",
+      "behind": "Only when you're behind your target's pace",
+      "silent": "Silent — no sound, no badge",
+      "off": "Turn it off anytime in Settings"
+    },
+    "deniedTitle": "Notifications are off",
+    "deniedBody": "Allow notifications for Stridr in iOS Settings to get pace nudges.",
+    "openSettings": "Open Settings"
   }
 }

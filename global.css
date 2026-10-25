@@ -3,31 +3,43 @@
 @tailwind utilities;
 
 /*
- * CSS-variable palette (space-separated RGB triplets).
- * Runtime source of truth is src/ui/theme-colors.ts — keep both in sync.
+ * CSS-variable palette (space-separated RGB triplets) — Monochrome Cadence
+ * (DESIGN.md = dark, "DESIGN_light mode.md" = light).
+ * Runtime source of truth is src/ui/theme-colors.ts — keep both in sync,
+ * plus the THEME constant in widgets/steps-widget.tsx.
  */
 :root {
-  --color-surface-page: 245 245 245;
+  --color-surface-page: 249 249 249;
   --color-surface-card: 255 255 255;
-  --color-surface-sunken: 235 235 235;
-  --color-text-primary: 23 23 23;
-  --color-text-secondary: 82 82 82;
-  --color-text-tertiary: 140 140 140;
-  --color-border-hairline: 224 224 224;
-  --color-accent-fg: 252 186 3;
-  --color-accent-on: 23 23 23;
-  --color-danger-fg: 220 38 38;
+  --color-surface-sunken: 243 243 243;
+  --color-surface-raised: 238 238 238;
+  --color-surface-high: 232 232 232;
+  --color-surface-highest: 226 226 226;
+  --color-text-primary: 0 0 0;
+  --color-text-body: 26 28 28;
+  --color-text-secondary: 95 94 94;
+  --color-text-tertiary: 126 117 118;
+  --color-text-quiet: 207 196 197;
+  --color-border-hairline: 229 229 229;
+  --color-accent-fg: 0 0 0;
+  --color-accent-on: 255 255 255;
+  --color-danger-fg: 186 26 26;
 }
 
 .dark:root {
-  --color-surface-page: 18 18 18;
-  --color-surface-card: 30 30 30;
-  --color-surface-sunken: 12 12 12;
-  --color-text-primary: 245 245 245;
-  --color-text-secondary: 163 163 163;
-  --color-text-tertiary: 115 115 115;
-  --color-border-hairline: 55 55 55;
-  --color-accent-fg: 252 186 3;
-  --color-accent-on: 23 23 23;
-  --color-danger-fg: 248 113 113;
+  --color-surface-page: 19 19 19;
+  --color-surface-card: 27 27 27;
+  --color-surface-sunken: 14 14 14;
+  --color-surface-raised: 31 31 31;
+  --color-surface-high: 42 42 42;
+  --color-surface-highest: 53 53 53;
+  --color-text-primary: 255 255 255;
+  --color-text-body: 226 226 226;
+  --color-text-secondary: 199 198 198;
+  --color-text-tertiary: 142 145 146;
+  --color-text-quiet: 68 71 72;
+  --color-border-hairline: 42 42 42;
+  --color-accent-fg: 255 255 255;
+  --color-accent-on: 19 19 19;
+  --color-danger-fg: 255 180 171;
 }

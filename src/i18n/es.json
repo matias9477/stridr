@@ -1,6 +1,7 @@
 {
   "tabs": {
-    "home": "Inicio",
+    "today": "Hoy",
+    "stats": "Estadísticas",
     "settings": "Ajustes"
   },
   "common": {
@@ -14,34 +15,258 @@
     "viewMore": "Ver {{count}} más",
     "viewLess": "Ver menos"
   },
+  "time": {
+    "justNow": "ahora",
+    "minutesAgo_one": "hace {{count}} min",
+    "minutesAgo_other": "hace {{count}} min",
+    "hoursAgo_one": "hace {{count}} h",
+    "hoursAgo_other": "hace {{count}} h"
+  },
+  "cards": {
+    "error": "No se pudo cargar",
+    "errorRetry": "No se pudo cargar · Toca para reintentar",
+    "healthNotConnected": "Conecta Salud de Apple para ver esto.",
+    "healthUnavailable": "Requiere Salud de Apple, que no está disponible en este dispositivo."
+  },
   "onboarding": {
     "skip": "Omitir",
     "next": "Siguiente",
-    "getStarted": "Crea el primero",
-    "welcomeTitle": "Bienvenido a Stridr",
-    "welcomeBody": "TODO: una frase sobre qué hace esta app por el usuario.",
-    "organizeTitle": "Todo en un solo lugar",
-    "organizeBody": "TODO: una frase sobre la idea organizadora principal.",
-    "readyTitle": "Todo listo",
-    "readyBody": "TODO: una frase que lleve a la primera creación."
+    "getStarted": "Conectar Salud",
+    "readyTitle": "Solo lectura. En tu dispositivo.",
+    "readyBody": "Stridr solo lee tus pasos. Nada sale de tu teléfono — sin cuenta, sin rastreo.",
+    "calibrate": {
+      "title": "Calibra tu zancada.",
+      "body": "Tu altura define el largo de tu zancada, que convierte las caminatas que registras por distancia en pasos estimados — sin GPS.",
+      "height": "Tu altura",
+      "unit": "Unidad de altura",
+      "fine": "Ajuste fino",
+      "decrease": "Uno menos",
+      "increase": "Uno más",
+      "cmA11y": "{{value}} centímetros",
+      "ftInA11y": "{{feet}} pies {{inches}} pulgadas",
+      "stride": "Zancada estimada",
+      "formula": "Fórmula: altura × {{ratio}}",
+      "confirm": "Confirmar altura →",
+      "later": "Puedes ajustarlo luego en Ajustes"
+    },
+    "step": "Paso {{step}} de {{total}}",
+    "finish": "Empezar",
+    "health": {
+      "title": "Conexión directa con Salud.",
+      "body": "Stridr lee tu conteo de pasos para calcular tus totales diarios, promedios y cadencia. Nunca escribe en Salud ni lee nada más.",
+      "source": "Salud de Apple",
+      "oneWay": "Solo lectura",
+      "local": "En este dispositivo",
+      "flowA11y": "De Salud de Apple a Stridr, en un sentido, solo lectura",
+      "contract": "Acceso de solo lectura",
+      "reads": "Lee",
+      "metrics_one": "{{count}} métrica",
+      "metrics_other": "{{count}} métricas",
+      "read": {
+        "steps": "Pasos",
+        "stepsCaption": "Historial completo y totales por minuto"
+      },
+      "never": "Nunca accede",
+      "blocked": {
+        "heart": "Ritmo cardíaco y ECG",
+        "location": "Ubicación y rutas",
+        "sleep": "Sueño",
+        "workouts": "Entrenamientos"
+      },
+      "privacyTitle": "Nada sale de tu teléfono",
+      "privacyBody": "Todo se procesa en el dispositivo. Sin cuenta, sin analíticas, sin servidores.",
+      "connect": "Conectar Salud →"
+    },
+    "nudges": {
+      "title": "Avisos suaves, nunca insistentes.",
+      "body": "Nada de ánimos genéricos. Un aviso por la tarde, solo si vas por detrás del ritmo de tu propio objetivo.",
+      "enable": "Activar avisos inteligentes →",
+      "later": "Quizás luego"
+    }
   },
-  "home": {
-    "title": "Stridr",
-    "empty": "Todavía no hay nada. ¡Crea el primero!",
-    "new": "Nuevo"
+  "today": {
+    "dateLabel": "Hoy, {{date}}",
+    "sync": {
+      "synced": "Sincronizado {{ago}} · Salud",
+      "connect": "Conectar Salud de Apple",
+      "failed": "Error al sincronizar · Toca para reintentar",
+      "unavailable": "Solo registro manual",
+      "chipActive": "Salud activa",
+      "chipOff": "Salud apagada",
+      "chipManual": "Solo manual"
+    },
+    "hero": {
+      "label": "Acumulado de hoy",
+      "stepsToday": "Pasos hoy",
+      "target": "Meta {{goal}}",
+      "a11y": "{{steps}} pasos hoy",
+      "noDataA11y": "Todavía no hay pasos hoy",
+      "connect": "Conectar Salud de Apple",
+      "connectBody": "Stridr lee tus pasos de Salud de Apple. También puedes registrar caminatas a mano.",
+      "setTarget": "Fija una meta diaria",
+      "ahead": "{{steps}} pasos por delante del ritmo",
+      "behind": "{{steps}} pasos por detrás del ritmo",
+      "onPace": "Al ritmo",
+      "goalExceeded": "Meta superada",
+      "goalReached": "Meta cumplida",
+      "toGo": "Faltan {{steps}}"
+    },
+    "metrics": {
+      "average": "Promedio 7 días",
+      "baseline": "7 días previos {{value}}",
+      "averageDays_one": "De {{count}} día",
+      "averageDays_other": "De {{count}} días",
+      "averageEmpty": "Necesita unos días de historial.",
+      "distance": "Distancia est.",
+      "stride": "Zancada {{value}} cm",
+      "noStepsYet": "Aún no hay pasos hoy.",
+      "activeTime": "Tiempo activo",
+      "cadence": "{{value}} pasos/min prom.",
+      "activeEmpty": "Aún no caminaste a buen ritmo hoy.",
+      "peak": "Hora pico",
+      "peakCaption": "{{steps}} pasos en 60 min",
+      "peakEmpty": "Aún no hay datos por hora."
+    },
+    "cadence": {
+      "title": "Cadencia temporal",
+      "subtitle": "Radar 24 horas",
+      "current": "{{time}} actual",
+      "empty": "Aún no hay pasos registrados hoy.",
+      "barA11y": "{{time}}: {{steps}} pasos",
+      "barEmptyA11y": "{{time}}: sin pasos"
+    },
+    "stride": {
+      "title": "Zancada {{cm}} cm",
+      "manual": "Fijada a mano",
+      "height": "Según tu altura ({{height}} cm)",
+      "default": "Promedio por defecto — indica tu altura",
+      "calibrate": "Calibrar"
+    },
+    "logWalk": "Registrar caminata",
+    "share": {
+      "a11y": "Compartir los pasos de hoy",
+      "withGoal": "{{steps}} pasos hoy — {{percent}} de mi meta de {{goal}}. Medido con Stridr.",
+      "plain": "{{steps}} pasos hoy. Medido con Stridr."
+    }
   },
-  "form": {
-    "titleLabel": "Título",
-    "titlePlaceholder": "Ponle un nombre",
-    "notesLabel": "Notas",
-    "notesPlaceholder": "Notas opcionales",
-    "create": "Crear",
-    "update": "Guardar cambios"
+  "stats": {
+    "range": {
+      "a11y": "Rango del gráfico",
+      "week": "7D",
+      "month": "30D",
+      "quarter": "90D",
+      "all": "Todo"
+    },
+    "chart": {
+      "title": "Volumen de pasos",
+      "peakUnit": "Pasos / pico",
+      "empty": "Aún no hay pasos en este rango.",
+      "goal": "Meta {{value}}",
+      "max": "Máx",
+      "daily": "Diario",
+      "weekly": "Prom. semanal",
+      "weekOf": "Semana del {{date}}",
+      "noData": "Sin datos",
+      "peak": "Pico",
+      "today": "Hoy",
+      "perDay": "Por día",
+      "steps": "Pasos",
+      "barA11y": "{{date}}: {{steps}} pasos",
+      "barEmptyA11y": "{{date}}: sin datos"
+    },
+    "summary": {
+      "week": "Total semana",
+      "weekSpan": "Lun – hoy",
+      "weekVsLast": "{{value}} vs semana pasada",
+      "weekEmpty": "Aún no hay pasos esta semana.",
+      "avg": "Prom. diario",
+      "avgCaption_one": "{{range}} · {{count}} día",
+      "avgCaption_other": "{{range}} · {{count}} días",
+      "avgEmpty": "No hay datos en este rango."
+    },
+    "milestones": {
+      "title": "Hitos",
+      "allTime": "Historial completo",
+      "record": "Récord personal",
+      "recordValue": "{{steps}} pasos",
+      "recordA11y": "Récord personal: {{steps}} pasos el {{date}}",
+      "recordEmpty": "Tu mejor día aparecerá aquí.",
+      "ath": "MÁX",
+      "since": "desde {{date}}",
+      "limitedSince": "acceso limitado desde {{date}}",
+      "streak": "Racha",
+      "days_one": "{{count}} día",
+      "days_other": "{{count}} días",
+      "streakCaption": "≥ {{goal}} · mejor {{best}}",
+      "streakNoGoal": "Fija una meta diaria para empezar una racha.",
+      "trend": "Tendencia 30 días",
+      "trendCaption": "{{diff}}/día vs 30 previos",
+      "trendEmpty": "Necesita unos dos meses de datos."
+    },
+    "log": {
+      "title": "Registro de actividad",
+      "recent_one": "Último {{count}} día",
+      "recent_other": "Últimos {{count}} días",
+      "empty": "Aún no hay actividad. Camina con tu teléfono o registra una caminata.",
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "steps": "Pasos",
+      "noData": "Sin datos",
+      "stepsA11y": "{{steps}} pasos",
+      "activeMins_one": "{{count}} min activo",
+      "activeMins_other": "{{count}} min activos",
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "inclManual": "incl. {{steps}} manuales",
+      "manual": "Manual",
+      "manualWalk": "Caminata",
+      "manualSteps": "Pasos añadidos",
+      "editHint": "Abre la entrada para editarla o borrarla"
+    },
+    "footer": {
+      "synced": "Sincronizado {{ago}}",
+      "manualOnly": "Solo datos manuales",
+      "export": "Exportar"
+    }
   },
-  "detail": {
-    "notFound": "No encontrado",
-    "deleteConfirmTitle": "¿Eliminar esto?",
-    "deleteConfirmMessage": "Esta acción no se puede deshacer."
+  "activity": {
+    "newTitle": "Añadir actividad",
+    "editTitle": "Editar actividad",
+    "notFound": "Esta entrada ya no existe.",
+    "mode": {
+      "a11y": "Tipo de actividad",
+      "walk": "Caminata",
+      "steps": "Añadir pasos"
+    },
+    "form": {
+      "day": "Día",
+      "steps": "Pasos",
+      "distance": "Distancia",
+      "duration": "Duración",
+      "estimate": "Pasos estimados",
+      "estimateEmpty": "Ingresa una distancia, una duración o ambas.",
+      "basisDistance": "Estimación · distancia ÷ zancada de {{cm}} cm",
+      "basisDuration": "Estimación · duración × {{spm}} pasos/min",
+      "finalSteps": "Pasos a añadir",
+      "useEstimate": "Usar estimación",
+      "stepsHint": "Añade solo actividad que tu iPhone o Apple Watch no registró; si no, contará dos veces.",
+      "save": "Añadir actividad",
+      "update": "Guardar cambios",
+      "stepsUnit": "pasos"
+    },
+    "confirm": {
+      "title": "¿No estaba registrada?",
+      "body": "Estos pasos se suman a Salud de Apple. Añádelos solo si tu iPhone o Apple Watch no registró esta actividad.",
+      "add": "Añadir"
+    },
+    "delete": {
+      "title": "¿Borrar esta entrada?",
+      "body": "Sus pasos se quitarán del total de ese día."
+    }
+  },
+  "export": {
+    "failedTitle": "Error al exportar",
+    "failedBody": "No se pudo crear el CSV. Inténtalo de nuevo."
   },
   "settings": {
     "title": "Ajustes",
@@ -50,10 +275,7 @@
     "themeDark": "Oscuro",
     "themeSystem": "Sistema",
     "language": "Idioma",
-    "languageEnglish": "Inglés",
-    "languageSpanish": "Español",
     "languageSystem": "Sistema",
-    "feel": "Sensación",
     "haptics": "Vibración háptica",
     "hapticsCaption": "Vibraciones al usar la app",
     "pro": "Pro",
@@ -67,13 +289,83 @@
     "leaveReview": "Deja una reseña",
     "privacyPolicy": "Política de privacidad",
     "viewOnboarding": "Ver introducción de nuevo",
-    "version": "Versión"
+    "version": "Versión",
+    "display": "Pantalla y sensación",
+    "target": {
+      "title": "Meta diaria base",
+      "on": "Activa",
+      "off": "Apagada",
+      "toggleA11y": "Meta diaria",
+      "steps": "Pasos",
+      "decrease": "Bajar la meta 500",
+      "increase": "Subir la meta 500",
+      "a11y": "Meta diaria {{steps}} pasos",
+      "offA11y": "Sin meta diaria",
+      "median": "Usa tu mediana de 7 días",
+      "medianEmpty": "La mediana aparece tras unos días",
+      "medianValue": "{{steps}} pasos",
+      "useMedianHint": "Fija la meta en tu mediana reciente"
+    },
+    "metrics": {
+      "title": "Biomecánica y métricas",
+      "stride": "Longitud de zancada",
+      "strideManual": "Fijada a mano",
+      "strideHeight": "Calculada por altura",
+      "strideDefault": "Promedio por defecto",
+      "strideTitle": "Longitud de zancada",
+      "strideBody": "Se usa para estimar distancia y pasos de caminatas.",
+      "setHeight": "Calcular por altura",
+      "setStride": "Ingresar zancada",
+      "useDefault": "Usar promedio",
+      "heightTitle": "Tu altura",
+      "heightBody": "En centímetros ({{min}}–{{max}}).",
+      "strideInputBody": "Longitud del paso en centímetros ({{min}}–{{max}}).",
+      "cadence": "Cadencia al caminar",
+      "cadenceCaption": "Para caminatas solo con duración",
+      "cadenceTitle": "Cadencia al caminar",
+      "cadenceBody": "Pasos por minuto ({{min}}–{{max}}). Por defecto {{default}}.",
+      "unit": "Unidad de distancia",
+      "unitCaption": "Preferencia de visualización",
+      "miles": "Millas",
+      "invalid": "Ese número está fuera de rango.",
+      "editHint": "Abre un editor"
+    },
+    "health": {
+      "title": "Integración del sistema",
+      "active": "Activa",
+      "off": "Sin conectar",
+      "unavailable": "No disponible",
+      "name": "Salud de Apple",
+      "readOnly": "Solo lectura de pasos",
+      "connect": "Conectar",
+      "synced": "Sincronizado",
+      "syncFailed": "Error",
+      "unavailableBody": "Salud de Apple no está disponible en este dispositivo. El registro manual sigue funcionando.",
+      "noDataBody": "No se ven pasos. Revisa Salud › Compartir › Apps › Stridr y permite Pasos.",
+      "openHealth": "Abrir Salud",
+      "privacy": "Stridr solo lee tus pasos. Nunca recopila ritmo cardíaco, rutas GPS ni calorías, y nada sale de tu dispositivo."
+    },
+    "widgets": {
+      "title": "Vista previa de widgets",
+      "lock": "Pantalla bloqueada",
+      "home": "Pantalla de inicio",
+      "rectangular": "Rectangular",
+      "small": "Cuadrado pequeño",
+      "lockA11y": "Vista previa del widget de pantalla bloqueada",
+      "homeA11y": "Vista previa del widget de inicio"
+    },
+    "data": {
+      "export": "Exportar pasos en CSV",
+      "privacy": "Privacidad y cero analíticas"
+    },
+    "nudges": "Avisos de ritmo",
+    "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo"
   },
   "paywall": {
     "title": "Hazte Pro",
     "subtitle": "Desbloquea todo, para siempre.",
-    "featureOne": "Entradas ilimitadas",
-    "featureTwo": "Widget de pantalla de inicio",
+    "featureOne": "Todos los rangos y el historial completo",
+    "featureTwo": "Widgets de inicio y bloqueo",
     "featureThree": "Apoya a un desarrollador independiente",
     "purchase": "Continuar",
     "restore": "Restaurar compras",
@@ -83,10 +375,53 @@
     "terms": "El pago se carga a tu Apple ID. Las suscripciones se renuevan automáticamente salvo que las canceles."
   },
   "validation": {
-    "titleRequired": "El título es obligatorio",
-    "titleTooLong": "El título debe tener menos de 120 caracteres"
+    "stepsRequired": "Ingresa una cantidad de pasos",
+    "stepsTooMany": "Son más de 100.000 pasos",
+    "numberInvalid": "Ingresa un número",
+    "durationInvalid": "La duración debe ser menor a 24 horas",
+    "distanceTooLong": "Es más de 100 km",
+    "walkNeedsInput": "Ingresa una distancia o una duración",
+    "dayInvalid": "Elige un día",
+    "dayInFuture": "Ese día todavía no llegó"
   },
   "widget": {
-    "empty": "Sin elementos"
+    "empty": "Aún no hay pasos",
+    "connect": "Abre Stridr para conectar",
+    "newDay": "Nuevo día · sin pasos aún",
+    "week": "Últimos 7 días",
+    "inline": "{{steps}} pasos",
+    "steps": "Pasos",
+    "total": "Total de hoy",
+    "updated": "Actualizado {{time}}",
+    "ahead": "+{{steps}} adelante",
+    "behind": "−{{steps}} atrás",
+    "goal": "Objetivo {{goal}}",
+    "reached": "{{percent}} logrado",
+    "ofGoal": "{{percent}} del objetivo",
+    "avg": "Media {{steps}} / día",
+    "active": "Activo",
+    "cadence": "Cadencia",
+    "kilometers": "Kilómetros",
+    "miles": "Millas",
+    "movingTime": "En movimiento",
+    "perMin": "Pasos / min",
+    "spm": "ppm",
+    "inlinePace": "{{steps}} pasos · {{pace}}"
+  },
+  "nudges": {
+    "notification": {
+      "title": "Vas por detrás del ritmo de hoy",
+      "body": "Te faltan unos {{remaining}} pasos para tu objetivo. Una caminata por la tarde aún lo cierra."
+    },
+    "rules": "Las reglas",
+    "rule": {
+      "once": "Como mucho uno al día, a las {{time}}",
+      "behind": "Solo si vas por detrás del ritmo de tu objetivo",
+      "silent": "Silencioso — sin sonido ni globo",
+      "off": "Desactívalo cuando quieras en Ajustes"
+    },
+    "deniedTitle": "Las notificaciones están desactivadas",
+    "deniedBody": "Permite las notificaciones de Stridr en Ajustes de iOS para recibir avisos de ritmo.",
+    "openSettings": "Abrir Ajustes"
   }
 }

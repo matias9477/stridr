@@ -16,10 +16,18 @@ export const DURATION = {
   enter: 260,
   /** Progress fills, counters. */
   fill: 520,
+  /** Odometer digits rolling to their value (RollingNumber). */
+  roll: 900,
+  /** Delay between neighbouring odometer digits, left to right. */
+  rollStagger: 45,
+  /** Total left→right spread of a bar chart's grow-in (each bar takes `fill`). */
+  sweep: 320,
   /** Stagger step between list items on first appearance. */
   stagger: 60,
-  /** One half of a slow idle "breathe" loop — placeholders/decoration only, Reduce Motion off. */
-  breathe: 1400,
+  /** Live-status blink: how long the dot stays lit between blinks (Reduce Motion off only). */
+  blinkHold: 900,
+  /** Live-status blink: each half of the quick off/on flick. */
+  blink: 220,
 } as const;
 
 export const SPRING = {

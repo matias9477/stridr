@@ -5,12 +5,14 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 ## Shipped (for reference)
 
 - Scaffolded with create-mt-app: Expo Router, NativeWind tokens, Drizzle+expo-sqlite with generated migrations, Zod+RHF forms, i18n (en/es), expo-widgets widget, RevenueCat purchases module with custom paywall, AdMob banner slot (test ads in dev, disabled until unit ids are configured), skippable onboarding, review prompts, dark mode.
+- Steps core (docs/spec-steps-core.md): HealthKit step totals (statistics-collection queries, so iPhone + Watch never double count), manual steps and estimated walks in SQLite, goal history, and every statistic (7-day average, week total, peak, record, streaks, 30-day trend) as tested pure functions. Today / Stats / Settings tabs built from the Stitch "Monochrome Cadence" designs with per-card loading/empty/error states, Space Mono + Geist, light and dark palettes. Home-screen widgets (2×2, 4×2, 4×4 with 24h cadence and the Today bento) and lock-screen widgets (circular gauge, rectangular, inline above the clock) fed by one app-pushed timeline with HealthKit background delivery; CSV export.
 
 ## Critical path to v1.0
 
 ### Product
-- [ ] Write `docs/spec-<first-feature-batch>.md` (copy `docs/spec-template.md`) and implement in its stated order
-- [ ] Replace the onboarding TODO copy in `src/i18n/en.json` + `es.json` (both files, key parity)
+- [ ] Review the defaults chosen for the product spec's open questions (docs/spec-steps-core.md → Decisions)
+- [ ] First device run (`npm run ios`): grant Health access, check totals against the Health app, confirm background delivery refreshes the widget without opening the app
+- [ ] Pace nudges on device (needs a new dev-client build for expo-notifications): enable in onboarding step 3, check the 18:00 alert fires when behind pace and is cancelled once the pace mark is reached (DeveloperSection → test nudge for the banner)
 - [ ] Fill DESIGN.md → Voice & tone and App Store visual direction
 
 ### App-store readiness
@@ -25,17 +27,20 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ## v1.1+ backlog
 
-- (deferred features go here, each with the reason it was deferred)
+- Hourly tab (Stitch `hourly_cadence`): idle-stretch detection, hourly reminders, intraday timeline. Deferred — not in the product spec MVP; Today's cadence card covers the intraday view.
+- Stride calibration walk (spec §4 "future version").
+- Light-mode shape language: "DESIGN_light mode.md" specifies 0px corners and Space Grotesk headings; the app currently shares the dark design's shapes/fonts and only swaps colors.
 
 ## Open: (unresolved decisions)
 
-- (name the conflict, list checkboxes to resolve it before the affected work lands)
+- Pro split: nothing is gated yet and the paywall copy is generic. Decide what Pro unlocks (candidates: All-time range, widgets, CSV export) before wiring `useIsPro()` gates.
+  - [ ] pick the Pro features  - [ ] gate them  - [ ] paywall copy in both locales
+  - [ ] onboarding step 4 becomes the paywall (replaces the old "Read-only. On-device." slide, which now repeats step 1)
+- Ads: the AdMob slot sits at the bottom of Today. Keep (and set unit ids) or delete per CLAUDE.md → Ads.
 
 ## Known issues / tech debt
 
 - Items here carry removal instructions written the moment the scaffolding is added (e.g. "remove X before v1.0 ships").
-- Home's empty state is the create-mt-app `StartHere` placeholder (dev builds only). When you build Home: delete `src/ui/start-here.tsx` and the `__DEV__ ? <StartHere /> :` branch in `app/(tabs)/(home)/index.tsx`, leaving `EmptyState` (with real copy in `home.empty`) as the empty state.
-- `plugins/with-scene-lifecycle.js` ports SDK 58's UIScene life cycle to SDK 57 — without it, apps built with Xcode 27 crash at launch ("UIScene life cycle is required"). **Remove it (file + `app.json` plugins entry) when upgrading to Expo SDK 58**, which ships this natively.
 
 ## Tone of voice
 

@@ -117,7 +117,7 @@ Every app has a published privacy policy before release:
 - **Keep a fixed footprint**: animated content that swaps (counters, badges) renders an invisible "ghost" copy to reserve size, so the layout around it never jumps.
 - **Reduce Motion is mandatory** for anything looping or ambient: `useReducedMotion()` → hold a static state (or render `null` for pure decoration). One-shot entrances can stay; infinite `withRepeat` cannot.
 - Press feel: wrap pressables in `Animated.View` + `usePressScale()` (`src/ui/use-press-scale.ts`) — `Button` already does. Don't stack it on top of `active:opacity-*` for the same element beyond what `Button` does.
-- Reusable effects become primitives in `src/ui/` (`use-press-scale.ts`, future `rolling-number.tsx`, `use-blink.ts`), not copy-pasted per screen. Restraint: motion marks state changes and moments; it is never decoration on idle screens.
+- Reusable effects become primitives in `src/ui/` (`use-press-scale.ts`, `rolling-number.tsx` — odometer digits for stat values, `use-blink.ts`), not copy-pasted per screen. Restraint: motion marks state changes and moments; it is never decoration on idle screens.
 
 ### Haptics (Pulsar)
 
@@ -140,7 +140,7 @@ Every app has a published privacy policy before release:
 - Components use `useTranslation()`; non-React modules import the `i18n` default and call `i18n.t()`.
 - Adding a language: add the JSON file, extend `SUPPORTED_LANGUAGES` in `src/i18n/index.ts`, the options in settings, `CFBundleLocalizations` in app.json, and `store.config.json`.
 
-### Notifications (when you add them — none scaffolded)
+### Notifications (`src/features/notifications/` — pace nudges, docs/spec-pace-nudges.md)
 
 Rules learned the hard way in `since` (`src/utils/notifications.ts` there is the reference implementation):
 

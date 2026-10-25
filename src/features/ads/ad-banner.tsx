@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { useIsPro } from "@/src/features/purchases/purchases-store";
-import { ADS_ENABLED, BANNER_AD_UNIT_ID } from "./ads-service";
+import { ADS_ENABLED, adsLib, BANNER_AD_UNIT_ID } from "./ads-service";
 
 /**
  * Adaptive banner anchored at the bottom of a screen. Renders nothing for Pro
@@ -16,9 +15,11 @@ export function AdBanner() {
   // on load to avoid a stray hairline while the slot is empty.
   const [isLoaded, setIsLoaded] = useState(false);
 
-  if (!ADS_ENABLED || isPro) {
+  const ads = adsLib();
+  if (!ADS_ENABLED || isPro || !ads) {
     return null;
   }
+  const { BannerAd, BannerAdSize } = ads;
 
   return (
     <View className={isLoaded ? "items-center border-t border-border-hairline" : "items-center"}>

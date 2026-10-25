@@ -1,0 +1,227 @@
+import { addDaysToKey, type DayKey } from "@/src/lib/day";
+import {
+  averageOf,
+  buildDailyTotals,
+  chartBars,
+  type DailyTotal,
+  goalStreaks,
+  indexDays,
+  MAX_DAILY_BARS,
+  median,
+  peakDay,
+  percentChange,
+  rangeDays,
+  sevenDayAverage,
+  thirtyDayTrend,
+  todayProgress,
+  weekSummary,
+} from "../stats";
+
+// Wednesday.
+const TODAY: DayKey = "2026-10-21";
+const ago = (n: number) => addDaysToKey(TODAY, -n);
+
+function build(
+  health: Record<DayKey, number>,
+  opts: { manual?: Record<DayKey, number>; goal?: number | null } = {},
+): DailyTotal[] {
+  const goals =
+    opts.goal === undefined || opts.goal === null
+      ? []
+      : [{ effectiveFrom: TODAY, steps: opts.goal }];
+  return buildDailyTotals({ health, manual: opts.manual ?? {}, goals, today: TODAY });
+}
+
+/** n consecutive days ending `endAgo` days before today, all with `steps`. */
+function run(n: number, steps: number, endAgo = 1): Record<DayKey, number> {
+  const out: Record<DayKey, number> = {};
+  for (let i = 0; i < n; i++) out[ago(endAgo + i)] = steps;
+  return out;
+}
+
+describe("buildDailyTotals", () => {
+  it("never turns a day without data into zero", () => {
+    const days = build({ [ago(2)]: 5000 });
+    expect(days.map((d) => d.total)).toEqual([5000, null, null]);
+  });
+
+  it("adds manual steps on top of HealthKit's total", () => {
+    const [day] = build({ [TODAY]: 3000 }, { manual: { [TODAY]: 1200 } });
+    expect(day).toMatchObject({ healthSteps: 3000, manualSteps: 1200, total: 4200 });
+  });
+
+  it("counts a manual-only day as valid", () => {
+    const days = build({}, { manual: { [ago(1)]: 800 } });
+    expect(days[0]).toMatchObject({ healthSteps: null, total: 800 });
+  });
+
+  it("applies the first goal retroactively and marks unknown days as unknown, not missed", () => {
+    const days = build({ [ago(2)]: 12000 }, { goal: 10000 });
+    expect(days.map((d) => d.goalMet)).toEqual([true, null, null]);
+  });
+
+  it("starts at today when there is no data at all", () => {
+    expect(build({}).map((d) => d.day)).toEqual([TODAY]);
+  });
+});
+
+describe("averages", () => {
+  it("averages valid days only", () => {
+    expect(averageOf([1000, null, 3000])).toEqual({ average: 2000, validDays: 2 });
+    expect(averageOf([null, null])).toEqual({ average: null, validDays: 0 });
+  });
+
+  it("7-day average uses the last 7 completed days, excluding today", () => {
+    const days = build({ ...run(7, 8000), [TODAY]: 100, ...run(7, 4000, 8) });
+    const result = sevenDayAverage(indexDays(days), TODAY);
+    expect(result).toMatchObject({ average: 8000, validDays: 7, baseline: 4000 });
+    expect(result.changePct).toBeCloseTo(100);
+  });
+
+  it("median handles odd and even counts", () => {
+    expect(median([3, 1, 2])).toBe(2);
+    expect(median([1, 2, 3, 4])).toBe(3);
+    expect(median([])).toBeNull();
+  });
+
+  it("percent change refuses a zero base", () => {
+    expect(percentChange(500, 0)).toBeNull();
+    expect(percentChange(150, 100)).toBe(50);
+  });
+});
+
+describe("peakDay", () => {
+  it("returns the highest valid day, latest on ties", () => {
+    const days = build({ [ago(3)]: 9000, [ago(1)]: 9000, [ago(2)]: 4000 });
+    expect(peakDay(days)?.day).toBe(ago(1));
+  });
+
+  it("is null without data", () => {
+    expect(peakDay(build({}))).toBeNull();
+  });
+});
+
+describe("weekSummary", () => {
+  it("sums Monday through today", () => {
+    // TODAY is a Wednesday → Mon, Tue, Wed.
+    const days = build({ [ago(2)]: 1000, [ago(1)]: 2000, [TODAY]: 3000, [ago(3)]: 99999 });
+    const week = weekSummary(indexDays(days), TODAY);
+    expect(week).toMatchObject({ from: ago(2), total: 6000, validDays: 3 });
+  });
+
+  it("compares with the same span of last week only when last week has enough data", () => {
+    const sparse = build({ [ago(9)]: 1000, [TODAY]: 2000 });
+    expect(weekSummary(indexDays(sparse), TODAY).changePct).toBeNull();
+
+    const full = build({ ...run(7, 1000, 3), [TODAY]: 3000 }); // last week Mon–Sun = ago(3..9)
+    const week = weekSummary(indexDays(full), TODAY);
+    // Last week Mon–Wed = 3000; this week = 3000 (today only).
+    expect(week.previousTotal).toBe(3000);
+    expect(week.changePct).toBe(0);
+  });
+});
+
+describe("thirtyDayTrend", () => {
+  it("compares two consecutive 30-day periods", () => {
+    const days = build({ ...run(30, 11000), ...run(30, 10000, 31) });
+    const trend = thirtyDayTrend(indexDays(days), TODAY);
+    expect(trend).toMatchObject({
+      currentAverage: 11000,
+      previousAverage: 10000,
+      difference: 1000,
+    });
+    expect(trend?.percent).toBeCloseTo(10);
+  });
+
+  it("needs enough valid days in both periods", () => {
+    const days = build({ ...run(30, 11000), ...run(10, 10000, 31) });
+    expect(thirtyDayTrend(indexDays(days), TODAY)).toBeNull();
+  });
+
+  it("reports no percentage over a zero previous average", () => {
+    const days = build({ ...run(30, 5000), ...run(30, 0, 31) });
+    const trend = thirtyDayTrend(indexDays(days), TODAY);
+    expect(trend?.difference).toBe(5000);
+    expect(trend?.percent).toBeNull();
+  });
+});
+
+describe("goalStreaks", () => {
+  it("counts consecutive completed days meeting the goal", () => {
+    const days = build({ ...run(5, 12000), [ago(6)]: 100, ...run(3, 12000, 7) }, { goal: 10000 });
+    expect(goalStreaks(days, TODAY)).toEqual({ current: 5, longest: 5, todayCounted: false });
+  });
+
+  it("today extends the streak once met but never breaks it early", () => {
+    const met = build({ ...run(2, 12000), [TODAY]: 10000 }, { goal: 10000 });
+    expect(goalStreaks(met, TODAY)).toEqual({ current: 3, longest: 3, todayCounted: true });
+    const pending = build({ ...run(2, 12000), [TODAY]: 10 }, { goal: 10000 });
+    expect(goalStreaks(pending, TODAY).current).toBe(2);
+  });
+
+  it("skips short no-data gaps but breaks on long ones", () => {
+    const short = build({ [ago(1)]: 12000, [ago(4)]: 12000 }, { goal: 10000 });
+    expect(goalStreaks(short, TODAY).current).toBe(2);
+    const long = build({ [ago(1)]: 12000, [ago(5)]: 12000 }, { goal: 10000 });
+    expect(goalStreaks(long, TODAY)).toMatchObject({ current: 1, longest: 1 });
+  });
+
+  it("does not count without a goal", () => {
+    expect(goalStreaks(build(run(5, 20000)), TODAY).current).toBe(0);
+  });
+});
+
+describe("todayProgress", () => {
+  const at = (h: number) => new Date(2026, 9, 21, h, 0);
+
+  it("reports uncapped percent and moves the goal tick once exceeded", () => {
+    const [day] = build({ [TODAY]: 15000 }, { goal: 10000 });
+    const p = todayProgress(day, at(18));
+    expect(p.percent).toBe(150);
+    expect(p.remaining).toBe(0);
+    expect(p.fill).toBe(1);
+    expect(p.goalMarker).toBeCloseTo(10000 / 15000);
+  });
+
+  it("computes pace across the waking window", () => {
+    const [day] = build({ [TODAY]: 6000 }, { goal: 10000 });
+    // 14:30 is halfway between 07:00 and 22:00 → expected 5000.
+    expect(todayProgress(day, new Date(2026, 9, 21, 14, 30)).paceDelta).toBe(1000);
+    expect(todayProgress(day, at(6)).paceDelta).toBeNull();
+  });
+
+  it("has no progress without a goal", () => {
+    const [day] = build({ [TODAY]: 5000 });
+    expect(todayProgress(day, at(12))).toMatchObject({
+      total: 5000,
+      percent: null,
+      goalMarker: null,
+    });
+  });
+});
+
+describe("chart", () => {
+  it("pads short ranges to a fixed number of slots", () => {
+    const days = build({ [ago(1)]: 5000 });
+    const week = rangeDays(days, "week", TODAY);
+    expect(week).toHaveLength(7);
+    expect(week[0]?.total).toBeNull();
+  });
+
+  it("marks the peak bar and today", () => {
+    const bars = chartBars(
+      rangeDays(build({ [ago(1)]: 9000, [TODAY]: 3000 }), "week", TODAY),
+      TODAY,
+    );
+    expect(bars.find((b) => b.isPeak)?.from).toBe(ago(1));
+    expect(bars.at(-1)?.containsToday).toBe(true);
+  });
+
+  it("aggregates long histories into weekly averages", () => {
+    const days = build(run(400, 7000, 0));
+    const bars = chartBars(days, TODAY);
+    expect(bars.length).toBeLessThanOrEqual(Math.ceil(400 / 7) + 1);
+    expect(bars.length).toBeLessThan(MAX_DAILY_BARS);
+    expect(bars.every((b) => b.aggregated && b.value === 7000)).toBe(true);
+  });
+});

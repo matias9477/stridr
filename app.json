@@ -18,14 +18,15 @@
       },
       "infoPlist": {
         "CFBundleLocalizations": ["en", "es"],
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIViewControllerBasedStatusBarAppearance": true
       }
     },
     "android": {
       "package": "com.matiasturra.stridr",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#fcba03"
+        "backgroundColor": "#000000"
       }
     },
     "web": {
@@ -38,11 +39,11 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#000000",
           "dark": {
-            "backgroundColor": "#121212"
+            "backgroundColor": "#000000"
           }
         }
       ],
@@ -50,6 +51,7 @@
       "expo-localization",
       "expo-font",
       "expo-web-browser",
+      "expo-notifications",
       [
         "react-native-google-mobile-ads",
         {
@@ -62,19 +64,50 @@
         {
           "widgets": [
             {
-              "name": "Items",
+              "name": "Steps",
               "displayName": "Stridr",
-              "description": "Latest items at a glance",
+              "description": "Today's steps and goal progress",
               "ios": {
-                "supportedFamilies": ["systemSmall", "systemMedium"]
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium",
+                  "systemLarge",
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline"
+                ]
+              }
+            },
+            {
+              "name": "StepsRing",
+              "displayName": "Stridr Ring",
+              "description": "Today's steps as a goal ring",
+              "ios": {
+                "supportedFamilies": ["systemSmall"]
+              }
+            },
+            {
+              "name": "StepsBar",
+              "displayName": "Stridr Bar",
+              "description": "Today's steps as a walk along your goal",
+              "ios": {
+                "supportedFamilies": ["systemMedium"]
               }
             }
           ]
         }
       ],
-      "./plugins/with-scene-lifecycle",
       "expo-image",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-sharing",
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Stridr reads your step count from Apple Health to show your daily total, history and goal progress. Nothing leaves your device.",
+          "NSHealthUpdateUsageDescription": false,
+          "background": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

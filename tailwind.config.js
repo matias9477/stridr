@@ -1,40 +1,70 @@
 /** @type {import('tailwindcss').Config} */
+const token = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
+
 module.exports = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   presets: [require("nativewind/preset")],
   darkMode: "class",
   theme: {
     extend: {
-      // iOS text styles (body 17 / subhead 15 / footnote 13) instead of
-      // Tailwind's web defaults (16 / 14 / 12), so in-app text matches the
-      // native headers and tab bar. Components keep using text-base/sm/xs.
       fontSize: {
+        // iOS text styles for the legacy primitives (ListRow, Field…).
         xs: ["13px", { lineHeight: "18px" }],
         sm: ["15px", { lineHeight: "20px" }],
         base: ["17px", { lineHeight: "22px" }],
+        // Monochrome Cadence type scale (DESIGN.md → typography). Use through
+        // src/ui/typography.tsx, which pairs each size with its font + tracking.
+        micro: ["9px", { lineHeight: "12px" }],
+        label: ["11px", { lineHeight: "14px" }],
+        "body-sm": ["12px", { lineHeight: "16px" }],
+        "body-md": ["14px", { lineHeight: "20px" }],
+        "body-lg": ["16px", { lineHeight: "24px" }],
+        "headline-sm": ["16px", { lineHeight: "22px" }],
+        stat: ["26px", { lineHeight: "32px" }],
+        display: ["56px", { lineHeight: "60px" }],
+      },
+      // RN ignores fontWeight for custom fonts — each weight is its own family.
+      fontFamily: {
+        mono: ["SpaceMono_400Regular"],
+        "mono-bold": ["SpaceMono_700Bold"],
+        sans: ["Geist_400Regular"],
+        "sans-medium": ["Geist_500Medium"],
+        "sans-semibold": ["Geist_600SemiBold"],
+      },
+      // em values from DESIGN.md resolved against each size (RN wants points).
+      letterSpacing: {
+        micro: "1.4px",
+        label: "1.3px",
+        stat: "-0.5px",
+        display: "-1.7px",
       },
       colors: {
         // Semantic tokens only — values live as CSS variables in global.css
         // and at runtime in src/ui/theme-colors.ts. Keep all three in sync.
         surface: {
-          page: "rgb(var(--color-surface-page) / <alpha-value>)",
-          card: "rgb(var(--color-surface-card) / <alpha-value>)",
-          sunken: "rgb(var(--color-surface-sunken) / <alpha-value>)",
+          page: token("surface-page"),
+          card: token("surface-card"),
+          sunken: token("surface-sunken"),
+          raised: token("surface-raised"),
+          high: token("surface-high"),
+          highest: token("surface-highest"),
         },
         text: {
-          primary: "rgb(var(--color-text-primary) / <alpha-value>)",
-          secondary: "rgb(var(--color-text-secondary) / <alpha-value>)",
-          tertiary: "rgb(var(--color-text-tertiary) / <alpha-value>)",
+          primary: token("text-primary"),
+          body: token("text-body"),
+          secondary: token("text-secondary"),
+          tertiary: token("text-tertiary"),
+          quiet: token("text-quiet"),
         },
         border: {
-          hairline: "rgb(var(--color-border-hairline) / <alpha-value>)",
+          hairline: token("border-hairline"),
         },
         accent: {
-          fg: "rgb(var(--color-accent-fg) / <alpha-value>)",
-          on: "rgb(var(--color-accent-on) / <alpha-value>)",
+          fg: token("accent-fg"),
+          on: token("accent-on"),
         },
         danger: {
-          fg: "rgb(var(--color-danger-fg) / <alpha-value>)",
+          fg: token("danger-fg"),
         },
       },
     },

@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { Alert, Switch } from "react-native";
-import { db } from "@/src/db/client";
-import { items } from "@/src/db/schema";
+import { deleteAllManualEntries, seedManualEntries } from "@/src/features/activity/queries";
+import { deleteGoalHistory } from "@/src/features/goal/queries";
 import {
   haptics,
   hapticsAvailable,
   setHapticSoundSimulation,
 } from "@/src/features/haptics/haptics";
+import { useHealthStore } from "@/src/features/health/health-store";
+import {
+  requestNotificationPermission,
+  schedulePaceNudge,
+} from "@/src/features/notifications/notifications-service";
+import { addDaysToKey, todayKey } from "@/src/lib/day";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ListRow } from "@/src/ui/list-row";
 import { ListSection } from "@/src/ui/list-section";
+import { mockHealthData } from "./mock-health";
 
 /**
  * __DEV__-only tools for staging UI states (App Store screenshots, empty
@@ -20,8 +27,15 @@ import { ListSection } from "@/src/ui/list-section";
 export function DeveloperSection() {
   const setOnboardingDone = usePreferencesStore((s) => s.setOnboardingDone);
   const [hapticSound, setHapticSound] = useState(false);
+  const setMockData = useHealthStore((s) => s.setMockData);
+  const [healthMocked, setHealthMocked] = useState(false);
 
   if (!__DEV__) return null;
+
+  function toggleHealthMock(next: boolean) {
+    setHealthMocked(next);
+    setMockData(next ? mockHealthData() : null);
+  }
 
   function toggleHapticSound(next: boolean) {
     setHapticSound(next);
@@ -33,17 +47,51 @@ export function DeveloperSection() {
     Alert.alert("Onboarding reset", "Relaunch or navigate to see it again.");
   }
 
+  function run(label: string, action: () => Promise<void>) {
+    action()
+      .then(() => Alert.alert("Done", label))
+      .catch((error) => console.error(`[dev/${label}] failed`, error));
+  }
+
+  async function sendTestNudge() {
+    if ((await requestNotificationPermission()) !== "granted") {
+      Alert.alert(
+        "Notifications not granted",
+        "Allow them in iOS Settings, or rebuild (npm run ios).",
+      );
+      return;
+    }
+    // Replaces today's real nudge until NudgeSync's next reconcile.
+    await schedulePaceNudge({
+      fireAt: new Date(Date.now() + 5000),
+      title: "Behind today's pace",
+      body: "About 2,400 steps to your target. (test)",
+      day: todayKey(),
+    });
+    Alert.alert("Test nudge in 5 s", "Lock the device or background the app to see the banner.");
+  }
+
+  function seed() {
+    // Simulators have no step data — 60 days of manual steps stage every chart and stat.
+    const today = todayKey();
+    const days = Array.from({ length: 60 }, (_, i) => addDaysToKey(today, -i)).filter(
+      // Leave a few holes so "no data" bars and streak gaps are visible too.
+      (_, i) => i % 11 !== 5,
+    );
+    run("Seeded 60 days of manual steps", () => seedManualEntries(days));
+  }
+
   function deleteAll() {
-    Alert.alert("Delete ALL items?", "Dev-only: empties the table to stage empty states.", [
+    Alert.alert("Delete ALL manual activity + goal history?", "Dev-only: stages empty states.", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
         style: "destructive",
-        onPress: () => {
-          db.delete(items)
-            .then(() => Alert.alert("Done", "All rows deleted."))
-            .catch((error) => console.error("[dev/deleteAll] failed", error));
-        },
+        onPress: () =>
+          run("Deleted manual activity and goals", async () => {
+            await deleteAllManualEntries();
+            await deleteGoalHistory();
+          }),
       },
     ]);
   }
@@ -52,7 +100,14 @@ export function DeveloperSection() {
     <>
       <ListSection title="Developer (dev builds only)">
         <ListRow title="Reset onboarding flag" onPress={resetOnboarding} />
-        <ListRow title="Delete all items (stage empty states)" onPress={deleteAll} />
+        <ListRow
+          title="Mock HealthKit data"
+          subtitle="120 days + per-minute data for the last 8 — not persisted"
+          right={<Switch value={healthMocked} onValueChange={toggleHealthMock} />}
+        />
+        <ListRow title="Send test pace nudge (5 s)" onPress={() => void sendTestNudge()} />
+        <ListRow title="Seed 60 days of manual steps" onPress={seed} />
+        <ListRow title="Delete manual activity + goals (empty states)" onPress={deleteAll} />
       </ListSection>
 
       <ListSection
