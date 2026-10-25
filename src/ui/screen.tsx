@@ -21,7 +21,7 @@ export function Screen({ children, scroll = true, className = "" }: ScreenProps)
   const insets = useSafeAreaInsets();
   if (!scroll) {
     // Native SafeAreaView reads this view's own safe area, which includes the
-    // tab bar — so bottom-pinned content (AdBanner) sits above it, not under it.
+    // tab bar — so bottom-pinned content sits above it, not under it.
     return (
       <View className={`flex-1 bg-surface-page ${className}`}>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>

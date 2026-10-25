@@ -14,10 +14,15 @@
       "appleTeamId": "7VJ997Q842",
       "buildNumber": "1",
       "entitlements": {
-        "com.apple.security.application-groups": ["group.com.matiasturra.stridr"]
+        "com.apple.security.application-groups": [
+          "group.com.matiasturra.stridr"
+        ]
       },
       "infoPlist": {
-        "CFBundleLocalizations": ["en", "es"],
+        "CFBundleLocalizations": [
+          "en",
+          "es"
+        ],
         "ITSAppUsesNonExemptEncryption": false,
         "UIViewControllerBasedStatusBarAppearance": true
       }
@@ -53,13 +58,6 @@
       "expo-web-browser",
       "expo-notifications",
       [
-        "react-native-google-mobile-ads",
-        {
-          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713"
-        }
-      ],
-      [
         "expo-widgets",
         {
           "widgets": [
@@ -83,7 +81,9 @@
               "displayName": "Stridr Ring",
               "description": "Today's steps as a goal ring",
               "ios": {
-                "supportedFamilies": ["systemSmall"]
+                "supportedFamilies": [
+                  "systemSmall"
+                ]
               }
             },
             {
@@ -91,7 +91,9 @@
               "displayName": "Stridr Bar",
               "description": "Today's steps as a walk along your goal",
               "ios": {
-                "supportedFamilies": ["systemMedium"]
+                "supportedFamilies": [
+                  "systemMedium"
+                ]
               }
             }
           ]
@@ -112,6 +114,33 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "ExpoWidgetsTarget",
+                  "bundleIdentifier": "com.matiasturra.stridr.ExpoWidgetsTarget",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.matiasturra.stridr"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "a0c40262-fc7e-4720-882a-c7b22b742b73"
+      }
     }
   }
 }

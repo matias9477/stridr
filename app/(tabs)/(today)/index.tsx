@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { AdBanner } from "@/src/features/ads/ad-banner";
 import { useStepStats } from "@/src/features/stats/use-step-stats";
 import { CadenceCard } from "@/src/features/today/cadence-card";
 import { HeroSteps } from "@/src/features/today/hero-steps";
@@ -36,7 +35,6 @@ export default function TodayScreen() {
         <CadenceCard stats={stats} now={now} />
         <StrideCard />
         <TodayActions stats={stats} now={now} />
-        <AdBanner />
       </View>
     </Screen>
   );

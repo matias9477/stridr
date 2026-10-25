@@ -13,7 +13,6 @@ import { Platform, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import migrations from "@/drizzle/migrations";
 import { db } from "@/src/db/client";
-import { initializeAds } from "@/src/features/ads/ads-service";
 import { HapticsSync } from "@/src/features/haptics/haptics-sync";
 import { HealthSync } from "@/src/features/health/health-sync";
 import { LanguageSync } from "@/src/features/i18n/language-sync";
@@ -75,7 +74,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     usePurchasesStore.getState().initialize();
-    initializeAds();
   }, []);
 
   if (migrationError) {

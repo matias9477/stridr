@@ -4,7 +4,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ## Shipped (for reference)
 
-- Scaffolded with create-mt-app: Expo Router, NativeWind tokens, Drizzle+expo-sqlite with generated migrations, Zod+RHF forms, i18n (en/es), expo-widgets widget, RevenueCat purchases module with custom paywall, AdMob banner slot (test ads in dev, disabled until unit ids are configured), skippable onboarding, review prompts, dark mode.
+- Scaffolded with create-mt-app: Expo Router, NativeWind tokens, Drizzle+expo-sqlite with generated migrations, Zod+RHF forms, i18n (en/es), expo-widgets widget, RevenueCat purchases module with custom paywall, skippable onboarding, review prompts, dark mode.
 - Steps core (docs/spec-steps-core.md): HealthKit step totals (statistics-collection queries, so iPhone + Watch never double count), manual steps and estimated walks in SQLite, goal history, and every statistic (7-day average, week total, peak, record, streaks, 30-day trend) as tested pure functions. Today / Stats / Settings tabs built from the Stitch "Monochrome Cadence" designs with per-card loading/empty/error states, Space Mono + Geist, light and dark palettes. Home-screen widgets (2×2, 4×2, 4×4 with 24h cadence and the Today bento) and lock-screen widgets (circular gauge, rectangular, inline above the clock) fed by one app-pushed timeline with HealthKit background delivery; CSV export.
 
 ## Critical path to v1.0
@@ -17,10 +17,8 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ### App-store readiness
 - [ ] Final icon + splash (replace the placeholder solid-color assets in `assets/images/`)
-- [ ] `npx eas init` run; EAS project id recorded in CLAUDE.md → App identity
 - [ ] RevenueCat: app created, products, entitlement `pro`, `default` offering; keys in `.env` + EAS env
-- [ ] AdMob: apps + banner ad units created; real app ids replace Google's samples in app.json (`react-native-google-mobile-ads` plugin, needs a rebuild); unit ids in `.env` + EAS env — **or** delete the ads module per CLAUDE.md → Ads if this app won't run ads
-- [ ] Privacy policy: `content/privacy/stridr.mdx` in ~/Projects/my-portfolio, published (URL already wired in Settings)
+- [ ] Privacy policy: drafted in ~/Projects/my-portfolio `content/privacy/stridr.mdx` — review, commit and publish (URL already wired in Settings); add the URL to App Store Connect
 - [ ] store.config.json copy finalized (en-US + es-ES); `eas metadata:lint` then `eas metadata:push`
 - [ ] 4 screenshots per DESIGN.md headlines (stage states with the __DEV__ DeveloperSection; upload manually in App Store Connect — EAS metadata does not cover screenshots)
 - [ ] After first release: record the App Store ID in CLAUDE.md → App identity AND `src/lib/review-prompt.ts`
@@ -33,13 +31,12 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ## Open: (unresolved decisions)
 
-- Pro split — decided: Pro unlocks the **90-day and All-time** Stats ranges (`ChartRange` `"quarter"` / `"all"`) and the **widgets**. Free keeps Today, Stats week/month, manual activities and pace nudges.
+- Pro split — decided: Pro unlocks the **90-day and All-time** Stats ranges (`ChartRange` `"quarter"` / `"all"`), the **widgets** and **CSV export**. Free keeps Today, Stats week/month, manual activities and pace nudges. No ads (decided 2026-10-25; AdMob removed). The gating ships together with onboarding step 4 (the paywall).
   - [ ] gate the 90D / All chips in the Stats range switch with `useIsPro()` → `router.push("/paywall?variant=stats")`
   - [ ] gate the widgets: free users get a locked state pointing to the paywall instead of their numbers (WidgetSync pushes an "Upgrade to Pro" snapshot), and a `variant=widgets` paywall entry from Settings → Widget previews
-  - [ ] decide whether CSV export is free or Pro
-  - [ ] paywall copy for both variants in en + es (mention "remove ads" if ads stay)
+  - [ ] gate CSV export (Settings → Data) → `router.push("/paywall?variant=export")`
+  - [ ] paywall copy for the three variants in en + es
   - [ ] onboarding step 4 becomes the paywall (replaces the old "Read-only. On-device." slide, which now repeats step 1)
-- Ads: the AdMob slot sits at the bottom of Today. Keep (and set unit ids) or delete per CLAUDE.md → Ads.
 
 ## Known issues / tech debt
 
