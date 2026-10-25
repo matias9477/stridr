@@ -2,7 +2,7 @@
   "expo": {
     "name": "Stridr",
     "slug": "stridr",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "stridr",
@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.matiasturra.stridr",
       "appleTeamId": "7VJ997Q842",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "entitlements": {
         "com.apple.security.application-groups": [
           "group.com.matiasturra.stridr"
