@@ -1,8 +1,8 @@
 import * as StoreReview from "expo-store-review";
 import { Linking, Platform } from "react-native";
 
-/** TODO: set after the first App Store release (numeric id from App Store Connect). */
-const APP_STORE_ID = "";
+/** Numeric App Store id from App Store Connect (Apple ID of the app). */
+const APP_STORE_ID = "6826933348";
 
 const WRITE_REVIEW_URL = `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
 

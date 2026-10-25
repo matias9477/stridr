@@ -11,7 +11,7 @@ Stridr — an Expo (latest SDK) iOS/Android app. Local-first: SQLite via Drizzle
 - Bundle id / Android package: `com.matiasturra.stridr` · App Group: `group.com.matiasturra.stridr`
 - Apple Team ID: `7VJ997Q842` · Expo owner: `matias.turra`
 - EAS project id: `a0c40262-fc7e-4720-882a-c7b22b742b73`
-- App Store ID: TODO after first release — record it here AND in `src/lib/review-prompt.ts` (review prompts and the write-review URL need it)
+- App Store ID: `6826933348` — also set in `src/lib/review-prompt.ts` (review prompts and the write-review URL need it)
 
 ## Commands
 
