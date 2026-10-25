@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1792923463512,
+      "tag": "0000_flawless_shinobi_shaw",
+      "breakpoints": true
+    }
+  ]
+}

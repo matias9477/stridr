@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * CSS-variable palette (space-separated RGB triplets).
+ * Runtime source of truth is src/ui/theme-colors.ts — keep both in sync.
+ */
+:root {
+  --color-surface-page: 245 245 245;
+  --color-surface-card: 255 255 255;
+  --color-surface-sunken: 235 235 235;
+  --color-text-primary: 23 23 23;
+  --color-text-secondary: 82 82 82;
+  --color-text-tertiary: 140 140 140;
+  --color-border-hairline: 224 224 224;
+  --color-accent-fg: 252 186 3;
+  --color-accent-on: 23 23 23;
+  --color-danger-fg: 220 38 38;
+}
+
+.dark:root {
+  --color-surface-page: 18 18 18;
+  --color-surface-card: 30 30 30;
+  --color-surface-sunken: 12 12 12;
+  --color-text-primary: 245 245 245;
+  --color-text-secondary: 163 163 163;
+  --color-text-tertiary: 115 115 115;
+  --color-border-hairline: 55 55 55;
+  --color-accent-fg: 252 186 3;
+  --color-accent-on: 23 23 23;
+  --color-danger-fg: 248 113 113;
+}

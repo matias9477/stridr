@@ -1,0 +1,92 @@
+{
+  "tabs": {
+    "home": "Inicio",
+    "settings": "Ajustes"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "loading": "Cargando…",
+    "error": "Algo salió mal",
+    "retry": "Reintentar",
+    "viewMore": "Ver {{count}} más",
+    "viewLess": "Ver menos"
+  },
+  "onboarding": {
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "getStarted": "Crea el primero",
+    "welcomeTitle": "Bienvenido a Stridr",
+    "welcomeBody": "TODO: una frase sobre qué hace esta app por el usuario.",
+    "organizeTitle": "Todo en un solo lugar",
+    "organizeBody": "TODO: una frase sobre la idea organizadora principal.",
+    "readyTitle": "Todo listo",
+    "readyBody": "TODO: una frase que lleve a la primera creación."
+  },
+  "home": {
+    "title": "Stridr",
+    "empty": "Todavía no hay nada. ¡Crea el primero!",
+    "new": "Nuevo"
+  },
+  "form": {
+    "titleLabel": "Título",
+    "titlePlaceholder": "Ponle un nombre",
+    "notesLabel": "Notas",
+    "notesPlaceholder": "Notas opcionales",
+    "create": "Crear",
+    "update": "Guardar cambios"
+  },
+  "detail": {
+    "notFound": "No encontrado",
+    "deleteConfirmTitle": "¿Eliminar esto?",
+    "deleteConfirmMessage": "Esta acción no se puede deshacer."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "appearance": "Apariencia",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "themeSystem": "Sistema",
+    "language": "Idioma",
+    "languageEnglish": "Inglés",
+    "languageSpanish": "Español",
+    "languageSystem": "Sistema",
+    "feel": "Sensación",
+    "haptics": "Vibración háptica",
+    "hapticsCaption": "Vibraciones al usar la app",
+    "pro": "Pro",
+    "proActive": "Pro está activo",
+    "proInactive": "Plan gratuito",
+    "goPro": "Hazte Pro",
+    "restorePurchases": "Restaurar compras",
+    "restoreSuccess": "Compras restauradas",
+    "restoreNone": "No hay compras para restaurar",
+    "about": "Acerca de",
+    "leaveReview": "Deja una reseña",
+    "privacyPolicy": "Política de privacidad",
+    "viewOnboarding": "Ver introducción de nuevo",
+    "version": "Versión"
+  },
+  "paywall": {
+    "title": "Hazte Pro",
+    "subtitle": "Desbloquea todo, para siempre.",
+    "featureOne": "Entradas ilimitadas",
+    "featureTwo": "Widget de pantalla de inicio",
+    "featureThree": "Apoya a un desarrollador independiente",
+    "purchase": "Continuar",
+    "restore": "Restaurar compras",
+    "loading": "Cargando ofertas…",
+    "noOffers": "No hay ofertas disponibles ahora. Inténtalo más tarde.",
+    "purchaseError": "La compra falló. No se te cobró nada.",
+    "terms": "El pago se carga a tu Apple ID. Las suscripciones se renuevan automáticamente salvo que las canceles."
+  },
+  "validation": {
+    "titleRequired": "El título es obligatorio",
+    "titleTooLong": "El título debe tener menos de 120 caracteres"
+  },
+  "widget": {
+    "empty": "Sin elementos"
+  }
+}

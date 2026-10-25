@@ -1,0 +1,21 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "Stridr",
+        "subtitle": "",
+        "description": "TODO: App Store description",
+        "keywords": [],
+        "releaseNotes": "Initial release"
+      },
+      "es-ES": {
+        "title": "Stridr",
+        "subtitle": "",
+        "description": "TODO: descripción para el App Store",
+        "keywords": [],
+        "releaseNotes": "Primera versión"
+      }
+    }
+  }
+}

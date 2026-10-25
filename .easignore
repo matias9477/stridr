@@ -1,0 +1,16 @@
+# EAS re-runs prebuild in the cloud — never upload local native dirs or secrets.
+/ios
+/android
+node_modules/
+.expo/
+.git/
+.vscode/
+.agents/
+.claude/
+*.p8
+*.p12
+*.key
+.env
+.env.*
+!.env.example
+.DS_Store
