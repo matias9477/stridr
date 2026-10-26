@@ -7,6 +7,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Scaffolded with create-mt-app: Expo Router, NativeWind tokens, Drizzle+expo-sqlite with generated migrations, Zod+RHF forms, i18n (en/es), expo-widgets widget, RevenueCat purchases module with custom paywall, skippable onboarding, review prompts, dark mode.
 - Privacy policy published at https://www.matiasturra.dev/privacy/stridr: step count only, on-device, RevenueCat for Pro, no ads or analytics.
 - Steps core (docs/spec-steps-core.md): HealthKit step totals (statistics-collection queries, so iPhone + Watch never double count), manual steps and estimated walks in SQLite, goal history, and every statistic (7-day average, week total, peak, record, streaks, 30-day trend) as tested pure functions. Today / Stats / Settings tabs built from the Stitch "Monochrome Cadence" designs with per-card loading/empty/error states, Space Mono + Geist, light and dark palettes. Home-screen widgets (2×2, 4×2, 4×4 with 24h cadence and the Today bento) and lock-screen widgets (circular gauge, rectangular, inline above the clock) fed by one app-pushed timeline with HealthKit background delivery; CSV export.
+- Share card (docs/spec-share-card.md): Today's share button opens a preview of a designed 1080×1920 Story image — the step count as hero, today's hourly bars on a ruler (last 7 days when there's no hourly data), distance / active time / streak, and the stridr lockup — then shares the PNG through the system sheet. Free, follows the theme, replaces the old text-only share.
 
 ## Critical path to v1.0
 
@@ -14,6 +15,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - [ ] Review the defaults chosen for the product spec's open questions (docs/spec-steps-core.md → Decisions)
 - [ ] First device run (`npm run ios`): grant Health access, check totals against the Health app, confirm background delivery refreshes the widget without opening the app
 - [ ] Pace nudges on device (needs a new dev-client build for expo-notifications): enable in onboarding step 3, check the 18:00 alert fires when behind pace and is cancelled once the pace mark is reached (DeveloperSection → test nudge for the banner)
+- [ ] Share card on device (new dev-client build for react-native-view-shot): check the PNG is 1080×1920 and crisp, fonts are Space Mono (not system), both themes and es; post one to Instagram Stories to confirm nothing sits under its UI
 - [ ] Fill DESIGN.md → Voice & tone and App Store visual direction
 
 ### App-store readiness
@@ -27,6 +29,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 ## v1.1+ backlog
 
 - Hourly tab (Stitch `hourly_cadence`): idle-stretch detection, hourly reminders, intraday timeline. Deferred — not in the product spec MVP; Today's cadence card covers the intraday view.
+- Share card for past days (from Stats) — needs hourly minutes for arbitrary dates; `buildShareCard({ day })` already takes the day.
 - Stride calibration walk (spec §4 "future version").
 - Light-mode shape language: "DESIGN_light mode.md" specifies 0px corners and Space Grotesk headings; the app currently shares the dark design's shapes/fonts and only swaps colors.
 

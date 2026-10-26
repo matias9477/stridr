@@ -214,3 +214,8 @@ The design uses tight, technical corners. A subtle radius softens the high-contr
 ### Bottom Navigation Bar
 - Grounded `#000000` surface with a continuous 1px top border of `#262626`.
 - Minimal stroke icons (24px) rendered in `#737373` for inactive states and `#FFFFFF` for the active view, marked by an underlying 2x2px solid white square dot.
+### Share Card
+- `ShareCard` (`src/features/share-card/`) is a fixed **360×640pt** poster captured at 3× → 1080×1920 PNG (Instagram Story); spec in `docs/spec-share-card.md`. Its canvas size, the preview's fit-scale and `BrandMark`'s icon-derived geometry are the allowed raw-number exceptions — everything else is tokens.
+- Follows the theme. Every text sets `allowFontScaling={false}` so the PNG is identical on every device; the hero uses the `poster` role (76px), dropping to `display` past 6 characters.
+- 96pt top/bottom padding keeps content out of the bands Instagram covers with its UI.
+- `BrandMark` / `BrandLockup`: the app icon's seven pill bars, baseline and dot rebuilt from Views (tones = opacity steps of accent-fg, so light mode inverts the ramp) + lowercase "stridr" in Space Mono Bold. Use it for any branded surface instead of the PNG.

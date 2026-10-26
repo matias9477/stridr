@@ -19,7 +19,7 @@ Workflow: commit this spec first (`chore: add share-card spec`), then implement 
   6. **Brand lockup** — the logo mark (five rounded bars, drawn as `View`s at the splash-icon proportions, not the PNG) left of lowercase **"stridr"** in Space Mono Bold, centered, above the bottom safe zone. Nothing else: no URL, no tagline. Mark greys stay as-is on dark; inverted ramp on light so contrast holds.
 - **Second layer — 24-hour bars** (when `hourly` has any non-null hour):
   - Always the full 00–23 axis, so every card has the same rhythm. Past/current hours: real bars, normalised to the day's max hour. Future hours: dim fixed-height stubs.
-  - A 2×2 **"now" dot** (DESIGN.md active-tab motif) above the current hour.
+  - A small **"now" dot** on the baseline under the current hour, replacing its tick — the logo's baseline-and-dot.
   - **Ruler detailing**: hairline baseline with tick marks, micro mono hour labels at 00 · 06 · 12 · 18, and a hairline frame inset from the card edges.
   - If manual steps exist today (total − sum of hourly > 0), a small mono label "+4,000 logged" sits beside the axis — manual walks have no time of day, so they can't be placed in an hour. Bars stay HealthKit-only; the label keeps it honest.
 - **Fallback second layer — 7-day bars** (when every hour is `null`: no HealthKit access or manual-only): last 7 days' totals, today highlighted, same ruler styling with weekday initials. No card ever shows an empty axis.
@@ -42,13 +42,14 @@ New native dependency: `react-native-view-shot` (needs a new dev-client build, `
   - `buildShareCard({ stats, now, strideMeters, unit }) → ShareCardModel` — hero, goal line, `second: { kind: "hourly", bars, nowHour, loggedExtra } | { kind: "week", bars, todayIndex }`, `stats: ShareStat[]` (already collapsed).
   - `hourlyBars(hourly, nowHour) → { height: number /* 0–1 */, future: boolean }[]` (24 entries).
   - `loggedExtra(total, hourly) → number | null` (null when ≤ 0).
-- `share-card.tsx` — `ShareCard` presentational component, laid out at a fixed logical 360×640 (9:16) so capture at 1080×1920 is an exact 3× on every device. Composed from: `share-card-bars.tsx` (hourly + week variants, ruler), `share-card-stats.tsx`, `brand-lockup.tsx` (mark + wordmark; reusable later for other branded surfaces).
-- `share-card-capture.ts` — the only importer of `react-native-view-shot`: `captureShareCard(ref) → Promise<string>` (`captureRef(ref, { width: 1080, height: 1920, format: "png", result: "tmpfile" })`) and `shareCardImage(uri)` (share + cleanup).
+- `share-card.tsx` — `ShareCard` presentational component, laid out at a fixed logical 360×640 (9:16). On 3× iPhones the 1080×1920 capture is native resolution; on 2× devices view-shot renders at 720×1280 and upscales (acceptable — only older SEs and iPads). Composed from: `share-card-bars.tsx` (hourly + week variants, ruler), `share-card-stats.tsx`, `brand-lockup.tsx` (mark + wordmark; reusable later for other branded surfaces).
+- `share-card-capture.ts` — the only importer of `react-native-view-shot`: `shareCardImage(ref)` captures (`captureRef(ref, { width: 1080, height: 1920, format: "png", result: "tmpfile" })`), shares and deletes the temp file.
+- `share-card-preview.tsx` — the modal body (states, fit-scale, settle gate, share).
 
 ### UI
 - **Entry**: `TodayActions` share `IconButton` → `router.push("/share-card")`. Keeps its disabled state.
-- **Route** `app/share-card.tsx` (thin), registered in `app/_layout.tsx` with `presentation: "modal"`. Accepts an optional `day` search param (seam; v1 always today — see Out of scope).
-- **Preview**: the card scaled to fit the sheet width (wrapper transform; the captured view itself is never transformed), a **Share** `Button`, and a close toolbar button. Dismissible by swipe — the cancel path is one gesture.
+- **Route** `app/share-card.tsx` (thin), registered in `app/_layout.tsx` with `presentation: "modal"`. Always today in v1; the past-day seam is `buildShareCard({ day })`, not a route param (an unused param would be dead code).
+- **Preview**: the card scaled to fit the available area (wrapper transform; the captured view itself is never transformed), a **Share** `Button` and a secondary **Cancel** `Button` (matches the other modals, which have no toolbar). Dismissible by swipe — the cancel path is one gesture.
 - **States**: loading → `LoadingState` (stats still loading); error → `ErrorState` with retry (`stats.retry`); empty → `EmptyState` ("No steps yet today") — unreachable from the disabled button but required.
 - **Motion** (one-shot entrance, opening the modal is the transition): bars grow from the baseline left→right over `DURATION.sweep` with each bar taking `DURATION.fill` (same as `bar-chart.tsx`); the hero rolls in via `RollingNumber`. **Share is disabled until both settle** so the capture never grabs a half-drawn frame. Reduce Motion → static card, Share enabled immediately.
 - **Haptics**: only `Button`'s existing `press` on press-in. No haptic after sharing — `shareAsync` resolves on dismiss whether or not anything was posted.
@@ -71,7 +72,7 @@ New native dependency: `react-native-view-shot` (needs a new dev-client build, `
 ## Implementation order
 
 1. `share-card-model.ts` + tests — pins every edge case (no goal, no HealthKit, manual extra, mid-day) before any pixels.
-2. `BrandLockup` + `ShareCard` layout, rendered in the DeveloperSection for both themes and both languages to iterate visually.
+2. `BrandLockup` + `ShareCard` layout. (The preview modal itself is the visual test bench — with DeveloperSection's mock HealthKit data — so no separate dev-section render.)
 3. Install `react-native-view-shot`, `share-card-capture.ts`, the `app/share-card.tsx` modal with states and the settle-gated Share.
 4. Rewire `TodayActions`, delete the text share and its strings.
 5. Motion polish + Reduce Motion pass; DESIGN.md and TODO.md updates.
