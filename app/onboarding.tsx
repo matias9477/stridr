@@ -20,7 +20,7 @@ import { NudgePreview } from "@/src/features/notifications/nudge-preview";
 import { useEnableNudges } from "@/src/features/notifications/use-enable-nudges";
 import { HealthContract } from "@/src/features/onboarding/health-contract";
 import { OnboardingSlide } from "@/src/features/onboarding/onboarding-slide";
-import { StrideCalibration } from "@/src/features/onboarding/stride-calibration";
+import { DEFAULT_HEIGHT_CM, StrideCalibration } from "@/src/features/onboarding/stride-calibration";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ActionButton } from "@/src/ui/action-button";
 import { Button } from "@/src/ui/button";
@@ -28,9 +28,6 @@ import { DURATION } from "@/src/ui/motion";
 import { PulseDot } from "@/src/ui/pulse-dot";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-
-/** Starting point for the height ruler when none is saved yet. */
-const DEFAULT_HEIGHT_CM = 170;
 
 type SlideIcon = keyof typeof Ionicons.glyphMap;
 

@@ -53,6 +53,10 @@ function RootStack() {
       <Stack.Screen name="activity/[id]" options={{ title: t("activity.editTitle") }} />
       <Stack.Screen name="paywall" options={{ presentation: "modal", title: t("paywall.title") }} />
       <Stack.Screen
+        name="calibrate"
+        options={{ presentation: "modal", title: t("today.stride.calibrate") }}
+      />
+      <Stack.Screen
         name="share-card"
         options={{ presentation: "modal", title: t("shareCard.title") }}
       />

@@ -11,6 +11,9 @@ import { Segmented } from "@/src/ui/segmented";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
 
+/** Starting point for the height ruler when none is saved yet. */
+export const DEFAULT_HEIGHT_CM = 170;
+
 type HeightUnit = "cm" | "ftin";
 
 const CM_PER_INCH = 2.54;
@@ -22,7 +25,7 @@ const HEIGHT_LIMITS_IN = {
 const feetInches = (inches: number) => `${Math.floor(inches / 12)}′${inches % 12}″`;
 
 /**
- * Height picker for onboarding: a tape-measure scrubber plus ± fine steps,
+ * Height picker (onboarding and the recalibrate modal): a tape-measure scrubber plus ± fine steps,
  * in cm or ft/in (display only — height is always stored in cm). The stride
  * preview is the rounded value estimates will actually use (estimate.ts).
  */

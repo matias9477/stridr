@@ -11,7 +11,8 @@ import { T } from "@/src/ui/typography";
 
 /**
  * Stride in use for distance estimates and where it came from. "Calibrate"
- * opens Settings → stride (the walk-a-known-distance flow is v1.1, spec §4).
+ * reopens the onboarding height step as a modal (the walk-a-known-distance
+ * flow is v1.1, spec §4).
  */
 export function StrideCard() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export function StrideCard() {
         label={t("today.stride.calibrate")}
         size="sm"
         variant="secondary"
-        onPress={() => router.navigate("/settings")}
+        onPress={() => router.push("/calibrate")}
       />
     </Panel>
   );
