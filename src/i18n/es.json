@@ -144,9 +144,7 @@
     },
     "logWalk": "Registrar caminata",
     "share": {
-      "a11y": "Compartir los pasos de hoy",
-      "withGoal": "{{steps}} pasos hoy — {{percent}} de mi meta de {{goal}}. Medido con Stridr.",
-      "plain": "{{steps}} pasos hoy. Medido con Stridr."
+      "a11y": "Compartir los pasos de hoy"
     }
   },
   "stats": {
@@ -436,5 +434,23 @@
     "deniedTitle": "Las notificaciones están desactivadas",
     "deniedBody": "Permite las notificaciones de Stridr en Ajustes de iOS para recibir avisos de ritmo.",
     "openSettings": "Abrir Ajustes"
+  },
+  "shareCard": {
+    "title": "Compartir",
+    "share": "Compartir imagen",
+    "steps": "Pasos",
+    "goal": "{{percent}} del objetivo de {{goal}}",
+    "goalMet": "Objetivo cumplido · {{percent}}",
+    "byHour": "Hoy por hora",
+    "lastWeek": "Últimos 7 días",
+    "logged": "+{{steps}} registrados",
+    "distance": "Distancia",
+    "active": "Activo",
+    "streak": "Racha",
+    "streakDays_one": "{{count}} día",
+    "streakDays_other": "{{count}} días",
+    "empty": "Aún no hay pasos hoy: sal a caminar y compártelo.",
+    "failedTitle": "No se pudo compartir",
+    "failedBody": "No se pudo crear la imagen. Inténtalo de nuevo."
   }
 }

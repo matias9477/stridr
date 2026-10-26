@@ -144,9 +144,7 @@
     },
     "logWalk": "Log manual walk",
     "share": {
-      "a11y": "Share today's steps",
-      "withGoal": "{{steps}} steps today — {{percent}} of my {{goal}} target. Tracked with Stridr.",
-      "plain": "{{steps}} steps today. Tracked with Stridr."
+      "a11y": "Share today's steps"
     }
   },
   "stats": {
@@ -436,5 +434,23 @@
     "deniedTitle": "Notifications are off",
     "deniedBody": "Allow notifications for Stridr in iOS Settings to get pace nudges.",
     "openSettings": "Open Settings"
+  },
+  "shareCard": {
+    "title": "Share",
+    "share": "Share image",
+    "steps": "Steps",
+    "goal": "{{percent}} of {{goal}} target",
+    "goalMet": "Target reached · {{percent}}",
+    "byHour": "Today by hour",
+    "lastWeek": "Last 7 days",
+    "logged": "+{{steps}} logged",
+    "distance": "Distance",
+    "active": "Active",
+    "streak": "Streak",
+    "streakDays_one": "{{count}} day",
+    "streakDays_other": "{{count}} days",
+    "empty": "No steps yet today — take a walk, then share it.",
+    "failedTitle": "Couldn't share",
+    "failedBody": "The image couldn't be created. Try again."
   }
 }
