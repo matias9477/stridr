@@ -2,7 +2,7 @@
   "expo": {
     "name": "Stridr",
     "slug": "stridr",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "stridr",
@@ -12,12 +12,17 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.matiasturra.stridr",
       "appleTeamId": "7VJ997Q842",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "entitlements": {
-        "com.apple.security.application-groups": ["group.com.matiasturra.stridr"]
+        "com.apple.security.application-groups": [
+          "group.com.matiasturra.stridr"
+        ]
       },
       "infoPlist": {
-        "CFBundleLocalizations": ["en", "es"],
+        "CFBundleLocalizations": [
+          "en",
+          "es"
+        ],
         "ITSAppUsesNonExemptEncryption": false,
         "UIViewControllerBasedStatusBarAppearance": true
       }
@@ -76,7 +81,9 @@
               "displayName": "Stridr Ring",
               "description": "Today's steps as a goal ring",
               "ios": {
-                "supportedFamilies": ["systemSmall"]
+                "supportedFamilies": [
+                  "systemSmall"
+                ]
               }
             },
             {
@@ -84,7 +91,9 @@
               "displayName": "Stridr Bar",
               "description": "Today's steps as a walk along your goal",
               "ios": {
-                "supportedFamilies": ["systemMedium"]
+                "supportedFamilies": [
+                  "systemMedium"
+                ]
               }
             }
           ]
@@ -129,7 +138,9 @@
                   "targetName": "ExpoWidgetsTarget",
                   "bundleIdentifier": "com.matiasturra.stridr.ExpoWidgetsTarget",
                   "entitlements": {
-                    "com.apple.security.application-groups": ["group.com.matiasturra.stridr"]
+                    "com.apple.security.application-groups": [
+                      "group.com.matiasturra.stridr"
+                    ]
                   }
                 }
               ]
