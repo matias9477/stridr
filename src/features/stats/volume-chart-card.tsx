@@ -15,6 +15,7 @@ import {
   type ChartBar,
   type ChartBucket,
   type ChartRange,
+  type CustomRange,
   chartBars,
   peakDay,
   rangeDays,
@@ -40,15 +41,23 @@ const BEST_LABEL: Record<ChartBucket, string> = {
  * value in the header, MAX tag on the peak bar, dashed goal reference, and a
  * tap-to-inspect ribbon. Long ranges fold into week/month/year bars (stats.chartBars).
  */
-export function VolumeChartCard({ stats, range }: { stats: StepStats; range: ChartRange }) {
+export function VolumeChartCard({
+  stats,
+  range,
+  custom,
+}: {
+  stats: StepStats;
+  range: ChartRange;
+  custom: CustomRange | null;
+}) {
   const { t } = useTranslation();
   const c = useThemeColors();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const { days, bars, peak } = useMemo(() => {
-    const days = rangeDays(stats.days, range, stats.today, stats.weekView);
+    const days = rangeDays(stats.days, range, stats.today, stats.weekView, custom);
     return { days, bars: chartBars(days, stats.today, stats.weekStart), peak: peakDay(days) };
-  }, [stats.days, range, stats.today, stats.weekView, stats.weekStart]);
+  }, [stats.days, range, stats.today, stats.weekView, stats.weekStart, custom]);
 
   const status: CardStatus =
     baseCardStatus(stats) ??
@@ -128,7 +137,7 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
         <View className="pt-4">
           <BarChart
             // A new range regrows the bars instead of morphing week bars into month bars.
-            key={range}
+            key={range === "custom" ? JSON.stringify(custom) : range}
             bars={chartData}
             max={max}
             heightClass="h-40"

@@ -6,6 +6,8 @@ interface SegmentedProps<V extends string> {
   options: readonly { value: V; label: string }[];
   value: V;
   onChange: (value: V) => void;
+  /** Tap on the already-selected option (e.g. reopening a chip's editor). Ignored when absent. */
+  onReselect?: (value: V) => void;
   /** fill = stretches (range toggle); compact = hugs content (unit switch). */
   layout?: "fill" | "compact";
   accessibilityLabel: string;
@@ -16,6 +18,7 @@ export function Segmented<V extends string>({
   options,
   value,
   onChange,
+  onReselect,
   layout = "fill",
   accessibilityLabel,
 }: SegmentedProps<V>) {
@@ -33,7 +36,12 @@ export function Segmented<V extends string>({
             accessibilityRole="tab"
             accessibilityState={{ selected }}
             onPress={() => {
-              if (selected) return;
+              if (selected) {
+                if (!onReselect) return;
+                haptics.tick();
+                onReselect(option.value);
+                return;
+              }
               haptics.tick();
               onChange(option.value);
             }}

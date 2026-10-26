@@ -7,7 +7,15 @@ import { type CardStatus, READY } from "@/src/ui/card-state";
 import { StatTile } from "@/src/ui/stat-tile";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { baseCardStatus } from "./card-status";
-import { averageOf, type ChartRange, rangeDays, rangeLabelKey, sumOf } from "./stats";
+import { customChipLabel, customSpanLabel } from "./custom-range/custom-range-label";
+import {
+  averageOf,
+  type ChartRange,
+  type CustomRange,
+  rangeDays,
+  rangeLabelKey,
+  sumOf,
+} from "./stats";
 import type { StepStats } from "./use-step-stats";
 
 // Seven-plus digits (an all-time sum) overflow a half-width tile; millions go compact ("12.3M").
@@ -19,20 +27,28 @@ const formatTotal = (total: number) => (total >= 1e6 ? formatCompact(total) : fo
  * selected range's completed days — today's partial total would drag it down
  * (and disagree with Today's 7-day average), and the week's days ahead have none.
  */
-export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartRange }) {
+export function SummaryTiles({
+  stats,
+  range,
+  custom,
+}: {
+  stats: StepStats;
+  range: ChartRange;
+  custom: CustomRange | null;
+}) {
   const { t } = useTranslation();
   const c = useThemeColors();
   const base = baseCardStatus(stats);
   const week = stats.week;
 
   const { rangeAverage, rangeTotal, rangeFrom } = useMemo(() => {
-    const days = rangeDays(stats.days, range, stats.today, stats.weekView);
+    const days = rangeDays(stats.days, range, stats.today, stats.weekView, custom);
     return {
       rangeAverage: averageOf(days.filter((d) => d.day < stats.today).map((d) => d.total)),
       rangeTotal: sumOf(days.map((d) => d.total)),
       rangeFrom: days[0]?.day,
     };
-  }, [stats.days, range, stats.today, stats.weekView]);
+  }, [stats.days, range, stats.today, stats.weekView, custom]);
 
   const isWeek = range === "week";
   const total = isWeek ? week : rangeTotal;
@@ -51,6 +67,8 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
       week.changePct !== null
         ? t("stats.summary.weekVsLast", { value: formatSignedPercent(week.changePct) })
         : t(stats.weekStart === "monday" ? "stats.summary.weekSpan" : "stats.summary.weekSpanSun");
+  } else if (range === "custom" && custom) {
+    totalCaption = customSpanLabel(custom, stats.today, t);
   } else if (rangeFrom) {
     const date = dayLabel(rangeFrom, range === "all" ? "MMM d, yyyy" : "MMM d");
     totalCaption = t(range === "all" ? "stats.summary.since" : "stats.summary.rangeSpan", { date });
@@ -77,7 +95,10 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
         icon={<MaterialIcons name="speed" size={16} color={c.textTertiary} />}
         value={rangeAverage.average === null ? "—" : formatSteps(rangeAverage.average)}
         caption={t("stats.summary.avgCaption", {
-          range: t(rangeLabelKey(range, stats.weekView)).toUpperCase(),
+          range: (range === "custom"
+            ? customChipLabel(custom, t)
+            : t(rangeLabelKey(range, stats.weekView))
+          ).toUpperCase(),
           count: rangeAverage.validDays,
         })}
         status={avgStatus}
