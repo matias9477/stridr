@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { haptics } from "@/src/features/haptics/haptics";
+import { playTick } from "@/src/features/haptics/tick-sound";
 import { T } from "./typography";
 
 /** One unit of the ruler in points — must match the tick column's `w-3`. */
@@ -30,7 +31,9 @@ interface ScrubRulerProps {
  * snapping per unit. External value changes (the ± buttons) scroll the tape;
  * scrolling reports the unit under the needle. VoiceOver uses it as an
  * adjustable (swipe up/down). Finger scrubbing ticks a haptic per unit like a
- * picker detent; programmatic scrolls stay silent (the ± press already buzzed). Remount it (`key`) when the unit system changes.
+ * picker detent (firmer on labeled marks) with a matching click; programmatic
+ * scrolls stay silent (the ± press already buzzed). Remount it (`key`) when the
+ * unit system changes.
  */
 export function ScrubRuler({
   min,
@@ -60,7 +63,13 @@ export function ScrubRuler({
     const next = Math.min(max, Math.max(min, raw));
     if (next === shown.current) return;
     shown.current = next;
-    if (scrubbing.current) haptics.tick();
+    if (scrubbing.current) {
+      // Labeled marks land firmer, like the long ticks on a tape measure.
+      const major = next % labelEvery === 0;
+      if (major) haptics.detentMajor();
+      else haptics.tick();
+      playTick(major);
+    }
     onChange(next);
   };
 

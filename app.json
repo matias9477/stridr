@@ -14,15 +14,10 @@
       "appleTeamId": "7VJ997Q842",
       "buildNumber": "3",
       "entitlements": {
-        "com.apple.security.application-groups": [
-          "group.com.matiasturra.stridr"
-        ]
+        "com.apple.security.application-groups": ["group.com.matiasturra.stridr"]
       },
       "infoPlist": {
-        "CFBundleLocalizations": [
-          "en",
-          "es"
-        ],
+        "CFBundleLocalizations": ["en", "es"],
         "ITSAppUsesNonExemptEncryption": false,
         "UIViewControllerBasedStatusBarAppearance": true
       }
@@ -81,9 +76,7 @@
               "displayName": "Stridr Ring",
               "description": "Today's steps as a goal ring",
               "ios": {
-                "supportedFamilies": [
-                  "systemSmall"
-                ]
+                "supportedFamilies": ["systemSmall"]
               }
             },
             {
@@ -91,9 +84,7 @@
               "displayName": "Stridr Bar",
               "description": "Today's steps as a walk along your goal",
               "ios": {
-                "supportedFamilies": [
-                  "systemMedium"
-                ]
+                "supportedFamilies": ["systemMedium"]
               }
             }
           ]
@@ -108,6 +99,14 @@
           "NSHealthShareUsageDescription": "Stridr reads your step count from Apple Health to show your daily total, history and goal progress. Nothing leaves your device.",
           "NSHealthUpdateUsageDescription": "Stridr only reads your step count and never writes to Apple Health. Nothing leaves your device.",
           "background": true
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
         }
       ]
     ],
@@ -130,9 +129,7 @@
                   "targetName": "ExpoWidgetsTarget",
                   "bundleIdentifier": "com.matiasturra.stridr.ExpoWidgetsTarget",
                   "entitlements": {
-                    "com.apple.security.application-groups": [
-                      "group.com.matiasturra.stridr"
-                    ]
+                    "com.apple.security.application-groups": ["group.com.matiasturra.stridr"]
                   }
                 }
               ]

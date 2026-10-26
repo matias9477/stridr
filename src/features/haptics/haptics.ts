@@ -43,6 +43,8 @@ export const haptics = {
   press: () => lib()?.Presets.System.impactLight(),
   /** Selection tick: picker choice, pager page change, segmented control. */
   tick: () => lib()?.Presets.System.selection(),
+  /** A labeled mark passing under a ruler's needle — firmer than the minor ticks between. */
+  detentMajor: () => lib()?.Presets.System.impactLight(),
   /** Toggle/checkbox turned on. */
   toggleOn: () => lib()?.Presets.System.impactMedium(),
   /** Toggle/checkbox turned off. */
