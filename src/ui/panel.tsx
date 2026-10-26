@@ -11,7 +11,7 @@ const SURFACE: Record<Surface, string> = {
 
 interface PanelProps {
   children: ReactNode;
-  /** sunken = data cards (Today, Trends — keep them matching); card = Settings and forms. */
+  /** sunken = data cards (Today, Trends — keep them matching); card = forms and modals. */
   surface?: Surface;
   className?: string;
 }

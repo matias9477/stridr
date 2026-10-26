@@ -16,7 +16,7 @@ export function SettingsCard({
   children: ReactNode;
 }) {
   return (
-    <Panel className="gap-2">
+    <Panel surface="sunken" className="gap-2">
       <PanelHeader label={label} right={right} />
       {children}
     </Panel>
@@ -70,7 +70,7 @@ export function SettingsRow({
 /** Raised mono value tag ("78 CM") — the tappable value of a row. */
 export function ValueTag({ label }: { label: string }) {
   return (
-    <View className="rounded bg-surface-high px-2 py-1">
+    <View className="rounded bg-surface-raised px-2 py-1">
       <T variant="label">{label}</T>
     </View>
   );
@@ -98,7 +98,7 @@ export function ActionRow({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      className={`flex-row items-center justify-between rounded-lg bg-surface-card p-4 active:bg-surface-raised ${
+      className={`flex-row items-center justify-between rounded-lg bg-surface-sunken p-4 active:bg-surface-raised ${
         disabled ? "opacity-40" : ""
       }`}
     >

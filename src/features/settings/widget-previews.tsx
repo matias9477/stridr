@@ -41,7 +41,7 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
     >
       <View className="mt-2 flex-row gap-2">
         <View
-          className="flex-1 items-center rounded-lg bg-surface-sunken p-2"
+          className="flex-1 items-center rounded-lg bg-surface-raised p-2"
           accessible
           accessibilityLabel={t("settings.widgets.lockA11y")}
         >
@@ -68,7 +68,7 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
         </View>
 
         <View
-          className="flex-1 items-center rounded-lg bg-surface-sunken p-2"
+          className="flex-1 items-center rounded-lg bg-surface-raised p-2"
           accessible
           accessibilityLabel={t("settings.widgets.homeA11y")}
         >

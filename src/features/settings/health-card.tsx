@@ -34,7 +34,7 @@ export function HealthCard({ stats }: { stats: StepStats }) {
     <SettingsCard label={t("settings.health.title")} right={<Chip variant="raised" {...chip} />}>
       <View className="flex-row items-center justify-between py-1">
         <View className="flex-1 flex-row items-center gap-2">
-          <View className="h-9 w-9 items-center justify-center rounded bg-surface-high">
+          <View className="h-9 w-9 items-center justify-center rounded bg-surface-raised">
             <MaterialIcons name="favorite" size={20} color={c.textPrimary} />
           </View>
           <View>
@@ -88,7 +88,7 @@ export function HealthCard({ stats }: { stats: StepStats }) {
 function Note({ icon, text }: { icon: keyof typeof MaterialIcons.glyphMap; text: string }) {
   const c = useThemeColors();
   return (
-    <View className="flex-row items-start gap-2 rounded-lg bg-surface-sunken p-2">
+    <View className="flex-row items-start gap-2 rounded-lg bg-surface-raised p-2">
       <MaterialIcons name={icon} size={18} color={c.textTertiary} />
       <T variant="bodySm" tone="tertiary" className="flex-1 leading-5">
         {text}

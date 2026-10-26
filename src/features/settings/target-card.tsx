@@ -112,7 +112,7 @@ export function TargetCard({ stats }: { stats: StepStats }) {
           accessibilityHint={t("settings.target.useMedianHint")}
           disabled={suggestion === null || suggestion === goal}
           onPress={() => suggestion !== null && save(suggestion)}
-          className="flex-row items-center justify-between rounded bg-surface-sunken px-2 py-1 active:opacity-60"
+          className="flex-row items-center justify-between rounded bg-surface-raised px-2 py-1 active:opacity-60"
         >
           <T variant="bodySm" tone="tertiary">
             {suggestion === null ? t("settings.target.medianEmpty") : t("settings.target.median")}
