@@ -4,10 +4,11 @@ import { GOAL_LIMITS, snapGoal } from "@/src/features/goal/goal-rules";
 import { setGoalFromToday } from "@/src/features/goal/queries";
 import { haptics } from "@/src/features/haptics/haptics";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
-import { formatSteps } from "@/src/lib/format";
+import { formatCompact, formatSteps } from "@/src/lib/format";
 import { IconButton } from "@/src/ui/action-button";
 import { CardStateBody, type CardStatus, READY, Skeleton } from "@/src/ui/card-state";
 import { Chip } from "@/src/ui/chip";
+import { RollingNumber } from "@/src/ui/rolling-number";
 import { T } from "@/src/ui/typography";
 import { SettingsCard } from "./settings-row";
 
@@ -27,8 +28,8 @@ export function TargetCard({ stats }: { stats: StepStats }) {
       ? { kind: "error" }
       : READY;
 
+  // No tick here — the rolling number clicks as its digits pass.
   function save(next: number | null) {
-    haptics.tick();
     setGoalFromToday(next).catch((error) => console.error("[settings/setGoal] failed", error));
   }
 
@@ -37,7 +38,10 @@ export function TargetCard({ stats }: { stats: StepStats }) {
       accessibilityRole="switch"
       accessibilityState={{ checked: goal !== null }}
       accessibilityLabel={t("settings.target.toggleA11y")}
-      onPress={() => save(goal === null ? (suggestion ?? GOAL_LIMITS.suggested) : null)}
+      onPress={() => {
+        goal === null ? haptics.toggleOn() : haptics.toggleOff();
+        save(goal === null ? (suggestion ?? GOAL_LIMITS.suggested) : null);
+      }}
       hitSlop={8}
       className="active:opacity-60"
     >
@@ -59,36 +63,50 @@ export function TargetCard({ stats }: { stats: StepStats }) {
         minHeightClass="min-h-24"
         loading={<Skeleton className="h-12 w-full" />}
       >
-        <View className="flex-row items-center justify-between py-2">
-          <IconButton
-            icon="remove"
-            accessibilityLabel={t("settings.target.decrease")}
-            disabled={goal === null || goal <= GOAL_LIMITS.min}
-            onPress={() => goal !== null && save(goal - GOAL_LIMITS.step)}
-          />
-          <View
-            className="flex-row items-baseline gap-1"
-            accessible
-            accessibilityLabel={
-              goal === null
-                ? t("settings.target.offA11y")
-                : t("settings.target.a11y", { steps: formatSteps(goal) })
-            }
-          >
-            <T variant="stat" tone={goal === null ? "quiet" : "primary"}>
-              {goal === null ? "—" : formatSteps(goal)}
-            </T>
-            <T variant="label" tone="tertiary">
-              {t("settings.target.steps")}
-            </T>
+        {goal === null ? (
+          // "— STEPS" next to live ± buttons read as broken; one tap starts the goal instead.
+          // min-h-12 matches the stepper's button height so the card doesn't jump.
+          <View className="min-h-12 items-center justify-center py-2">
+            <Pressable
+              accessibilityRole="button"
+              onPressIn={() => haptics.press()}
+              onPress={() => save(GOAL_LIMITS.suggested)}
+              hitSlop={8}
+              className="active:opacity-60"
+            >
+              <Chip
+                label={t("settings.target.startAt", {
+                  steps: formatCompact(GOAL_LIMITS.suggested),
+                })}
+              />
+            </Pressable>
           </View>
-          <IconButton
-            icon="add"
-            accessibilityLabel={t("settings.target.increase")}
-            disabled={goal !== null && goal >= GOAL_LIMITS.max}
-            onPress={() => save(goal === null ? GOAL_LIMITS.suggested : goal + GOAL_LIMITS.step)}
-          />
-        </View>
+        ) : (
+          <View className="flex-row items-center justify-between py-2">
+            <IconButton
+              icon="remove"
+              accessibilityLabel={t("settings.target.decrease")}
+              disabled={goal <= GOAL_LIMITS.min}
+              onPress={() => save(goal - GOAL_LIMITS.step)}
+            />
+            <View
+              className="flex-row items-baseline gap-1"
+              accessible
+              accessibilityLabel={t("settings.target.a11y", { steps: formatSteps(goal) })}
+            >
+              <RollingNumber haptic variant="stat" tone="primary" value={formatSteps(goal)} />
+              <T variant="label" tone="tertiary">
+                {t("settings.target.steps")}
+              </T>
+            </View>
+            <IconButton
+              icon="add"
+              accessibilityLabel={t("settings.target.increase")}
+              disabled={goal >= GOAL_LIMITS.max}
+              onPress={() => save(goal + GOAL_LIMITS.step)}
+            />
+          </View>
+        )}
         <Pressable
           accessibilityRole="button"
           accessibilityHint={t("settings.target.useMedianHint")}

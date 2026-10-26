@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { type LayoutChangeEvent, View } from "react-native";
 import Animated, {
   Easing,
@@ -8,6 +8,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
+import { haptics } from "@/src/features/haptics/haptics";
 import { DURATION } from "./motion";
 import { T, type TypeRole } from "./typography";
 
@@ -20,6 +21,11 @@ interface RollingNumberProps {
   tone?: Parameters<typeof T>[0]["tone"];
   /** Spoken instead of the digit strips; defaults to `value`. */
   accessibilityLabel?: string;
+  /**
+   * Detent ticks as the digits roll — for values the user is changing (a
+   * stepper), never for passive data updates. Silent on mount.
+   */
+  haptic?: boolean;
 }
 
 /**
@@ -30,7 +36,14 @@ interface RollingNumberProps {
  * monospaced, so the width never jumps mid-roll. Reduce Motion lands
  * instantly.
  */
-export function RollingNumber({ value, variant, tone, accessibilityLabel }: RollingNumberProps) {
+export function RollingNumber({
+  value,
+  variant,
+  tone,
+  accessibilityLabel,
+  haptic = false,
+}: RollingNumberProps) {
+  useRollHaptic(value, haptic);
   const chars = [...value];
   return (
     <View accessible accessibilityLabel={accessibilityLabel ?? value} className="flex-row">
@@ -106,4 +119,51 @@ function Digit({
       </Animated.View>
     </View>
   );
+}
+
+/** Max detent ticks per change — a 9-position roll shouldn't buzz like a motor. */
+const MAX_TICKS = 6;
+
+/**
+ * Ticks once per digit position crossed by the digit that travels furthest,
+ * timed to its ease-out curve so the clicks slow down as the strip settles.
+ * Digits pair up from the right, the same way the strips are keyed.
+ */
+function useRollHaptic(value: string, enabled: boolean) {
+  const reduceMotion = useReducedMotion();
+  const previous = useRef(value);
+
+  useEffect(() => {
+    const from = previous.current;
+    previous.current = value;
+    if (!enabled || from === value) return;
+    if (reduceMotion) {
+      haptics.tick();
+      return;
+    }
+
+    const next = [...value];
+    const prev = [...from];
+    let distance = 0;
+    let delay = 0;
+    next.forEach((char, i) => {
+      const digit = DIGITS.indexOf(char as (typeof DIGITS)[number]);
+      if (digit === -1) return;
+      const before = DIGITS.indexOf(prev[prev.length - next.length + i] as (typeof DIGITS)[number]);
+      const travel = Math.abs(digit - Math.max(before, 0));
+      if (travel > distance) {
+        distance = travel;
+        delay = i * DURATION.rollStagger;
+      }
+    });
+    if (distance === 0) return;
+
+    const ticks = Math.min(distance, MAX_TICKS);
+    const timers = Array.from({ length: ticks }, (_, k) => {
+      // Inverse of easeOutCubic: when the strip reaches the (k+1)th crossing.
+      const progress = 1 - (1 - (k + 1) / ticks) ** (1 / 3);
+      return setTimeout(haptics.tick, delay + progress * DURATION.roll);
+    });
+    return () => timers.forEach(clearTimeout);
+  }, [value, enabled, reduceMotion]);
 }
