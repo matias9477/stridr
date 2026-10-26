@@ -7,6 +7,7 @@ import {
   hasProEntitlement,
   restorePurchases,
 } from "./purchases-service";
+import { MOCK_PRO } from "./types";
 
 interface PurchasesState {
   isReady: boolean;
@@ -21,7 +22,7 @@ interface PurchasesState {
 
 export const usePurchasesStore = create<PurchasesState>()((set) => ({
   isReady: false,
-  isPro: false,
+  isPro: MOCK_PRO,
   customerInfo: null,
   error: null,
 
@@ -32,10 +33,10 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
         return;
       }
       addCustomerInfoListener((info) => {
-        set({ customerInfo: info, isPro: hasProEntitlement(info) });
+        set({ customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
       });
       const info = await getCustomerInfo();
-      set({ isReady: true, customerInfo: info, isPro: hasProEntitlement(info) });
+      set({ isReady: true, customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
     } catch (error) {
       console.error("[purchases/initialize] failed", error);
       set({ isReady: true, error: error instanceof Error ? error.message : "init failed" });
@@ -45,7 +46,7 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
   refresh: async () => {
     try {
       const info = await getCustomerInfo();
-      set({ customerInfo: info, isPro: hasProEntitlement(info) });
+      set({ customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
     } catch (error) {
       console.error("[purchases/refresh] failed", error);
     }
@@ -54,7 +55,7 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
   restore: async () => {
     try {
       const info = await restorePurchases();
-      const isPro = hasProEntitlement(info);
+      const isPro = MOCK_PRO || hasProEntitlement(info);
       set({ customerInfo: info, isPro });
       return isPro;
     } catch (error) {

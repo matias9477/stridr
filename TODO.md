@@ -21,6 +21,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 ### App-store readiness
 - [ ] Final icon + splash (replace the placeholder solid-color assets in `assets/images/`)
 - [ ] RevenueCat: app created, products, entitlement `pro`, `default` offering; keys in `.env` + EAS env
+  - [ ] tech debt: remove `MOCK_PRO` (`src/features/purchases/types.ts`) and its uses in `purchases-store.ts` once the `default` offering resolves on a sandbox account — until then every `useIsPro()` gate is open
 - [ ] Privacy policy URL (`https://www.matiasturra.dev/privacy/stridr`, live since 2026-10-25) entered in App Store Connect
 - [ ] store.config.json copy finalized (en-US + es-ES); `eas metadata:lint` then `eas metadata:push`
 - [ ] 4 screenshots per DESIGN.md headlines (stage states with the __DEV__ DeveloperSection; upload manually in App Store Connect — EAS metadata does not cover screenshots)
