@@ -340,9 +340,27 @@ export function todayProgress(day: DailyTotal | undefined, now: Date): TodayProg
 
 // --- chart ---
 
-export type ChartRange = "week" | "month" | "quarter" | "all";
+export type ChartRange = "week" | "month" | "quarter" | "all" | "custom";
 
-export const RANGE_DAYS: Record<Exclude<ChartRange, "all">, number> = {
+/** A user-saved Stats range (docs/spec-custom-range.md): rolling last N days, or fixed dates. */
+export type CustomRange =
+  | { kind: "last"; days: number }
+  | { kind: "between"; from: DayKey; to: DayKey };
+
+/** Longest "last N days" a custom range takes — ten years. */
+export const MAX_CUSTOM_DAYS = 3650;
+
+/** Inclusive day bounds of a custom range; "last N" ends today and rolls forward daily. */
+export function customRangeBounds(
+  custom: CustomRange,
+  today: DayKey,
+): { from: DayKey; to: DayKey } {
+  return custom.kind === "last"
+    ? { from: addDaysToKey(today, -(custom.days - 1)), to: today }
+    : { from: custom.from, to: custom.to };
+}
+
+export const RANGE_DAYS: Record<Exclude<ChartRange, "all" | "custom">, number> = {
   week: 7,
   month: 30,
   quarter: 90,
@@ -363,22 +381,39 @@ export function rangeLabelKey(range: ChartRange, weekView: WeekView): string {
   return range === "week" && weekView === "rolling" ? "stats.range.last7" : `stats.range.${range}`;
 }
 
+/** The first and last day a range charts (`null` = the whole history). */
+function rangeBounds(
+  range: ChartRange,
+  today: DayKey,
+  weekView: WeekView,
+  custom: CustomRange | null,
+): { from: DayKey; to: DayKey } | null {
+  if (range === "all") return null;
+  if (range === "custom" && custom) return customRangeBounds(custom, today);
+  // The chip only selects Custom after a save, so a missing one never charts — Week is the fallback.
+  const fixed = range === "custom" ? "week" : range;
+  if (fixed === "week" && weekView !== "rolling") {
+    const from = startOfWeekKey(today, weekStartOf(weekView));
+    return { from, to: addDaysToKey(from, RANGE_DAYS.week - 1) };
+  }
+  return { from: addDaysToKey(today, -(RANGE_DAYS[fixed] - 1)), to: today };
+}
+
 /**
  * The days a range charts. A calendar "week" is the one containing today, so
- * the days still ahead come back as empty slots; the others end at today.
+ * the days still ahead come back as empty slots; the others end at today
+ * (a custom "between" range ends on its own last day).
  */
 export function rangeDays(
   days: readonly DailyTotal[],
   range: ChartRange,
   today: DayKey,
   weekView: WeekView = "monday",
+  custom: CustomRange | null = null,
 ): DailyTotal[] {
-  if (range === "all") return [...days];
-  const calendar = range === "week" && weekView !== "rolling";
-  const from = calendar
-    ? startOfWeekKey(today, weekStartOf(weekView))
-    : addDaysToKey(today, -(RANGE_DAYS[range] - 1));
-  const to = calendar ? addDaysToKey(from, RANGE_DAYS.week - 1) : today;
+  const bounds = rangeBounds(range, today, weekView, custom);
+  if (bounds === null) return [...days];
+  const { from, to } = bounds;
   const index = indexDays(days);
   // Pad before history start (and after today) so a week chart always has 7 slots.
   return dayRange(from, to).map(

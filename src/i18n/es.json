@@ -154,7 +154,21 @@
       "last7": "7D",
       "month": "30D",
       "quarter": "90D",
-      "all": "Todo"
+      "all": "Todo",
+      "custom": "Personalizado"
+    },
+    "custom": {
+      "a11y": "Rango personalizado",
+      "modeA11y": "Tipo de rango",
+      "modeLast": "Últimos X días",
+      "modeBetween": "Entre fechas",
+      "last": "Últimos",
+      "daysUnit": "días",
+      "from": "Desde",
+      "to": "Hasta",
+      "chipDays_one": "{{count}}D",
+      "chipDays_other": "{{count}}D",
+      "chipDate": "d/M"
     },
     "chart": {
       "title": "Volumen de pasos",
@@ -193,7 +207,9 @@
       "avg": "Prom. diario",
       "avgCaption_one": "{{range}} · {{count}} día",
       "avgCaption_other": "{{range}} · {{count}} días",
-      "avgEmpty": "No hay datos en este rango."
+      "avgEmpty": "No hay datos en este rango.",
+      "total_custom": "Total del rango",
+      "betweenSpan": "{{from}} – {{to}}"
     },
     "milestones": {
       "title": "Hitos",
@@ -398,7 +414,11 @@
     "distanceTooLong": "Es más de 100 km",
     "walkNeedsInput": "Ingresa una distancia o una duración",
     "dayInvalid": "Elige un día",
-    "dayInFuture": "Ese día todavía no llegó"
+    "dayInFuture": "Ese día todavía no llegó",
+    "daysRequired": "Ingresa una cantidad de días",
+    "daysTooMany": "Son más de 10 años",
+    "beforeHistory": "Tu historial empieza después",
+    "rangeOrder": "El fin es anterior al inicio"
   },
   "widget": {
     "empty": "Aún no hay pasos",

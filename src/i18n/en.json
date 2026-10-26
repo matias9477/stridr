@@ -154,7 +154,21 @@
       "last7": "7D",
       "month": "30D",
       "quarter": "90D",
-      "all": "All"
+      "all": "All",
+      "custom": "Custom"
+    },
+    "custom": {
+      "a11y": "Custom range",
+      "modeA11y": "Custom range type",
+      "modeLast": "Last X days",
+      "modeBetween": "Between dates",
+      "last": "Last",
+      "daysUnit": "days",
+      "from": "From",
+      "to": "To",
+      "chipDays_one": "{{count}}D",
+      "chipDays_other": "{{count}}D",
+      "chipDate": "M/d"
     },
     "chart": {
       "title": "Cadence volume",
@@ -193,7 +207,9 @@
       "avg": "Daily avg",
       "avgCaption_one": "{{range}} · {{count}} day",
       "avgCaption_other": "{{range}} · {{count}} days",
-      "avgEmpty": "No data in this range."
+      "avgEmpty": "No data in this range.",
+      "total_custom": "Range total",
+      "betweenSpan": "{{from}} – {{to}}"
     },
     "milestones": {
       "title": "Metric milestones",
@@ -398,7 +414,11 @@
     "distanceTooLong": "That's longer than 100 km",
     "walkNeedsInput": "Enter a distance or a duration",
     "dayInvalid": "Pick a day",
-    "dayInFuture": "That day hasn't happened yet"
+    "dayInFuture": "That day hasn't happened yet",
+    "daysRequired": "Enter a number of days",
+    "daysTooMany": "That's more than 10 years",
+    "beforeHistory": "Your step history starts later",
+    "rangeOrder": "The end is before the start"
   },
   "widget": {
     "empty": "No steps yet",

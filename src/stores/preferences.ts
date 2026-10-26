@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { CustomRange } from "@/src/features/stats/stats";
 import type { WeekView } from "@/src/lib/day";
 
 export type ThemePreference = "light" | "dark" | "system";
@@ -34,6 +35,9 @@ interface PreferencesState {
   /** One 18:00 alert when behind the target's pace (spec pace-nudges). Needs iOS permission too. */
   paceNudgesEnabled: boolean;
   setPaceNudgesEnabled: (value: boolean) => void;
+  /** The Stats tab's saved custom range (spec custom-range). Null until the first save. */
+  customRange: CustomRange | null;
+  setCustomRange: (value: CustomRange) => void;
 }
 
 /**
@@ -64,6 +68,8 @@ export const usePreferencesStore = create<PreferencesState>()(
       setCadenceSpm: (value) => set({ cadenceSpm: value }),
       paceNudgesEnabled: false,
       setPaceNudgesEnabled: (value) => set({ paceNudgesEnabled: value }),
+      customRange: null,
+      setCustomRange: (value) => set({ customRange: value }),
     }),
     { name: "preferences", storage: createJSONStorage(() => AsyncStorage) },
   ),

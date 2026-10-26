@@ -3,6 +3,7 @@ import {
   averageOf,
   buildDailyTotals,
   chartBars,
+  customRangeBounds,
   type DailyTotal,
   goalStreaks,
   indexDays,
@@ -241,6 +242,42 @@ describe("chart", () => {
     expect(monday.slice(3).every((d) => d.total === null)).toBe(true);
     expect(rangeDays(days, "week", TODAY, "sunday")[0]?.day).toBe("2026-10-18");
     expect(rangeDays(days, "week", TODAY, "rolling")[0]?.day).toBe("2026-10-15");
+  });
+
+  it("charts a custom last-N range ending today", () => {
+    const days = build({ [ago(1)]: 9000, [TODAY]: 3000 });
+    const last = rangeDays(days, "custom", TODAY, "monday", { kind: "last", days: 13 });
+    expect(last).toHaveLength(13);
+    expect(last[0]?.day).toBe(ago(12));
+    expect(last.at(-1)?.day).toBe(TODAY);
+  });
+
+  it("charts a custom between range on its own dates, both inclusive", () => {
+    const days = build(run(30, 5000));
+    const between = rangeDays(days, "custom", TODAY, "monday", {
+      kind: "between",
+      from: ago(20),
+      to: ago(10),
+    });
+    expect(between[0]?.day).toBe(ago(20));
+    expect(between.at(-1)?.day).toBe(ago(10));
+    expect(between).toHaveLength(11);
+    expect(between.every((d) => d.total === 5000)).toBe(true);
+  });
+
+  it("falls back to the week when custom has nothing saved", () => {
+    const days = build({ [TODAY]: 3000 });
+    expect(rangeDays(days, "custom", TODAY, "monday", null)).toEqual(
+      rangeDays(days, "week", TODAY, "monday"),
+    );
+  });
+
+  it("rolls a last-N custom range forward and keeps a between range fixed", () => {
+    const tomorrow = addDaysToKey(TODAY, 1);
+    expect(customRangeBounds({ kind: "last", days: 1 }, TODAY)).toEqual({ from: TODAY, to: TODAY });
+    expect(customRangeBounds({ kind: "last", days: 7 }, tomorrow).to).toBe(tomorrow);
+    const fixed = { kind: "between", from: ago(5), to: ago(2) } as const;
+    expect(customRangeBounds(fixed, tomorrow)).toEqual({ from: ago(5), to: ago(2) });
   });
 
   it("aggregates long histories into weekly averages", () => {
