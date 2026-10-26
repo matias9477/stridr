@@ -67,6 +67,11 @@ describe("buildWidgetTimeline", () => {
     expect(now.inlineText).toContain("WIDGET.INLINEPACE");
   });
 
+  it("keeps the compact count exact below 10K", () => {
+    expect(buildWidgetTimeline(input(6143)).now.stepsCompact).toMatch(/^6.?143$/);
+    expect(buildWidgetTimeline(input(14832)).now.stepsCompact).toBe("14.8k");
+  });
+
   it("reports pace against the time of day", () => {
     // 8,400 at 14:00 vs 10,000 × 7/15 ≈ 4,667 expected → ahead.
     expect(buildWidgetTimeline(input(8400)).now.paceText).toContain("WIDGET.AHEAD");

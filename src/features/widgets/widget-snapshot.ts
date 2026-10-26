@@ -110,8 +110,14 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
   const current: StepsWidgetProps = {
     hasData: total !== null,
     steps: total === null ? "—" : formatSteps(total),
-    // Lock screen reads "14.8k" — lowercase is quieter next to the clock.
-    stepsCompact: total === null ? "—" : formatCompact(total).toLowerCase(),
+    // Exact below 10K ("6,143" matches the app; "6.1k" reads as a different number),
+    // "14.8k" above where the width matters. Lowercase is quieter next to the clock.
+    stepsCompact:
+      total === null
+        ? "—"
+        : total < 10000
+          ? formatSteps(total)
+          : formatCompact(total).toLowerCase(),
     stepsLabel: upper(t("widget.steps")),
     totalLabel: upper(t("widget.total")),
     timeText: time,

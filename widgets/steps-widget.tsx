@@ -49,7 +49,7 @@ export type StepsWidgetProps = {
   hasData: boolean;
   /** "14,832" */
   steps: string;
-  /** "14.8k" — lock screen. */
+  /** "6,143" below 10K, "14.8k" above — lock screen, ring, bar. */
   stepsCompact: string;
   /** "STEPS" — small widget header. */
   stepsLabel: string;
