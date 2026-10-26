@@ -26,6 +26,8 @@ interface RollingNumberProps {
    * stepper), never for passive data updates. Silent on mount.
    */
   haptic?: boolean;
+  /** False for fixed-size renders (the share card PNG) that must not follow Dynamic Type. */
+  allowFontScaling?: boolean;
 }
 
 /**
@@ -42,6 +44,7 @@ export function RollingNumber({
   tone,
   accessibilityLabel,
   haptic = false,
+  allowFontScaling = true,
 }: RollingNumberProps) {
   useRollHaptic(value, haptic);
   const chars = [...value];
@@ -51,7 +54,12 @@ export function RollingNumber({
         const fromRight = chars.length - 1 - i;
         const digit = DIGITS.indexOf(char as (typeof DIGITS)[number]);
         return digit === -1 ? (
-          <T key={`s${fromRight}`} variant={variant} tone={tone}>
+          <T
+            key={`s${fromRight}`}
+            variant={variant}
+            tone={tone}
+            allowFontScaling={allowFontScaling}
+          >
             {char}
           </T>
         ) : (
@@ -62,6 +70,7 @@ export function RollingNumber({
             delay={i * DURATION.rollStagger}
             variant={variant}
             tone={tone}
+            allowFontScaling={allowFontScaling}
           />
         );
       })}
@@ -74,11 +83,13 @@ function Digit({
   delay,
   variant,
   tone,
+  allowFontScaling,
 }: {
   digit: number;
   delay: number;
   variant: TypeRole;
   tone: RollingNumberProps["tone"];
+  allowFontScaling: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const lineHeight = useSharedValue(0);
@@ -106,13 +117,14 @@ function Digit({
       <T
         variant={variant}
         className="opacity-0"
+        allowFontScaling={allowFontScaling}
         onLayout={(e: LayoutChangeEvent) => lineHeight.set(e.nativeEvent.layout.height)}
       >
         0
       </T>
       <Animated.View className="absolute left-0 right-0 top-0" style={strip}>
         {DIGITS.map((d) => (
-          <T key={d} variant={variant} tone={tone}>
+          <T key={d} variant={variant} tone={tone} allowFontScaling={allowFontScaling}>
             {d}
           </T>
         ))}

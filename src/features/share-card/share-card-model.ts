@@ -112,7 +112,9 @@ export function weekSlots(index: DayIndex, day: DayKey): WeekSlot[] {
 }
 
 function shareStats(input: ShareCardInput, total: number, goal: number | null): ShareStat[] {
-  const out: ShareStat[] = [{ kind: "distance", meters: distanceForSteps(total, input.strideMeters) }];
+  const out: ShareStat[] = [
+    { kind: "distance", meters: distanceForSteps(total, input.strideMeters) },
+  ];
   if (input.activity && input.activity.activeMinutes > 0) {
     out.push({ kind: "active", minutes: input.activity.activeMinutes });
   }

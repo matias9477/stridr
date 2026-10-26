@@ -22,6 +22,8 @@ module.exports = {
         "headline-sm": ["16px", { lineHeight: "22px" }],
         stat: ["26px", { lineHeight: "32px" }],
         display: ["56px", { lineHeight: "60px" }],
+        // Share card hero — the card is a fixed 360×640 poster, never a screen.
+        poster: ["76px", { lineHeight: "80px" }],
       },
       // RN ignores fontWeight for custom fonts — each weight is its own family.
       fontFamily: {
@@ -37,6 +39,7 @@ module.exports = {
         label: "1.3px",
         stat: "-0.5px",
         display: "-1.7px",
+        poster: "-2.3px",
       },
       colors: {
         // Semantic tokens only — values live as CSS variables in global.css

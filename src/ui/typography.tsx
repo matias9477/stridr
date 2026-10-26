@@ -42,6 +42,8 @@ const ROLE = {
   stat: "font-mono-bold text-stat tracking-stat",
   /** 56px hero number. */
   display: "font-mono-bold text-display tracking-display",
+  /** 76px share-card hero (fixed-size poster only). */
+  poster: "font-mono-bold text-poster tracking-poster",
   /** 16px emphasised value in compact tiles. */
   headline: "font-mono-bold text-headline-sm tracking-stat",
   bodySm: "font-sans text-body-sm",
