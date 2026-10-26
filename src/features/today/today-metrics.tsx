@@ -47,6 +47,7 @@ function AverageTile({ stats }: { stats: StepStats }) {
     (average === null ? { kind: "empty", message: t("today.metrics.averageEmpty") } : READY);
   return (
     <StatTile
+      surface="sunken"
       label={t("today.metrics.average")}
       accessory={
         changePct !== null ? (
@@ -76,6 +77,7 @@ function DistanceTile({ stats }: { stats: StepStats }) {
     (total === null ? { kind: "empty", message: t("today.metrics.noStepsYet") } : READY);
   return (
     <StatTile
+      surface="sunken"
       label={t("today.metrics.distance")}
       icon={<Icon name="straighten" />}
       value={total === null ? "—" : formatDistance(distanceForSteps(total, strideMeters), unit)}
@@ -94,6 +96,7 @@ function ActiveTimeTile({ stats }: { stats: StepStats }) {
     (activity === undefined ? { kind: "empty", message: t("today.metrics.activeEmpty") } : READY);
   return (
     <StatTile
+      surface="sunken"
       label={t("today.metrics.activeTime")}
       icon={<Icon name="timer" />}
       value={activity ? formatMinutes(activity.activeMinutes) : "—"}
@@ -115,6 +118,7 @@ function PeakIntervalTile({ stats }: { stats: StepStats }) {
     (peak === null ? { kind: "empty", message: t("today.metrics.peakEmpty") } : READY);
   return (
     <StatTile
+      surface="sunken"
       label={t("today.metrics.peak")}
       icon={<Icon name="bolt" />}
       value={peak ? `${String(peak.hour).padStart(2, "0")}:00` : "—"}

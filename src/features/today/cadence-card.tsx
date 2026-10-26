@@ -12,7 +12,8 @@ const AXIS = ["00:00", "06:00", "12:00", "18:00", "23:59"];
 
 /**
  * "Temporal cadence" — today's steps hour by hour. Hours at ≥ half the busiest
- * hour render solid, other active hours gray, empty or future hours as stubs.
+ * hour render solid, other active hours in the base tone (the Trends pair),
+ * empty or future hours as stubs.
  */
 export function CadenceCard({ stats, now }: { stats: StepStats; now: Date }) {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export function CadenceCard({ stats, now }: { stats: StepStats; now: Date }) {
   const bars: Bar[] = hourly.map((steps, hour) => {
     let tone: BarTone = "none";
     if (hour <= currentHour && steps !== null && steps > 0) {
-      tone = steps >= max / 2 ? "peak" : "strong";
+      tone = steps >= max / 2 ? "peak" : "base";
     }
     const time = `${String(hour).padStart(2, "0")}:00`;
     return {
@@ -41,7 +42,7 @@ export function CadenceCard({ stats, now }: { stats: StepStats; now: Date }) {
   });
 
   return (
-    <Panel className="gap-2">
+    <Panel surface="sunken" className="gap-2">
       <View className="flex-row items-baseline gap-2">
         <T variant="label" numberOfLines={1}>
           {t("today.cadence.title")}
@@ -60,7 +61,7 @@ export function CadenceCard({ stats, now }: { stats: StepStats; now: Date }) {
       >
         <View className="pt-1">
           <BarChart bars={bars} max={max} heightClass="h-12" gapClass="gap-1" />
-          <View className="mt-0.5 h-px bg-surface-high" />
+          <View className="mt-0.5 h-px bg-surface-raised" />
         </View>
         <View className="flex-row justify-between pt-1">
           {AXIS.map((label) => (

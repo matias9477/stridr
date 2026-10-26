@@ -11,7 +11,7 @@ const SURFACE: Record<Surface, string> = {
 
 interface PanelProps {
   children: ReactNode;
-  /** card = Level 1 tiles (Today, Settings); sunken = the deeper Trends cards. */
+  /** sunken = data cards (Today, Trends — keep them matching); card = Settings and forms. */
   surface?: Surface;
   className?: string;
 }

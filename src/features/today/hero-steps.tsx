@@ -94,7 +94,7 @@ export function HeroSteps({ stats, now }: { stats: StepStats; now: Date }) {
               onPress={() => router.navigate("/settings")}
               className="self-start active:opacity-60"
             >
-              <View className="flex-row items-center gap-1.5 rounded bg-surface-card px-2 py-1">
+              <View className="flex-row items-center gap-1.5 rounded bg-surface-sunken px-2 py-1">
                 <MaterialIcons name="flag" size={13} color={c.textPrimary} />
                 <T variant="micro" tone="primary">
                   {t("today.hero.setTarget")}
@@ -162,7 +162,7 @@ function PaceChip({ delta, goalMet }: { delta: number | null; goalMet: boolean }
         ? t("today.hero.ahead", { steps: formatSteps(Math.abs(delta)) })
         : t("today.hero.behind", { steps: formatSteps(Math.abs(delta)) });
   return (
-    <View className="flex-row items-center gap-1.5 rounded bg-surface-card px-2 py-1">
+    <View className="flex-row items-center gap-1.5 rounded bg-surface-sunken px-2 py-1">
       <MaterialIcons name={ahead ? "north-east" : "south-east"} size={13} color={c.textPrimary} />
       <T variant="micro" tone="primary">
         {label}

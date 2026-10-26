@@ -30,9 +30,9 @@ export function StrideCard() {
         : t("today.stride.default");
 
   return (
-    <Panel className="flex-row items-center justify-between gap-3">
+    <Panel surface="sunken" className="flex-row items-center justify-between gap-3">
       <View className="min-w-0 flex-1 flex-row items-center gap-2">
-        <View className="h-9 w-9 items-center justify-center rounded bg-surface-high">
+        <View className="h-9 w-9 items-center justify-center rounded bg-surface-raised">
           <MaterialCommunityIcons name="shoe-print" size={18} color={c.textPrimary} />
         </View>
         <View className="min-w-0 flex-1">
