@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, isNotNull, sql } from "drizzle-orm";
 import { db } from "@/src/db/client";
 import { isLiveQueryLoading, useLiveQuery } from "@/src/db/live";
 import { type ManualActivityRow, manualActivity } from "@/src/db/schema";
@@ -113,8 +113,9 @@ export async function getAllManualEntries(): Promise<ManualActivityRow[]> {
 
 // --- dev-only helpers (DeveloperSection) ---
 
+/** WHERE keeps live queries notified — see deleteGoalHistory in goal/queries.ts. */
 export async function deleteAllManualEntries(): Promise<void> {
-  await db.delete(manualActivity);
+  await db.delete(manualActivity).where(isNotNull(manualActivity.id));
 }
 
 export async function seedManualEntries(days: DayKey[]): Promise<void> {

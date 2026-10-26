@@ -1,4 +1,4 @@
-import { asc } from "drizzle-orm";
+import { asc, isNotNull } from "drizzle-orm";
 import { db } from "@/src/db/client";
 import { isLiveQueryLoading, useLiveQuery } from "@/src/db/live";
 import { goalChanges } from "@/src/db/schema";
@@ -35,7 +35,11 @@ export async function setGoalFromToday(steps: number | null): Promise<void> {
     });
 }
 
-/** Dev-only (DeveloperSection). */
+/**
+ * Dev-only (DeveloperSection). The WHERE is load-bearing: a bare DELETE hits
+ * SQLite's truncate optimization, which skips the update hook live queries
+ * listen on — the rows vanish but the UI keeps showing them until relaunch.
+ */
 export async function deleteGoalHistory(): Promise<void> {
-  await db.delete(goalChanges);
+  await db.delete(goalChanges).where(isNotNull(goalChanges.id));
 }
