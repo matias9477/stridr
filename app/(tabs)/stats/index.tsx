@@ -16,9 +16,18 @@ import { VolumeChartCard } from "@/src/features/stats/volume-chart-card";
 import { useNow } from "@/src/lib/use-now";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { AppHeader } from "@/src/ui/app-header";
-import { DURATION } from "@/src/ui/motion";
+import { DURATION, SPRING } from "@/src/ui/motion";
 import { Screen } from "@/src/ui/screen";
 import { Segmented } from "@/src/ui/segmented";
+
+// The editor drops out of the range switch on a settling spring; closing is a quick fade.
+const EDITOR_IN = FadeInDown.springify()
+  .damping(SPRING.settle.damping)
+  .stiffness(SPRING.settle.stiffness);
+const EDITOR_OUT = FadeOut.duration(DURATION.exit);
+const SECTIONS_LAYOUT = LinearTransition.springify()
+  .damping(SPRING.settle.damping)
+  .stiffness(SPRING.settle.stiffness);
 
 export default function StatsScreen() {
   const { t } = useTranslation();
@@ -83,28 +92,31 @@ export default function StatsScreen() {
             { value: "custom", label: customChipLabel(customRange, t) },
           ]}
         />
+        {/* Animated wrappers carry no className: NativeWind's interop on the same view
+            can swallow Reanimated's entering/exiting/layout animations. */}
         {editorOpen ? (
-          // Half the column's gap above and below: the editor belongs to the switch, not between sections.
-          <Animated.View
-            entering={FadeInDown.duration(DURATION.enter)}
-            exiting={FadeOut.duration(DURATION.exit)}
-            className="-my-3"
-          >
-            <CustomRangeEditor
-              initial={customRange}
-              today={stats.today}
-              historyFrom={stats.historyFrom}
-              onSave={save}
-              onCancel={() => setEditorOpen(false)}
-            />
+          <Animated.View entering={EDITOR_IN} exiting={EDITOR_OUT}>
+            {/* Half the column's gap above and below: the editor belongs to the switch. */}
+            <View className="-my-3">
+              <CustomRangeEditor
+                initial={customRange}
+                today={stats.today}
+                historyFrom={stats.historyFrom}
+                onSave={save}
+                onCancel={() => setEditorOpen(false)}
+              />
+            </View>
           </Animated.View>
         ) : null}
-        <Animated.View layout={LinearTransition.duration(DURATION.layout)} className="gap-6">
-          <VolumeChartCard stats={stats} range={range} custom={customRange} />
-          <SummaryTiles stats={stats} range={range} custom={customRange} />
-          <Milestones stats={stats} />
-          <ActivityLog stats={stats} />
-          <StatsFooter stats={stats} now={now} />
+        {/* The sections below glide down/up as the editor opens and closes, instead of jumping. */}
+        <Animated.View layout={SECTIONS_LAYOUT}>
+          <View className="gap-6">
+            <VolumeChartCard stats={stats} range={range} custom={customRange} />
+            <SummaryTiles stats={stats} range={range} custom={customRange} />
+            <Milestones stats={stats} />
+            <ActivityLog stats={stats} />
+            <StatsFooter stats={stats} now={now} />
+          </View>
         </Animated.View>
       </View>
     </Screen>

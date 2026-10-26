@@ -35,7 +35,7 @@ Workflow: commit this spec first (`chore: add custom-range spec`), then implemen
   - Custom already selected and editor open → tapping it again collapses it (same as Cancel). `Segmented` needs to report a re-tap of the selected option for this (`onReselect`).
   - While the editor is open the Custom chip reads as selected, even before a first save; the chart keeps the previous range until Save.
 - Editor contents: a mode `Segmented` (**Last X days** | **Between dates**), then
-  - Last X: a `MetricInput` ("LAST", unit "days", number pad).
+  - Last X: one row the height of a date row — "LAST" on the left, the number (number pad) and "days" on the right (a full MetricInput tile was mostly dead space).
   - Between: two rows, **From** and **To**, each a `DateField` (`src/ui/date-field`) bounded to history start … today; From's upper bound is To and To's lower bound is From. iOS: the SwiftUI compact `DatePicker`. Both platforms show the date in a Space Mono chip — on iOS the native compact picker sits over it at 0.02 opacity (SwiftUI's compact button ignores custom fonts) so a tap still opens the system calendar. Android: the chip expands the Material calendar inline (Compose has no compact button); it converts through UTC midnights because Material reports days that way.
   - **Cancel** and **Save** as `ActionButton`s (Space Mono, like every action).
   - The editor sits half a column gap from the switch and the chart (`-my-3` against the `gap-6` column) — it belongs to the switch.

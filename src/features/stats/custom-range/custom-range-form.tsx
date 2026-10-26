@@ -1,14 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Keyboard, View } from "react-native";
+import { Keyboard, Pressable, TextInput, type TextInputInstance, View } from "react-native";
 import { addDaysToKey, type DayKey } from "@/src/lib/day";
 import { ActionButton } from "@/src/ui/action-button";
 import { DateField } from "@/src/ui/date-field";
-import { MetricInput } from "@/src/ui/metric-input";
 import { Panel } from "@/src/ui/panel";
 import { Segmented } from "@/src/ui/segmented";
+import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
 import type { CustomRange } from "../stats";
 import { type CustomRangeIn, customRangeSchema } from "./schema";
@@ -93,20 +93,16 @@ export function CustomRangeEditor({
           control={control}
           name="days"
           render={({ field: { onChange, onBlur, value } }) => (
-            <View className="flex-row">
-              <MetricInput
-                label={t("stats.custom.last")}
-                unit={t("stats.custom.daysUnit")}
-                placeholder={String(DEFAULT_LAST_DAYS)}
-                keyboardType="number-pad"
-                returnKeyType="done"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                onSubmitEditing={() => void save()}
-                error={errors.days?.message}
-              />
-            </View>
+            <DaysRow
+              label={t("stats.custom.last")}
+              unit={t("stats.custom.daysUnit")}
+              placeholder={String(DEFAULT_LAST_DAYS)}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              onSubmitEditing={() => void save()}
+              error={errors.days?.message}
+            />
           )}
         />
       ) : (
@@ -183,6 +179,77 @@ function DateRow({
         </T>
         <DateField accessibilityLabel={label} {...field} />
       </View>
+      {error ? (
+        <T variant="bodySm" tone="danger" className="mt-1 px-1">
+          {error}
+        </T>
+      ) : null}
+    </View>
+  );
+}
+
+/**
+ * One row, the height of a date row: label left, the number and its unit right.
+ * A full MetricInput tile left most of its width empty for a two-to-four digit count.
+ */
+function DaysRow({
+  label,
+  unit,
+  error,
+  value,
+  ...input
+}: {
+  label: string;
+  unit: string;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  onBlur: () => void;
+  onSubmitEditing: () => void;
+  error: string | undefined;
+}) {
+  const c = useThemeColors();
+  const inputRef = useRef<TextInputInstance>(null);
+  const [focused, setFocused] = useState(false);
+  const border = error
+    ? "border-danger-fg"
+    : focused
+      ? "border-text-secondary"
+      : "border-transparent";
+  return (
+    <View>
+      <Pressable
+        accessible={false}
+        onPress={() => inputRef.current?.focus()}
+        className={`min-h-12 flex-row items-center justify-between gap-3 rounded-lg border bg-surface-raised px-4 py-2 ${border}`}
+      >
+        <T variant="label" tone={error ? "danger" : "secondary"}>
+          {label}
+        </T>
+        <View className="flex-row items-baseline gap-1.5">
+          <TextInput
+            ref={inputRef}
+            accessibilityLabel={`${label} (${unit})`}
+            keyboardType="number-pad"
+            returnKeyType="done"
+            maxLength={4}
+            selectTextOnFocus
+            placeholderTextColor={c.textQuiet}
+            maxFontSizeMultiplier={1.25}
+            className="min-w-8 p-0 text-right font-mono-bold text-headline-sm tracking-stat text-text-primary"
+            value={value}
+            onFocus={() => setFocused(true)}
+            {...input}
+            onBlur={() => {
+              setFocused(false);
+              input.onBlur();
+            }}
+          />
+          <T variant="labelPlain" tone="secondary">
+            {unit}
+          </T>
+        </View>
+      </Pressable>
       {error ? (
         <T variant="bodySm" tone="danger" className="mt-1 px-1">
           {error}
