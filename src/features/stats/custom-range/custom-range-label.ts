@@ -3,14 +3,14 @@ import type { DayKey } from "@/src/lib/day";
 import { dayLabel } from "@/src/lib/format";
 import { type CustomRange, customRangeBounds } from "../stats";
 
-/** Range chip text: "Custom" until one is saved, then "13D" or a numeric span like "3/4–4/2". */
+/**
+ * Range chip text: "13D" for last N days, otherwise "Custom" — a date span doesn't
+ * fit a fifth of the switch, and the chart's header chip already shows the dates.
+ */
 export function customChipLabel(custom: CustomRange | null, t: TFunction): string {
-  if (custom === null) return t("stats.range.custom");
-  if (custom.kind === "last") return t("stats.custom.chipDays", { count: custom.days });
-  // The pattern is translated: month-first in English, day-first in Spanish.
-  const pattern = t("stats.custom.chipDate");
-  const from = dayLabel(custom.from, pattern);
-  return custom.from === custom.to ? from : `${from}–${dayLabel(custom.to, pattern)}`;
+  return custom?.kind === "last"
+    ? t("stats.custom.chipDays", { count: custom.days })
+    : t("stats.range.custom");
 }
 
 /** Tile caption naming the span: "Mar 4 – today" or "Mar 4 – Apr 2". */

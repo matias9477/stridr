@@ -167,8 +167,7 @@
       "from": "From",
       "to": "To",
       "chipDays_one": "{{count}}D",
-      "chipDays_other": "{{count}}D",
-      "chipDate": "M/d"
+      "chipDays_other": "{{count}}D"
     },
     "chart": {
       "title": "Cadence volume",

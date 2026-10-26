@@ -32,7 +32,7 @@ export function DateField({ value, min, max, onChange, accessibilityLabel }: Dat
         accessibilityRole="button"
         accessibilityLabel={`${accessibilityLabel}: ${dayLabel(value, "MMMM d, yyyy")}`}
         onPress={() => setOpen((o) => !o)}
-        className="rounded bg-surface-card px-3 py-1.5 active:opacity-60"
+        className="rounded bg-surface-card px-3 py-2 active:opacity-60"
       >
         <T variant="label">{dayLabel(value, "MMM d, yyyy")}</T>
       </Pressable>

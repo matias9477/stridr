@@ -28,7 +28,7 @@ Workflow: commit this spec first (`chore: add custom-range spec`), then implemen
 - Days before history start inside a "Last X" window are empty slots, exactly like 30D/90D today.
 
 ### Chip and editor behavior
-- Chip label: **"Custom"** when nothing is saved; otherwise a short summary — `13D` for Last X, a locale numeric short span for Between (`3/4–4/2` en, `4/3–2/4` es; same day → just `3/4`). The chart header chip carries the full dates.
+- Chip label: `13D` for a saved Last X; **"Custom"** otherwise (nothing saved, or Between dates — a date span broke the fifth-of-the-switch width, and the chart header chip already shows the dates; changed 2026-10-26).
 - Tapping Custom **always opens the editor**, a panel that expands between the range switch and the chart (`FadeInDown` entering / `FadeOut` exiting, siblings glide with `LinearTransition`):
   - Saved range exists → the chart switches to it immediately and the editor opens prefilled with it.
   - Nothing saved → the chart stays on the previous chip; the editor opens with defaults (Last 14 days / Between: 30 days ago … today).
@@ -36,8 +36,9 @@ Workflow: commit this spec first (`chore: add custom-range spec`), then implemen
   - While the editor is open the Custom chip reads as selected, even before a first save; the chart keeps the previous range until Save.
 - Editor contents: a mode `Segmented` (**Last X days** | **Between dates**), then
   - Last X: a `MetricInput` ("LAST", unit "days", number pad).
-  - Between: two rows, **From** and **To**, each a `DateField` (`src/ui/date-field`) bounded to history start … today; From's upper bound is To and To's lower bound is From. iOS: the SwiftUI compact `DatePicker`. Android: a date chip that expands the Material calendar inline (Compose has no compact button); it converts through UTC midnights because Material reports days that way.
-  - **Cancel** and **Save** buttons.
+  - Between: two rows, **From** and **To**, each a `DateField` (`src/ui/date-field`) bounded to history start … today; From's upper bound is To and To's lower bound is From. iOS: the SwiftUI compact `DatePicker`. Both platforms show the date in a Space Mono chip — on iOS the native compact picker sits over it at 0.02 opacity (SwiftUI's compact button ignores custom fonts) so a tap still opens the system calendar. Android: the chip expands the Material calendar inline (Compose has no compact button); it converts through UTC midnights because Material reports days that way.
+  - **Cancel** and **Save** as `ActionButton`s (Space Mono, like every action).
+  - The editor sits half a column gap from the switch and the chart (`-my-3` against the `gap-6` column) — it belongs to the switch.
 - **Save**: validates, persists, selects Custom, collapses, dismisses the keyboard. Disabled while invalid; the invalid field shows its inline error.
 - **Cancel**: discards the draft and collapses. If nothing was ever saved, the selection returns to the chip that was active before Custom was tapped.
 - Tapping another chip while the editor is open discards the draft and collapses it.

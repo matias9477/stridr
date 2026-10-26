@@ -167,8 +167,7 @@
       "from": "Desde",
       "to": "Hasta",
       "chipDays_one": "{{count}}D",
-      "chipDays_other": "{{count}}D",
-      "chipDate": "d/M"
+      "chipDays_other": "{{count}}D"
     },
     "chart": {
       "title": "Volumen de pasos",

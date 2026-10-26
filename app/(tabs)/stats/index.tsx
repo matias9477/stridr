@@ -84,9 +84,11 @@ export default function StatsScreen() {
           ]}
         />
         {editorOpen ? (
+          // Half the column's gap above and below: the editor belongs to the switch, not between sections.
           <Animated.View
             entering={FadeInDown.duration(DURATION.enter)}
             exiting={FadeOut.duration(DURATION.exit)}
+            className="-my-3"
           >
             <CustomRangeEditor
               initial={customRange}

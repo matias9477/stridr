@@ -4,7 +4,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, View } from "react-native";
 import { addDaysToKey, type DayKey } from "@/src/lib/day";
-import { Button } from "@/src/ui/button";
+import { ActionButton } from "@/src/ui/action-button";
 import { DateField } from "@/src/ui/date-field";
 import { MetricInput } from "@/src/ui/metric-input";
 import { Panel } from "@/src/ui/panel";
@@ -143,19 +143,21 @@ export function CustomRangeEditor({
       )}
 
       <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Button
-            variant="secondary"
-            label={t("common.cancel")}
-            onPress={() => {
-              Keyboard.dismiss();
-              onCancel();
-            }}
-          />
-        </View>
-        <View className="flex-1">
-          <Button label={t("common.save")} disabled={!isValid} onPress={() => void save()} />
-        </View>
+        <ActionButton
+          block
+          variant="secondary"
+          label={t("common.cancel")}
+          onPress={() => {
+            Keyboard.dismiss();
+            onCancel();
+          }}
+        />
+        <ActionButton
+          block
+          label={t("common.save")}
+          disabled={!isValid}
+          onPress={() => void save()}
+        />
       </View>
     </Panel>
   );

@@ -40,23 +40,16 @@ describe("customRangeSchema", () => {
 
 describe("customChipLabel", () => {
   const t = ((key: string, opts?: { count?: number }) =>
-    key === "stats.custom.chipDays"
-      ? `${opts?.count}D`
-      : key === "stats.custom.chipDate"
-        ? "M/d"
-        : key) as unknown as TFunction;
+    key === "stats.custom.chipDays" ? `${opts?.count}D` : key) as unknown as TFunction;
 
   it("names an unsaved range Custom", () => {
     expect(customChipLabel(null, t)).toBe("stats.range.custom");
   });
 
-  it("summarizes last N days and date spans", () => {
+  it("summarizes last N days and keeps date spans as Custom", () => {
     expect(customChipLabel({ kind: "last", days: 13 }, t)).toBe("13D");
     expect(customChipLabel({ kind: "between", from: "2026-03-04", to: "2026-04-02" }, t)).toBe(
-      "3/4–4/2",
-    );
-    expect(customChipLabel({ kind: "between", from: "2026-03-04", to: "2026-03-04" }, t)).toBe(
-      "3/4",
+      "stats.range.custom",
     );
   });
 });
