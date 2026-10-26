@@ -57,6 +57,14 @@ function RootStack() {
         options={{ presentation: "modal", title: t("today.stride.calibrate") }}
       />
       <Stack.Screen
+        name="stride"
+        options={{ presentation: "modal", title: t("settings.metrics.strideTitle") }}
+      />
+      <Stack.Screen
+        name="cadence"
+        options={{ presentation: "modal", title: t("settings.metrics.cadenceTitle") }}
+      />
+      <Stack.Screen
         name="share-card"
         options={{ presentation: "modal", title: t("shareCard.title") }}
       />
