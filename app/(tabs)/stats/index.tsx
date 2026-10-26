@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { ActivityLog } from "@/src/features/activity/activity-log";
 import { Milestones } from "@/src/features/stats/milestones";
-import type { ChartRange } from "@/src/features/stats/stats";
+import { type ChartRange, rangeLabelKey } from "@/src/features/stats/stats";
 import { StatsFooter } from "@/src/features/stats/stats-footer";
 import { SummaryTiles } from "@/src/features/stats/summary-tiles";
 import { useStepStats } from "@/src/features/stats/use-step-stats";
@@ -37,7 +37,7 @@ export default function StatsScreen() {
           value={range}
           onChange={setRange}
           options={[
-            { value: "week", label: t("stats.range.week") },
+            { value: "week", label: t(rangeLabelKey("week", stats.weekView)) },
             { value: "month", label: t("stats.range.month") },
             { value: "quarter", label: t("stats.range.quarter") },
             { value: "all", label: t("stats.range.all") },

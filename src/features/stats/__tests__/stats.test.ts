@@ -6,7 +6,7 @@ import {
   type DailyTotal,
   goalStreaks,
   indexDays,
-  MAX_DAILY_BARS,
+  MAX_BARS,
   median,
   peakDay,
   percentChange,
@@ -218,18 +218,48 @@ describe("chart", () => {
 
   it("marks the peak bar and today", () => {
     const bars = chartBars(
-      rangeDays(build({ [ago(1)]: 9000, [TODAY]: 3000 }), "week", TODAY),
+      rangeDays(build({ [ago(1)]: 9000, [TODAY]: 3000 }), "week", TODAY, "rolling"),
       TODAY,
     );
     expect(bars.find((b) => b.isPeak)?.from).toBe(ago(1));
     expect(bars.at(-1)?.containsToday).toBe(true);
   });
 
+  it("charts the calendar week with the days ahead empty", () => {
+    // TODAY (2026-10-21) is a Wednesday.
+    const days = build({ [ago(1)]: 9000, [TODAY]: 3000 });
+    const monday = rangeDays(days, "week", TODAY, "monday");
+    expect(monday.map((d) => d.day)).toEqual([
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25",
+    ]);
+    expect(monday.slice(3).every((d) => d.total === null)).toBe(true);
+    expect(rangeDays(days, "week", TODAY, "sunday")[0]?.day).toBe("2026-10-18");
+    expect(rangeDays(days, "week", TODAY, "rolling")[0]?.day).toBe("2026-10-15");
+  });
+
   it("aggregates long histories into weekly averages", () => {
     const days = build(run(400, 7000, 0));
     const bars = chartBars(days, TODAY);
     expect(bars.length).toBeLessThanOrEqual(Math.ceil(400 / 7) + 1);
-    expect(bars.length).toBeLessThan(MAX_DAILY_BARS);
-    expect(bars.every((b) => b.aggregated && b.value === 7000)).toBe(true);
+    expect(bars.length).toBeLessThan(MAX_BARS);
+    expect(bars.every((b) => b.bucket === "week" && b.value === 7000)).toBe(true);
+  });
+
+  it("falls back to monthly, then yearly, bars for very long histories", () => {
+    // ~9.8 years: 500+ weeks, 118 months.
+    const monthly = chartBars(build(run(3580, 7000, 0)), TODAY);
+    expect(monthly.length).toBeLessThanOrEqual(MAX_BARS);
+    expect(monthly.every((b) => b.bucket === "month" && b.value === 7000)).toBe(true);
+    expect(monthly.at(-1)?.containsToday).toBe(true);
+
+    const yearly = chartBars(build(run(4000, 7000, 0)), TODAY);
+    expect(yearly.every((b) => b.bucket === "year")).toBe(true);
+    expect(yearly.at(-1)?.key).toBe("2026-01-01");
   });
 });

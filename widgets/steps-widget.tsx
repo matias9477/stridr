@@ -74,7 +74,7 @@ export type StepsWidgetProps = {
   goalStatus: string;
   /** 06:00–22:00 by hour, 0–1 of the busiest; -1 = no steps that hour. */
   hourly: number[];
-  /** Last 7 days oldest→today on one scale with the goal; -1 = no data. */
+  /** This calendar week (or the last 7 days) on one scale with the goal; -1 = no data (or not yet). */
   weekBars: number[];
   /** Which of `weekBars` met the goal. */
   weekMet: boolean[];
@@ -82,9 +82,11 @@ export type StepsWidgetProps = {
   weekGoal: number;
   /** "10K" beside the goal line. */
   weekGoalText: string;
+  /** Index of today in `weekBars`. */
+  weekToday: number;
   /** Weekday initials matching `weekBars`. */
   dayLetters: string[];
-  /** "LAST 7 DAYS" */
+  /** "THIS WEEK" / "LAST 7 DAYS" */
   weekLabel: string;
   /** "AVG 12,410 / DAY" */
   weekAvgText: string;
@@ -378,7 +380,6 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
   const BAR_GAP = 12;
   const card = (radius: number) =>
     background(theme.card, shapes.roundedRectangle({ cornerRadius: radius }));
-  const lastDay = props.weekBars.length - 1;
 
   const tile = (metric: WidgetMetric | undefined) => (
     <VStack
@@ -494,7 +495,7 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
               modifiers={[
                 frame({ width: BAR_W }),
                 mono(9),
-                foregroundStyle(i === lastDay ? theme.primary : theme.tertiary),
+                foregroundStyle(i === props.weekToday ? theme.primary : theme.tertiary),
               ]}
             >
               {letter}

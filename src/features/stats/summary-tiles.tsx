@@ -7,20 +7,13 @@ import { type CardStatus, READY } from "@/src/ui/card-state";
 import { StatTile } from "@/src/ui/stat-tile";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { baseCardStatus } from "./card-status";
-import { averageOf, type ChartRange, rangeDays } from "./stats";
+import { averageOf, type ChartRange, rangeDays, rangeLabelKey } from "./stats";
 import type { StepStats } from "./use-step-stats";
 
-const RANGE_SHORT: Record<ChartRange, string> = {
-  week: "7D",
-  month: "30D",
-  quarter: "90D",
-  all: "ALL",
-};
-
 /**
- * Week total (Mon → today, spec §6.4) + average per valid day over the selected
- * range's completed days — today's partial total would drag it down (and
- * disagree with Today's 7-day average).
+ * Week total (week start → today, spec §6.4) + average per valid day over the
+ * selected range's completed days — today's partial total would drag it down
+ * (and disagree with Today's 7-day average), and the week's days ahead have none.
  */
 export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartRange }) {
   const { t } = useTranslation();
@@ -31,11 +24,11 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
   const rangeAverage = useMemo(
     () =>
       averageOf(
-        rangeDays(stats.days, range, stats.today)
-          .filter((d) => d.day !== stats.today)
+        rangeDays(stats.days, range, stats.today, stats.weekView)
+          .filter((d) => d.day < stats.today)
           .map((d) => d.total),
       ),
-    [stats.days, range, stats.today],
+    [stats.days, range, stats.today, stats.weekView],
   );
 
   const weekStatus: CardStatus =
@@ -57,7 +50,11 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
         caption={
           week.changePct !== null
             ? t("stats.summary.weekVsLast", { value: formatSignedPercent(week.changePct) })
-            : t("stats.summary.weekSpan")
+            : t(
+                stats.weekStart === "monday"
+                  ? "stats.summary.weekSpan"
+                  : "stats.summary.weekSpanSun",
+              )
         }
         status={weekStatus}
       />
@@ -67,7 +64,7 @@ export function SummaryTiles({ stats, range }: { stats: StepStats; range: ChartR
         icon={<MaterialIcons name="speed" size={16} color={c.textTertiary} />}
         value={rangeAverage.average === null ? "—" : formatSteps(rangeAverage.average)}
         caption={t("stats.summary.avgCaption", {
-          range: RANGE_SHORT[range],
+          range: t(rangeLabelKey(range, stats.weekView)).toUpperCase(),
           count: rangeAverage.validDays,
         })}
         status={avgStatus}

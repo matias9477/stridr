@@ -11,13 +11,34 @@ import { RollingNumber } from "@/src/ui/rolling-number";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
 import { baseCardStatus } from "./card-status";
-import { type ChartBar, type ChartRange, chartBars, peakDay, rangeDays } from "./stats";
+import {
+  type ChartBar,
+  type ChartBucket,
+  type ChartRange,
+  chartBars,
+  peakDay,
+  rangeDays,
+} from "./stats";
 import type { StepStats } from "./use-step-stats";
+
+const BUCKET_LABEL: Record<ChartBucket, string> = {
+  day: "stats.chart.daily",
+  week: "stats.chart.weekly",
+  month: "stats.chart.monthly",
+  year: "stats.chart.yearly",
+};
+
+const BEST_LABEL: Record<ChartBucket, string> = {
+  day: "stats.chart.peak",
+  week: "stats.chart.bestWeek",
+  month: "stats.chart.bestMonth",
+  year: "stats.chart.bestYear",
+};
 
 /**
  * Bar chart of daily totals for the selected range (spec §6.2–6.3): peak
  * value in the header, MAX tag on the peak bar, dashed goal reference, and a
- * tap-to-inspect ribbon. Long ranges render weekly bars (stats.chartBars).
+ * tap-to-inspect ribbon. Long ranges fold into week/month/year bars (stats.chartBars).
  */
 export function VolumeChartCard({ stats, range }: { stats: StepStats; range: ChartRange }) {
   const { t } = useTranslation();
@@ -25,24 +46,32 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const { days, bars, peak } = useMemo(() => {
-    const days = rangeDays(stats.days, range, stats.today);
-    return { days, bars: chartBars(days, stats.today), peak: peakDay(days) };
-  }, [stats.days, range, stats.today]);
+    const days = rangeDays(stats.days, range, stats.today, stats.weekView);
+    return { days, bars: chartBars(days, stats.today, stats.weekStart), peak: peakDay(days) };
+  }, [stats.days, range, stats.today, stats.weekView, stats.weekStart]);
 
   const status: CardStatus =
     baseCardStatus(stats) ??
     (peak === null ? { kind: "empty", message: t("stats.chart.empty") } : READY);
 
   const max = Math.max(stats.currentGoal ?? 0, ...bars.map((b) => b.value ?? 0));
-  const daily = !bars[0]?.aggregated;
+  const bucket = bars[0]?.bucket ?? "day";
   const selected = bars.find((b) => b.key === selectedKey) ?? bars.find((b) => b.isPeak) ?? null;
   const first = days[0]?.day;
   const last = days[days.length - 1]?.day;
 
-  const describe = (bar: ChartBar) =>
-    bar.aggregated
-      ? t("stats.chart.weekOf", { date: dayLabel(bar.from, "MMM d") })
-      : dayLabel(bar.from, "EEE, MMM d");
+  const describe = (bar: ChartBar) => {
+    switch (bar.bucket) {
+      case "day":
+        return dayLabel(bar.from, "EEE, MMM d");
+      case "week":
+        return t("stats.chart.weekOf", { date: dayLabel(bar.from, "MMM d") });
+      case "month":
+        return dayLabel(bar.from, "MMM yyyy");
+      case "year":
+        return dayLabel(bar.from, "yyyy");
+    }
+  };
 
   const chartData: Bar[] = bars.map((bar) => {
     let tone: BarTone = "none";
@@ -93,6 +122,7 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
       <CardStateBody
         status={status}
         minHeightClass="min-h-40"
+        centered
         loading={<Skeleton className="h-40 w-full" />}
       >
         <View className="pt-4">
@@ -134,7 +164,7 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
                 {first ? dayLabel(first, "MMM d, yy") : ""}
               </T>
               <T variant="micro" tone="tertiary">
-                {daily ? t("stats.chart.daily") : t("stats.chart.weekly")}
+                {t(BUCKET_LABEL[bucket])}
               </T>
               <T variant="micro" tone="tertiary">
                 {last ? dayLabel(last, "MMM d") : ""}
@@ -160,13 +190,11 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
                 {selected.value === null
                   ? t("stats.chart.noData")
                   : selected.isPeak
-                    ? // Weekly bars peak on the best week's average, not the best day in the header.
-                      t(selected.aggregated ? "stats.chart.bestWeek" : "stats.chart.peak")
-                    : selected.containsToday && !selected.aggregated
-                      ? t("stats.chart.today")
-                      : selected.aggregated
-                        ? t("stats.chart.perDay")
-                        : t("stats.chart.steps")}
+                    ? // Folded bars peak on the best bucket's average, not the best day in the header.
+                      t(BEST_LABEL[selected.bucket])
+                    : selected.bucket === "day"
+                      ? t(selected.containsToday ? "stats.chart.today" : "stats.chart.steps")
+                      : t("stats.chart.perDay")}
               </T>
             </View>
           </View>

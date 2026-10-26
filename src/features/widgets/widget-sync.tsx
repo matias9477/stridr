@@ -49,7 +49,8 @@ export function WidgetSync(): null {
   const unit = usePreferencesStore((s) => s.distanceUnit);
   const { strideMeters } = useEstimationSettings();
 
-  const { isLoading, todayTotal, currentGoal, days, today, access, hourly, activity } = stats;
+  const { isLoading, todayTotal, currentGoal, days, today, weekView, access, hourly, activity } =
+    stats;
 
   // Explicit fields, not `stats`: the hook returns a fresh object every render,
   // and unrelated health-store updates (lastSyncedAt) shouldn't re-push the timeline.
@@ -64,6 +65,7 @@ export function WidgetSync(): null {
           currentGoal,
           days,
           today,
+          weekView,
           access,
           hourly,
           activity,
@@ -91,6 +93,7 @@ export function WidgetSync(): null {
     currentGoal,
     days,
     today,
+    weekView,
     access,
     hourly,
     activity,

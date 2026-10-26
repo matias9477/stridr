@@ -152,7 +152,8 @@
   "stats": {
     "range": {
       "a11y": "Rango del gráfico",
-      "week": "7D",
+      "week": "Semana",
+      "last7": "7D",
       "month": "30D",
       "quarter": "90D",
       "all": "Todo"
@@ -165,12 +166,16 @@
       "max": "Máx",
       "daily": "Diario",
       "weekly": "Prom. semanal",
+      "monthly": "Prom. mensual",
+      "yearly": "Prom. anual",
       "weekOf": "Semana del {{date}}",
       "noData": "Sin datos",
       "peak": "Pico",
       "today": "Hoy",
       "perDay": "Por día",
       "bestWeek": "Mejor semana · por día",
+      "bestMonth": "Mejor mes · por día",
+      "bestYear": "Mejor año · por día",
       "steps": "Pasos",
       "barA11y": "{{date}}: {{steps}} pasos",
       "barEmptyA11y": "{{date}}: sin datos"
@@ -178,6 +183,7 @@
     "summary": {
       "week": "Total semana",
       "weekSpan": "Lun – hoy",
+      "weekSpanSun": "Dom – hoy",
       "weekVsLast": "{{value}} vs semana pasada",
       "weekEmpty": "Aún no hay pasos esta semana.",
       "avg": "Prom. diario",
@@ -277,6 +283,10 @@
     "themeSystem": "Sistema",
     "language": "Idioma",
     "languageSystem": "Sistema",
+    "weekView": "Gráfico semanal",
+    "weekViewMonday": "Lun – Dom",
+    "weekViewSunday": "Dom – Sáb",
+    "weekViewRolling": "Últimos 7 días",
     "haptics": "Vibración háptica",
     "hapticsCaption": "Vibraciones al usar la app",
     "pro": "Pro",
@@ -305,7 +315,8 @@
       "median": "Usa tu mediana de 7 días",
       "medianEmpty": "La mediana aparece tras unos días",
       "medianValue": "{{steps}} pasos",
-      "useMedianHint": "Fija la meta en tu mediana reciente"
+      "useMedianHint": "Fija la meta en tu mediana reciente",
+      "startAt": "Empezar en {{steps}}"
     },
     "metrics": {
       "title": "Biomecánica y métricas",
@@ -389,7 +400,8 @@
     "empty": "Aún no hay pasos",
     "connect": "Abre Stridr para conectar",
     "newDay": "Nuevo día · sin pasos aún",
-    "week": "Últimos 7 días",
+    "week": "Esta semana",
+    "last7": "Últimos 7 días",
     "inline": "{{steps}} pasos",
     "steps": "Pasos",
     "total": "Total de hoy",

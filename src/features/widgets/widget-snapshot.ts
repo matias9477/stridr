@@ -1,7 +1,7 @@
 import { distanceForSteps } from "@/src/features/activity/estimate";
-import { averageOf, rangeDays, todayProgress } from "@/src/features/stats/stats";
+import { averageOf, type DailyTotal, rangeDays, todayProgress } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
-import { addDaysToKey } from "@/src/lib/day";
+import { addDaysToKey, type DayKey } from "@/src/lib/day";
 import {
   dayLabel,
   formatCompact,
@@ -28,7 +28,7 @@ export function normalizeSeries(values: readonly (number | null)[]): number[] {
 export interface WidgetSnapshotInput {
   stats: Pick<
     StepStats,
-    "todayTotal" | "currentGoal" | "days" | "today" | "access" | "hourly" | "activity"
+    "todayTotal" | "currentGoal" | "days" | "today" | "weekView" | "access" | "hourly" | "activity"
   >;
   unit: DistanceUnit;
   strideMeters: number;
@@ -66,16 +66,25 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
       ? ""
       : formatGoalPercent(progress.percent ?? 0, progress.goalMet, 0);
 
-  // Week bars share one scale with the goal line so "over the line" reads at a glance.
-  const week = rangeDays(stats.days, "week", stats.today);
-  const weekScale = Math.max(1, goal ?? 0, ...week.map((d) => d.total ?? 0));
-  const weekBars = week.map((d) => (d.total === null || d.total <= 0 ? -1 : d.total / weekScale));
-  // Each day against the goal in effect that day, not today's.
-  const weekMet = week.map((d) => d.goalMet === true);
   // "Avg / day" over the bars it sits under, completed days only.
-  const weekAvg = (days: typeof week) => {
+  const weekAvg = (days: readonly DailyTotal[]) => {
     const { average } = averageOf(days.map((d) => d.total));
     return average === null ? "" : upper(t("widget.avg", { steps: formatSteps(average) }));
+  };
+  // The week chart as of `day`: its calendar week (days ahead are empty slots) or the last 7 days.
+  const weekFor = (day: DayKey) => {
+    const week = rangeDays(stats.days, "week", day, stats.weekView);
+    // One scale with the goal line so "over the line" reads at a glance.
+    const scale = Math.max(1, goal ?? 0, ...week.map((d) => d.total ?? 0));
+    return {
+      weekBars: week.map((d) => (d.total === null || d.total <= 0 ? -1 : d.total / scale)),
+      // Each day against the goal in effect that day, not today's.
+      weekMet: week.map((d) => d.goalMet === true),
+      weekGoal: goal === null ? -1 : goal / scale,
+      weekToday: week.findIndex((d) => d.day === day),
+      dayLetters: week.map((d) => dayLabel(d.day, "EEEEE")),
+      weekAvgText: weekAvg(week.filter((d) => d.day < day)),
+    };
   };
 
   const activity = stats.activity[stats.today];
@@ -133,13 +142,9 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
         ? ""
         : upper(t(progress.goalMet ? "widget.reached" : "widget.ofGoal", { percent: percentText })),
     hourly: normalizeSeries(stats.hourly.slice(WIDGET_HOURS.from, WIDGET_HOURS.to + 1)),
-    weekBars,
-    weekMet,
-    weekGoal: goal === null ? -1 : goal / weekScale,
+    ...weekFor(stats.today),
     weekGoalText: goal === null ? "" : formatCompact(goal),
-    dayLetters: week.map((d) => dayLabel(d.day, "EEEEE")),
-    weekLabel: upper(t("widget.week")),
-    weekAvgText: weekAvg(week.slice(0, -1)),
+    weekLabel: upper(t(stats.weekView === "rolling" ? "widget.last7" : "widget.week")),
     metrics: metrics(true),
     inlineText:
       total === null
@@ -163,12 +168,8 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
     percentText: "",
     goalStatus: "",
     hourly: current.hourly.map(() => -1),
-    // Shift the week left by one and add an empty "today".
-    weekBars: [...weekBars.slice(1), -1],
-    weekMet: [...weekMet.slice(1), false],
-    // After midnight the shown days are the old today and the five before it.
-    weekAvgText: weekAvg(week.slice(1)),
-    dayLetters: [...current.dayLetters.slice(1), dayLabel(tomorrow, "EEEEE")],
+    // Tomorrow's chart: the week shifted, the same calendar week with an empty new day, or a fresh one.
+    ...weekFor(tomorrow),
     metrics: metrics(false),
     inlineText: "",
     emptyText: upper(t("widget.newDay")),

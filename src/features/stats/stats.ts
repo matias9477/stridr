@@ -1,5 +1,13 @@
 import { type GoalChange, goalForDay } from "@/src/features/goal/goal-rules";
-import { addDaysToKey, type DayKey, dayRange, startOfWeekKey } from "@/src/lib/day";
+import {
+  addDaysToKey,
+  type DayKey,
+  dayRange,
+  startOfWeekKey,
+  type WeekStart,
+  type WeekView,
+  weekStartOf,
+} from "@/src/lib/day";
 
 /**
  * Step statistics — pure functions over daily totals (spec §6, §9).
@@ -164,19 +172,23 @@ export interface WeekSummary {
   to: DayKey;
   total: number;
   validDays: number;
-  /** Last week's total over the same completed days (Mon → yesterday's weekday). */
+  /** Last week's total over the same completed days (week start → yesterday's weekday). */
   previousTotal: number | null;
   /**
    * Completed days of this week vs the same days of last week. Today is left
    * out of both sides: its partial total against a finished day would read as
-   * "behind" every morning. Null on Mondays (nothing completed yet).
+   * "behind" every morning. Null on the week's first day (nothing completed yet).
    */
   changePct: number | null;
 }
 
-/** Monday through today (spec §6.4). */
-export function weekSummary(index: DayIndex, today: DayKey): WeekSummary {
-  const from = startOfWeekKey(today);
+/** Week start through today (spec §6.4). */
+export function weekSummary(
+  index: DayIndex,
+  today: DayKey,
+  weekStart: WeekStart = "monday",
+): WeekSummary {
+  const from = startOfWeekKey(today, weekStart);
   const current = sumOf(windowTotals(index, from, today));
   const yesterday = addDaysToKey(today, -1);
   const prevFrom = addDaysToKey(from, -7);
@@ -336,19 +348,40 @@ export const RANGE_DAYS: Record<Exclude<ChartRange, "all">, number> = {
   quarter: 90,
 };
 
-/** Above this many days the chart switches to weekly bars (spec §6.2 — efficient all-time). */
-export const MAX_DAILY_BARS = 120;
+/**
+ * Most bars a chart draws (spec §6.2 — efficient all-time). Past it, days
+ * fold into weeks, then months, then years. Each bar is flex-1 beside a 1pt
+ * gap, so ~500 weekly bars since 2017 left the bars 0pt wide — and mounted
+ * ~500 animated views.
+ */
+export const MAX_BARS = 120;
 
+export type ChartBucket = "day" | "week" | "month" | "year";
+
+/** i18n key for a range's chip — the week chip names what the week chart shows. */
+export function rangeLabelKey(range: ChartRange, weekView: WeekView): string {
+  return range === "week" && weekView === "rolling" ? "stats.range.last7" : `stats.range.${range}`;
+}
+
+/**
+ * The days a range charts. A calendar "week" is the one containing today, so
+ * the days still ahead come back as empty slots; the others end at today.
+ */
 export function rangeDays(
   days: readonly DailyTotal[],
   range: ChartRange,
   today: DayKey,
+  weekView: WeekView = "monday",
 ): DailyTotal[] {
   if (range === "all") return [...days];
-  const from = addDaysToKey(today, -(RANGE_DAYS[range] - 1));
+  const calendar = range === "week" && weekView !== "rolling";
+  const from = calendar
+    ? startOfWeekKey(today, weekStartOf(weekView))
+    : addDaysToKey(today, -(RANGE_DAYS[range] - 1));
+  const to = calendar ? addDaysToKey(from, RANGE_DAYS.week - 1) : today;
   const index = indexDays(days);
-  // Pad before history start so a 7D chart always has 7 slots.
-  return dayRange(from, today).map(
+  // Pad before history start (and after today) so a week chart always has 7 slots.
+  return dayRange(from, to).map(
     (day) =>
       index.get(day) ?? {
         day,
@@ -365,43 +398,67 @@ export interface ChartBar {
   key: string;
   from: DayKey;
   to: DayKey;
-  /** Daily total, or the weekly average per valid day when aggregated. Null = no data. */
+  /** Daily total, or the bucket's average per valid day. Null = no data. */
   value: number | null;
-  aggregated: boolean;
+  bucket: ChartBucket;
   containsToday: boolean;
   isPeak: boolean;
 }
 
-export function chartBars(days: readonly DailyTotal[], today: DayKey): ChartBar[] {
-  let bars: ChartBar[];
-  if (days.length <= MAX_DAILY_BARS) {
-    bars = days.map((d) => ({
-      key: d.day,
-      from: d.day,
-      to: d.day,
-      value: d.total,
-      aggregated: false,
-      containsToday: d.day === today,
-      isPeak: false,
-    }));
-  } else {
-    const weeks = new Map<DayKey, DailyTotal[]>();
-    for (const d of days) {
-      const week = startOfWeekKey(d.day);
-      const bucket = weeks.get(week);
-      if (bucket) bucket.push(d);
-      else weeks.set(week, [d]);
-    }
-    bars = [...weeks.entries()].map(([week, bucket]) => ({
-      key: week,
-      from: bucket[0]?.day ?? week,
-      to: bucket[bucket.length - 1]?.day ?? week,
-      value: averageOf(bucket.map((d) => d.total)).average,
-      aggregated: true,
-      containsToday: bucket.some((d) => d.day === today),
-      isPeak: false,
-    }));
+function bucketKey(day: DayKey, bucket: ChartBucket, weekStart: WeekStart): DayKey {
+  switch (bucket) {
+    case "day":
+      return day;
+    case "week":
+      return startOfWeekKey(day, weekStart);
+    case "month":
+      return `${day.slice(0, 7)}-01`;
+    case "year":
+      return `${day.slice(0, 4)}-01-01`;
   }
+}
+
+/** Groups consecutive days by bucket; `days` is sorted, so buckets come out in order. */
+function groupDays(
+  days: readonly DailyTotal[],
+  bucket: ChartBucket,
+  weekStart: WeekStart,
+): Map<DayKey, DailyTotal[]> {
+  const groups = new Map<DayKey, DailyTotal[]>();
+  for (const d of days) {
+    const key = bucketKey(d.day, bucket, weekStart);
+    const group = groups.get(key);
+    if (group) group.push(d);
+    else groups.set(key, [d]);
+  }
+  return groups;
+}
+
+const BUCKETS: readonly ChartBucket[] = ["day", "week", "month", "year"];
+
+export function chartBars(
+  days: readonly DailyTotal[],
+  today: DayKey,
+  weekStart: WeekStart = "monday",
+): ChartBar[] {
+  // The finest bucket that fits; years always fit a phone's lifetime of data.
+  let bucket: ChartBucket = "year";
+  let groups = new Map<DayKey, DailyTotal[]>();
+  for (const candidate of BUCKETS) {
+    groups = groupDays(days, candidate, weekStart);
+    bucket = candidate;
+    if (groups.size <= MAX_BARS) break;
+  }
+  const bars: ChartBar[] = [...groups.entries()].map(([key, group]) => ({
+    key,
+    from: group[0]?.day ?? key,
+    to: group[group.length - 1]?.day ?? key,
+    value:
+      bucket === "day" ? (group[0]?.total ?? null) : averageOf(group.map((d) => d.total)).average,
+    bucket,
+    containsToday: group.some((d) => d.day === today),
+    isPeak: false,
+  }));
   let peak: ChartBar | null = null;
   for (const bar of bars) {
     if (bar.value !== null && (peak === null || (peak.value as number) <= bar.value)) peak = bar;

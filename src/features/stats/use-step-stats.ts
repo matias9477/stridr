@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { useManualStepsByDay } from "@/src/features/activity/queries";
 import { useGoalChanges } from "@/src/features/goal/queries";
 import { useHealthStore } from "@/src/features/health/health-store";
-import type { DayKey } from "@/src/lib/day";
+import { type DayKey, weekStartOf } from "@/src/lib/day";
+import { usePreferencesStore } from "@/src/stores/preferences";
 import { activityByDay, hourlySteps, peakHour } from "./intraday";
 import {
   buildDailyTotals,
@@ -26,6 +27,8 @@ export function useStepStats() {
   const manual = useManualStepsByDay();
   const goals = useGoalChanges();
   const today = health.today;
+  const weekView = usePreferencesStore((s) => s.weekView);
+  const weekStart = weekStartOf(weekView);
 
   const manualByDay = useMemo(() => {
     const out: Record<DayKey, number> = {};
@@ -48,7 +51,7 @@ export function useStepStats() {
       hasAnyData: days.some((d) => d.total !== null),
       sevenDay: sevenDayAverage(index, today),
       sevenDayMedian: sevenDayMedian(index, today),
-      week: weekSummary(index, today),
+      week: weekSummary(index, today, weekStart),
       trend: thirtyDayTrend(index, today),
       streaks: goalStreaks(days, today),
       record: peakDay(days),
@@ -56,7 +59,7 @@ export function useStepStats() {
       peakHour: peakHour(hourly),
       activity: activityByDay(health.minutes),
     };
-  }, [health.daily, health.minutes, manualByDay, goals.data, today]);
+  }, [health.daily, health.minutes, manualByDay, goals.data, today, weekStart]);
 
   const healthLoading =
     health.status === "idle" || (health.status === "loading" && health.lastSyncedAt === null);
@@ -64,6 +67,8 @@ export function useStepStats() {
   return {
     ...derived,
     today,
+    weekView,
+    weekStart,
     access: health.access,
     lastSyncedAt: health.lastSyncedAt,
     limitedFrom: health.limitedFrom,

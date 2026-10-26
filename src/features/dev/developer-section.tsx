@@ -16,7 +16,7 @@ import { addDaysToKey, todayKey } from "@/src/lib/day";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ListRow } from "@/src/ui/list-row";
 import { ListSection } from "@/src/ui/list-section";
-import { mockHealthData } from "./mock-health";
+import { LONG_HISTORY_DAYS, mockHealthData } from "./mock-health";
 
 /**
  * __DEV__-only tools for staging UI states (App Store screenshots, empty
@@ -28,13 +28,18 @@ export function DeveloperSection() {
   const setOnboardingDone = usePreferencesStore((s) => s.setOnboardingDone);
   const [hapticSound, setHapticSound] = useState(false);
   const setMockData = useHealthStore((s) => s.setMockData);
-  const [healthMocked, setHealthMocked] = useState(false);
+  const [healthMock, setHealthMock] = useState<"off" | "recent" | "years">("off");
 
   if (!__DEV__) return null;
 
-  function toggleHealthMock(next: boolean) {
-    setHealthMocked(next);
-    setMockData(next ? mockHealthData() : null);
+  // The two mocks are exclusive: turning one on replaces the other.
+  function toggleHealthMock(kind: "recent" | "years", on: boolean) {
+    setHealthMock(on ? kind : "off");
+    if (!on) setMockData(null);
+    else
+      setMockData(
+        kind === "years" ? mockHealthData(new Date(), LONG_HISTORY_DAYS) : mockHealthData(),
+      );
   }
 
   function toggleHapticSound(next: boolean) {
@@ -103,9 +108,29 @@ export function DeveloperSection() {
         <ListRow
           title="Mock HealthKit data"
           subtitle="120 days + per-minute data for the last 8 — not persisted"
-          right={<Switch value={healthMocked} onValueChange={toggleHealthMock} />}
+          right={
+            <Switch
+              value={healthMock === "recent"}
+              onValueChange={(on) => toggleHealthMock("recent", on)}
+            />
+          }
+        />
+        <ListRow
+          title="Mock HealthKit data — 10 years"
+          subtitle="Daily back to 2017, seasonal — stresses the ALL chart"
+          right={
+            <Switch
+              value={healthMock === "years"}
+              onValueChange={(on) => toggleHealthMock("years", on)}
+            />
+          }
         />
         <ListRow title="Send test pace nudge (5 s)" onPress={() => void sendTestNudge()} />
+        <ListRow
+          title="Reset daily target"
+          subtitle="Clears goal history — the target card goes back to off"
+          onPress={() => run("Daily target reset", deleteGoalHistory)}
+        />
         <ListRow title="Seed 60 days of manual steps" onPress={seed} />
         <ListRow title="Delete manual activity + goals (empty states)" onPress={deleteAll} />
       </ListSection>

@@ -11,6 +11,8 @@ import { addDaysToKey, type DayKey, fromDayKey, toDayKey } from "@/src/lib/day";
 /** Active minutes per hour of a typical day (0 = sedentary). */
 const DAY_SHAPE = [0, 0, 0, 0, 0, 0, 6, 22, 14, 4, 3, 8, 16, 6, 4, 10, 18, 28, 32, 9, 3, 1, 0, 0];
 const HISTORY_DAYS = 120;
+/** "Years" mock: back to early 2017, long enough to force monthly chart bars. */
+export const LONG_HISTORY_DAYS = 3570;
 const MINUTE_DAYS = 8;
 
 /** Deterministic PRNG so the mock looks the same on every tap. */
@@ -41,7 +43,21 @@ function dayMinutes(day: DayKey, until: Date | null, rand: () => number): Minute
   return out;
 }
 
-export function mockHealthData(now: Date = new Date()): {
+/**
+ * Older days get a seasonal swing (summer peaks, winter dips) and a slow
+ * multi-year climb — flat noise averages out to identical monthly/yearly bars,
+ * which would hide whether long-range charts render shape at all.
+ */
+function historicDay(daysAgo: number, rand: () => number): number {
+  const season = Math.sin((daysAgo / 365.25) * 2 * Math.PI) * 1800;
+  const drift = -Math.min(daysAgo, 3600) * 0.9;
+  return Math.max(800, Math.round(8500 + season + drift + (rand() - 0.5) * 6000));
+}
+
+export function mockHealthData(
+  now: Date = new Date(),
+  historyDays: number = HISTORY_DAYS,
+): {
   daily: Record<DayKey, number>;
   minutes: MinuteSteps[];
 } {
@@ -49,7 +65,7 @@ export function mockHealthData(now: Date = new Date()): {
   const today = toDayKey(now);
   const daily: Record<DayKey, number> = {};
   const minutes: MinuteSteps[] = [];
-  for (let i = HISTORY_DAYS - 1; i >= 0; i--) {
+  for (let i = historyDays - 1; i >= 0; i--) {
     const day = addDaysToKey(today, -i);
     // Leave occasional holes so "no data" bars and streak gaps stay visible.
     if (i > 0 && i % 13 === 6) continue;
@@ -58,7 +74,8 @@ export function mockHealthData(now: Date = new Date()): {
       minutes.push(...dayMins);
       daily[day] = dayMins.reduce((sum, m) => sum + m.steps, 0);
     } else {
-      daily[day] = Math.round(5500 + rand() * 7500);
+      daily[day] =
+        historyDays === HISTORY_DAYS ? Math.round(5500 + rand() * 7500) : historicDay(i, rand);
     }
   }
   return { daily, minutes };

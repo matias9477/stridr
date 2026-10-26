@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { WeekView } from "@/src/lib/day";
 
 export type ThemePreference = "light" | "dark" | "system";
 export type LanguagePreference = "en" | "es" | "system";
@@ -18,6 +19,9 @@ interface PreferencesState {
   setHapticsEnabled: (value: boolean) => void;
   distanceUnit: DistanceUnit;
   setDistanceUnit: (value: DistanceUnit) => void;
+  /** Calendar week from Monday or Sunday, or the last 7 days. */
+  weekView: WeekView;
+  setWeekView: (value: WeekView) => void;
   /** Optional — when set (and no manual stride), stride is derived from it. */
   heightCm: number | null;
   setHeightCm: (value: number | null) => void;
@@ -50,6 +54,8 @@ export const usePreferencesStore = create<PreferencesState>()(
       setHapticsEnabled: (value) => set({ hapticsEnabled: value }),
       distanceUnit: "km",
       setDistanceUnit: (value) => set({ distanceUnit: value }),
+      weekView: "monday",
+      setWeekView: (value) => set({ weekView: value }),
       heightCm: null,
       setHeightCm: (value) => set({ heightCm: value }),
       strideCm: null,

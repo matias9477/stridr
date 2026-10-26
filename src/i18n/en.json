@@ -152,7 +152,8 @@
   "stats": {
     "range": {
       "a11y": "Chart range",
-      "week": "7D",
+      "week": "Week",
+      "last7": "7D",
       "month": "30D",
       "quarter": "90D",
       "all": "All"
@@ -165,12 +166,16 @@
       "max": "Max",
       "daily": "Daily",
       "weekly": "Weekly avg",
+      "monthly": "Monthly avg",
+      "yearly": "Yearly avg",
       "weekOf": "Week of {{date}}",
       "noData": "No data",
       "peak": "Peak",
       "today": "Today",
       "perDay": "Per day",
       "bestWeek": "Best week · per day",
+      "bestMonth": "Best month · per day",
+      "bestYear": "Best year · per day",
       "steps": "Steps",
       "barA11y": "{{date}}: {{steps}} steps",
       "barEmptyA11y": "{{date}}: no data"
@@ -178,6 +183,7 @@
     "summary": {
       "week": "Week total",
       "weekSpan": "Mon – today",
+      "weekSpanSun": "Sun – today",
       "weekVsLast": "{{value}} vs last week",
       "weekEmpty": "No steps this week yet.",
       "avg": "Daily avg",
@@ -277,6 +283,10 @@
     "themeSystem": "System",
     "language": "Language",
     "languageSystem": "System",
+    "weekView": "Week chart",
+    "weekViewMonday": "Mon – Sun",
+    "weekViewSunday": "Sun – Sat",
+    "weekViewRolling": "Last 7 days",
     "haptics": "Haptics",
     "hapticsCaption": "Taps as you use the app",
     "pro": "Pro",
@@ -305,7 +315,8 @@
       "median": "Use your 7-day median",
       "medianEmpty": "Median appears after a few days",
       "medianValue": "{{steps}} steps",
-      "useMedianHint": "Sets the target to your recent median"
+      "useMedianHint": "Sets the target to your recent median",
+      "startAt": "Start at {{steps}}"
     },
     "metrics": {
       "title": "Biomechanics & metrics",
@@ -389,7 +400,8 @@
     "empty": "No steps yet",
     "connect": "Open Stridr to connect",
     "newDay": "New day · no steps yet",
-    "week": "Last 7 days",
+    "week": "This week",
+    "last7": "Last 7 days",
     "inline": "{{steps}} steps",
     "steps": "Steps",
     "total": "Today's total",

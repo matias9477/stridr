@@ -67,12 +67,15 @@ export function CardStateBody({
   children,
   minHeightClass = "min-h-12",
   loading,
+  centered = false,
 }: {
   status: CardStatus;
   children: ReactNode;
   minHeightClass?: string;
   /** Custom skeleton for the card's shape. */
   loading?: ReactNode;
+  /** Center the empty/error message — for tall plot areas where a left-aligned line looks stranded. */
+  centered?: boolean;
 }) {
   if (status.kind === "ready") return <>{children}</>;
   if (status.kind === "loading") {
@@ -88,7 +91,7 @@ export function CardStateBody({
     );
   }
   return (
-    <View className={`justify-center ${minHeightClass}`}>
+    <View className={`justify-center ${centered ? "items-center" : ""} ${minHeightClass}`}>
       <CardStateMessage status={status} />
     </View>
   );

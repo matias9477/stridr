@@ -21,7 +21,11 @@ function day(offset: number, total: number | null, goal: number | null = 10000):
 // 14:00 on TODAY: half way through the 07:00–22:00 pace window is 7/15.
 const NOW = new Date(2026, 9, 21, 14, 0);
 
-function input(total: number | null, goal: number | null = 10000) {
+function input(
+  total: number | null,
+  goal: number | null = 10000,
+  weekView: "monday" | "sunday" | "rolling" = "monday",
+) {
   const days = [-6, -5, -4, -3, -2, -1].map((o) => day(o, 4000 + o * -500, goal));
   const today = day(0, total, goal);
   const hourly: (number | null)[] = Array.from({ length: 24 }, () => null);
@@ -33,6 +37,7 @@ function input(total: number | null, goal: number | null = 10000) {
       currentGoal: goal,
       days: [...days, today],
       today: TODAY,
+      weekView,
       access: "requested" as const,
       hourly,
       activity: { [TODAY]: { activeMinutes: 42, cadence: 110 } },
@@ -80,12 +85,17 @@ describe("buildWidgetTimeline", () => {
   });
 
   it("draws the week on the goal's scale and flags days that met it", () => {
+    // TODAY is a Wednesday: third of a Monday week, the days after it empty.
     const { now } = buildWidgetTimeline(input(12000));
     expect(now.weekBars).toHaveLength(7);
-    expect(now.weekBars[6]).toBe(1);
+    expect(now.weekToday).toBe(2);
+    expect(now.weekBars[2]).toBe(1);
+    expect(now.weekBars.slice(3)).toEqual([-1, -1, -1, -1]);
     expect(now.weekGoal).toBeCloseTo(10000 / 12000);
-    expect(now.weekMet[6]).toBe(true);
+    expect(now.weekMet[2]).toBe(true);
     expect(now.weekMet[0]).toBe(false);
+    expect(buildWidgetTimeline(input(12000, 10000, "sunday")).now.weekToday).toBe(3);
+    expect(buildWidgetTimeline(input(12000, 10000, "rolling")).now.weekToday).toBe(6);
     expect(now.goalStatus).toContain("WIDGET.REACHED");
   });
 
@@ -99,8 +109,15 @@ describe("buildWidgetTimeline", () => {
     expect(now.inlineText).toContain("WIDGET.INLINE ");
   });
 
-  it("starts the midnight entry empty with the week shifted", () => {
+  it("starts the midnight entry empty in the same calendar week", () => {
     const { now, midnight } = buildWidgetTimeline(input(8400));
+    expect(midnight.weekToday).toBe(3);
+    expect(midnight.weekBars).toEqual(now.weekBars);
+    expect(midnight.dayLetters).toEqual(now.dayLetters);
+  });
+
+  it("starts the midnight entry empty with the rolling week shifted", () => {
+    const { now, midnight } = buildWidgetTimeline(input(8400, 10000, "rolling"));
     expect(midnight.hasData).toBe(false);
     expect(midnight.progress).toBe(0);
     expect(midnight.paceText).toBe("");

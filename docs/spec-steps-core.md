@@ -15,12 +15,12 @@ Workflow: this spec is the domain authority; deviations get written back here be
 
 Other rules fixed here (all in `src/features/stats/stats.ts`, `STATS_RULES`, pinned by tests):
 - **7-day average** = last 7 *completed* days (today excluded — it's partial). Baseline = the 7 before.
-- **Weekly total** = Monday → today. Week-over-week % compares the same span of last week, only when last week has ≥ 4 valid days.
+- **Weekly total** = week start → today. Week start is a Settings preference (Week chart: Mon – Sun default, Sun – Sat, or Last 7 days, which keeps Monday for totals and weekly bars; added 2026-10-26). Week-over-week % compares the same span of last week, only when last week has ≥ 4 valid days.
 - **Trend** = last 30 completed days vs the 30 before; shown only with ≥ 15 valid days in each; no % when the previous average is 0.
 - **Goals** are a history (`goal_changes`): a change applies from its day on; the *first* goal also applies to all earlier days so new users get immediate streaks.
 - **Pace** ("x ahead of pace") assumes even accumulation 07:00–22:00.
 - **Active minute** = a minute with ≥ 60 steps (intraday cards; HealthKit-only, manual entries have no time of day).
-- **Chart** ranges 7D/30D/90D/All. Above 120 days the chart switches to weekly-average bars; stats stay daily.
+- **Chart** ranges Week/30D/90D/All. Week is the calendar week containing today (days ahead empty), or the rolling last 7 days ("7D") with that preference; the large widget's week chart follows the same setting. The chart draws at most 120 bars: past that, days fold into weekly, then monthly, then yearly average-per-day bars (finest that fits — a history since 2017 charts ~118 months; changed 2026-10-26 after weekly bars went 0pt wide on multi-year data). Stats stay daily.
 - **Stats tab "Daily avg"** is the average over the *selected range* (Today keeps the fixed 7-day average).
 
 ## Data model

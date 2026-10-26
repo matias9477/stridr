@@ -52,9 +52,22 @@ export function dayRange(from: DayKey, to: DayKey): DayKey[] {
   return out;
 }
 
-/** Monday of the week containing `key` (weeks run Monday–Sunday, spec §6.4). */
-export function startOfWeekKey(key: DayKey): DayKey {
-  return toDayKey(startOfWeek(fromDayKey(key), { weekStartsOn: 1 }));
+/** First day of the week (spec §6.4). */
+export type WeekStart = "monday" | "sunday";
+
+/**
+ * How week charts read — a Settings preference, Monday by default. "rolling"
+ * charts the last 7 days; week totals and weekly bars then start on Monday.
+ */
+export type WeekView = WeekStart | "rolling";
+
+export function weekStartOf(view: WeekView): WeekStart {
+  return view === "sunday" ? "sunday" : "monday";
+}
+
+/** First day of the week containing `key`. */
+export function startOfWeekKey(key: DayKey, weekStart: WeekStart = "monday"): DayKey {
+  return toDayKey(startOfWeek(fromDayKey(key), { weekStartsOn: weekStart === "monday" ? 1 : 0 }));
 }
 
 /** Local midnight that ends the given day. */

@@ -9,6 +9,7 @@ import { haptics } from "@/src/features/haptics/haptics";
 import { useEnableNudges } from "@/src/features/notifications/use-enable-nudges";
 import { useIsPro, usePurchasesStore } from "@/src/features/purchases/purchases-store";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
+import type { WeekView } from "@/src/lib/day";
 import { requestReviewExplicitly } from "@/src/lib/review-prompt";
 import {
   type LanguagePreference,
@@ -55,6 +56,8 @@ export function PreferenceSections() {
   const setThemePreference = usePreferencesStore((s) => s.setThemePreference);
   const languagePreference = usePreferencesStore((s) => s.languagePreference);
   const setLanguagePreference = usePreferencesStore((s) => s.setLanguagePreference);
+  const weekView = usePreferencesStore((s) => s.weekView);
+  const setWeekView = usePreferencesStore((s) => s.setWeekView);
   const hapticsEnabled = usePreferencesStore((s) => s.hapticsEnabled);
   const setHapticsEnabled = usePreferencesStore((s) => s.setHapticsEnabled);
   const nudgesEnabled = usePreferencesStore((s) => s.paceNudgesEnabled);
@@ -101,6 +104,17 @@ export function PreferenceSections() {
             { value: "system", label: t("settings.languageSystem") },
             { value: "en", label: "EN" },
             { value: "es", label: "ES" },
+          ]}
+        />
+        <SettingsRow title={t("settings.weekView")} />
+        <Segmented<WeekView>
+          accessibilityLabel={t("settings.weekView")}
+          value={weekView}
+          onChange={setWeekView}
+          options={[
+            { value: "monday", label: t("settings.weekViewMonday") },
+            { value: "sunday", label: t("settings.weekViewSunday") },
+            { value: "rolling", label: t("settings.weekViewRolling") },
           ]}
         />
         <SettingsRow
