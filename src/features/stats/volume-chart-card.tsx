@@ -148,14 +148,28 @@ export function VolumeChartCard({ stats, range }: { stats: StepStats; range: Cha
           {range === "week" ? (
             <View className="mt-2 flex-row gap-2">
               {bars.map((bar) => (
-                <T
-                  key={bar.key}
-                  variant="micro"
-                  tone={bar.isPeak || bar.containsToday ? "primary" : "tertiary"}
-                  className="flex-1 text-center"
-                >
-                  {dayLabel(bar.from, "EEEEE")}
-                </T>
+                // Today is marked on the axis, not the peak — the peak already wears the MAX tag.
+                <View key={bar.key} className="flex-1 items-center">
+                  <T
+                    variant="micro"
+                    tone={bar.containsToday ? "primary" : "tertiary"}
+                    className="text-center"
+                  >
+                    {dayLabel(bar.from, "EEEEE")}
+                  </T>
+                  {/* Out of flow, hanging into the gap above the ribbon, so the week axis stays
+                      the same height as the other ranges' and switching ranges doesn't shift. */}
+                  {bar.containsToday ? (
+                    <View className="absolute top-full" pointerEvents="none">
+                      <MaterialIcons
+                        name="keyboard-arrow-up"
+                        size={14}
+                        color={c.textPrimary}
+                        accessible={false}
+                      />
+                    </View>
+                  ) : null}
+                </View>
               ))}
             </View>
           ) : (
