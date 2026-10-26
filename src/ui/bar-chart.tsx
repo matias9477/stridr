@@ -68,6 +68,11 @@ export function BarChart({
 }: BarChartProps) {
   const safeMax = max > 0 ? max : 1;
   const goalPct = goal ? Math.min(100, (goal.value / safeMax) * 100) : null;
+  const barPct = (value: number | null) =>
+    value === null ? NO_DATA_STUB : Math.max(MIN_VISIBLE, Math.min(100, (value / safeMax) * 100));
+  const tagIndex = tag ? bars.findIndex((b) => b.key === tag.key) : -1;
+  // The goal label sits on the side away from the tag, so a peak near the goal can't cover it.
+  const goalLabelSide = tagIndex >= bars.length / 2 ? "left-0" : "right-0";
 
   return (
     <View className={`relative ${heightClass}`}>
@@ -79,7 +84,7 @@ export function BarChart({
           style={{ bottom: `${goalPct}%` }}
         >
           <View className="border-t border-dashed border-text-quiet" />
-          <View className="absolute -top-4 right-0 rounded-sm bg-surface-sunken px-1">
+          <View className={`absolute -top-4 ${goalLabelSide} rounded-sm bg-surface-sunken px-1`}>
             <T variant="micro" tone="tertiary">
               {goal.label}
             </T>
@@ -88,26 +93,11 @@ export function BarChart({
       ) : null}
       <View className={`h-full flex-row items-end ${gapClass}`}>
         {bars.map((bar, i) => {
-          const pct =
-            bar.value === null
-              ? NO_DATA_STUB
-              : Math.max(MIN_VISIBLE, Math.min(100, (bar.value / safeMax) * 100));
+          const pct = barPct(bar.value);
           const selected = selectedKey === bar.key;
           const content = (
             // Keyed only to satisfy the linter; the outer element carries the real key.
             <View key={bar.key} className="h-full justify-end">
-              {tag?.key === bar.key ? (
-                <Animated.View
-                  entering={FadeIn.duration(DURATION.enter).delay(DURATION.fill)}
-                  className="mb-1 items-center"
-                >
-                  <View className="rounded-sm bg-accent-fg px-1.5 py-0.5">
-                    <T variant="micro" tone="on-accent">
-                      {tag.label}
-                    </T>
-                  </View>
-                </Animated.View>
-              ) : null}
               <GrowBar
                 pct={pct}
                 // Spread over a fixed sweep so a 90-bar chart lands as fast as a 7-bar one.
@@ -142,6 +132,36 @@ export function BarChart({
           );
         })}
       </View>
+      {/* The tag is a label, not data: it gets its own layer above the goal line (the line
+          crosses bars on purpose, but not text). RN orders zIndex among siblings only, so it
+          can't live inside the bar row. Same slots as the row, so it lands over its bar. */}
+      {tag && tagIndex !== -1 ? (
+        <View
+          pointerEvents="none"
+          className={`absolute inset-0 z-20 flex-row items-end ${gapClass}`}
+        >
+          {bars.map((bar) => (
+            <View key={bar.key} className="h-full flex-1 justify-end">
+              {bar.key === tag.key ? (
+                <>
+                  <Animated.View
+                    entering={FadeIn.duration(DURATION.enter).delay(DURATION.fill)}
+                    className="mb-1 items-center"
+                  >
+                    <View className="rounded-sm bg-accent-fg px-1.5 py-0.5">
+                      <T variant="micro" tone="on-accent">
+                        {tag.label}
+                      </T>
+                    </View>
+                  </Animated.View>
+                  {/* Percent height is layout geometry: it mirrors the bar beneath. */}
+                  <View style={{ height: `${barPct(bar.value)}%` }} />
+                </>
+              ) : null}
+            </View>
+          ))}
+        </View>
+      ) : null}
     </View>
   );
 }
