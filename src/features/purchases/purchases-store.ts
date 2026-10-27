@@ -7,14 +7,13 @@ import {
   hasProEntitlement,
   restorePurchases,
 } from "./purchases-service";
-import { MOCK_PRO } from "./types";
 
 interface PurchasesState {
   isReady: boolean;
   isPro: boolean;
   customerInfo: CustomerInfo | null;
   error: string | null;
-  /** __DEV__ only (DeveloperSection): reads as free on top of MOCK_PRO to stage locked states. */
+  /** __DEV__ only (DeveloperSection): reads as free even after a sandbox purchase, to stage locked states. */
   devFree: boolean;
   setDevFree: (on: boolean) => void;
   /** Configure the SDK and load entitlements. Called once from app/_layout.tsx. */
@@ -25,7 +24,7 @@ interface PurchasesState {
 
 export const usePurchasesStore = create<PurchasesState>()((set) => ({
   isReady: false,
-  isPro: MOCK_PRO,
+  isPro: false,
   customerInfo: null,
   error: null,
   devFree: false,
@@ -38,10 +37,10 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
         return;
       }
       addCustomerInfoListener((info) => {
-        set({ customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
+        set({ customerInfo: info, isPro: hasProEntitlement(info) });
       });
       const info = await getCustomerInfo();
-      set({ isReady: true, customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
+      set({ isReady: true, customerInfo: info, isPro: hasProEntitlement(info) });
     } catch (error) {
       console.error("[purchases/initialize] failed", error);
       set({ isReady: true, error: error instanceof Error ? error.message : "init failed" });
@@ -51,7 +50,7 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
   refresh: async () => {
     try {
       const info = await getCustomerInfo();
-      set({ customerInfo: info, isPro: MOCK_PRO || hasProEntitlement(info) });
+      set({ customerInfo: info, isPro: hasProEntitlement(info) });
     } catch (error) {
       console.error("[purchases/refresh] failed", error);
     }
@@ -60,7 +59,7 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
   restore: async () => {
     try {
       const info = await restorePurchases();
-      const isPro = MOCK_PRO || hasProEntitlement(info);
+      const isPro = hasProEntitlement(info);
       set({ customerInfo: info, isPro });
       return isPro;
     } catch (error) {

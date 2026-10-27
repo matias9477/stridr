@@ -110,7 +110,7 @@ export function DeveloperSection() {
         <ListRow title="Reset onboarding flag" onPress={resetOnboarding} />
         <ListRow
           title="Simulate free tier"
-          subtitle="Locks every Pro gate (MOCK_PRO keeps it open otherwise) — not persisted"
+          subtitle="Locks every Pro gate, even with a sandbox purchase — not persisted"
           right={<Switch value={devFree} onValueChange={setDevFree} />}
         />
         <ListRow

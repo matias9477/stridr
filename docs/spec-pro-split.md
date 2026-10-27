@@ -1,6 +1,6 @@
 # Spec: Pro split (paywall + gates)
 
-Status: agreed 2026-10-27 (interview between Matias and Claude). **Pro is a single lifetime unlock** (non-consumable, one RevenueCat package in the `default` offering, entitlement `pro`). No subscriptions, no ads, no trial. RevenueCat dashboard / App Store Connect setup is **not done yet**: `MOCK_PRO` stays on (docs/spec-custom-range.md §0) and a `__DEV__` "Simulate free tier" switch exercises every locked state. Out of scope: hosted RevenueCat paywall templates (`react-native-purchases-ui`), promo codes, Android store setup.
+Status: agreed 2026-10-27 (interview between Matias and Claude). **Pro is a single lifetime unlock** (non-consumable, one RevenueCat package in the `default` offering, entitlement `pro`). No subscriptions, no ads, no trial. `MOCK_PRO` (docs/spec-custom-range.md §0) was removed 2026-10-27, so gates lock for real; a `__DEV__` "Simulate free tier" switch stages every locked state even after a sandbox purchase. Out of scope: hosted RevenueCat paywall templates (`react-native-purchases-ui`), promo codes, Android store setup.
 
 Workflow: commit this spec first (`chore: add pro-split spec`), then implement in §Implementation order. The spec is the authority — deviations get written back here before they land.
 
@@ -18,7 +18,7 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 ## 1. Purchases module
 
 ### Semantics
-- `useIsPro()` = `isPro && !devFree`. `devFree` is a non-persisted store flag only the DeveloperSection sets; in release builds it is always false. It works on top of `MOCK_PRO` so locked states are testable before RevenueCat exists.
+- `useIsPro()` = `isPro && !devFree`. `devFree` is a non-persisted store flag only the DeveloperSection sets; in release builds it is always false. It stages locked states on a build that already owns Pro.
 - The paywall sells **one package**: `offering.lifetime ?? offering.availablePackages[0]`. Its price string comes from the store (`product.priceString`) — never hardcoded.
 - User-cancelled purchases are silent. Purchase errors show one inline line ("You were not charged"). Restore shows the result inline.
 
@@ -47,7 +47,7 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 
 ## 3. Onboarding step 4
 
-The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with title/body (`onboarding.pro.*`), `ProFeatures` as its panel. Bottom bar: `ProOfferActions` with `onContinueFree` — "Unlock Pro · $X.XX", then restore and a "Continue free" link on one row, that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro (incl. mocked): one "Get started" button. Skip stays visible.
+The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with title/body (`onboarding.pro.*`), `ProFeatures` as its panel. Bottom bar: `ProOfferActions` with `onContinueFree` — "Unlock Pro · $X.XX", then restore and a "Continue free" link on one row, that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro: one "Get started" button. Skip stays visible.
 
 ## Cross-cutting obligations
 - i18n keys in BOTH `en.json` and `es.json`, same change.
