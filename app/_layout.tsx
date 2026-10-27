@@ -27,6 +27,11 @@ import { headerBackTitleStyle, headerTitleStyle } from "@/src/ui/tab-stack";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { ThemeRoot } from "@/src/ui/theme-root";
 
+// A cold-start deep link (a locked widget → stridr://paywall) would otherwise
+// make the modal the only screen: no swipe-to-dismiss, nowhere to go back to.
+// Anchoring seeds the tabs underneath every deep-linked route.
+export const unstable_settings = { anchor: "(tabs)" };
+
 function RootStack() {
   const { t } = useTranslation();
   // expo-router no longer ships React Navigation's ThemeProvider —
