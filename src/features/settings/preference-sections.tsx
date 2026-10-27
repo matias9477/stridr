@@ -38,9 +38,8 @@ export function DataActions({ stats }: { stats: StepStats }) {
       <ActionRow
         icon="file-download"
         title={csv.busy ? t("common.loading") : t("settings.data.export")}
-        trailing={csv.locked ? "PRO" : "RAW .CSV"}
-        // Locked stays tappable even with no data: the tap is the upsell.
-        disabled={(csv.disabled && !csv.locked) || csv.busy}
+        trailing="RAW .CSV"
+        disabled={csv.disabled || csv.busy}
         onPress={() => void csv.run()}
       />
       <ActionRow icon="shield" title={t("settings.data.privacy")} onPress={openPrivacyPolicy} />

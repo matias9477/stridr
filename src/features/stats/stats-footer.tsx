@@ -12,8 +12,6 @@ export function StatsFooter({ stats, now }: { stats: StepStats; now: Date }) {
   const { t } = useTranslation();
   const c = useThemeColors();
   const csv = useCsvExport(stats);
-  // Locked stays tappable even with no data: the tap is the upsell.
-  const disabled = csv.disabled && !csv.locked;
 
   const syncLabel =
     stats.access !== "requested"
@@ -32,20 +30,16 @@ export function StatsFooter({ stats, now }: { stats: StepStats; now: Date }) {
       </View>
       <Pressable
         accessibilityRole="button"
-        accessibilityState={{ disabled, busy: csv.busy }}
-        disabled={disabled || csv.busy}
+        accessibilityState={{ disabled: csv.disabled, busy: csv.busy }}
+        disabled={csv.disabled || csv.busy}
         onPress={() => void csv.run()}
         hitSlop={8}
-        className={`flex-row items-center gap-1 active:opacity-60 ${disabled ? "opacity-40" : ""}`}
+        className={`flex-row items-center gap-1 active:opacity-60 ${csv.disabled ? "opacity-40" : ""}`}
       >
         <T variant="micro" tone="primary">
           {csv.busy ? t("common.loading") : t("stats.footer.export")}
         </T>
-        <MaterialIcons
-          name={csv.locked ? "lock-outline" : "file-download"}
-          size={14}
-          color={c.textPrimary}
-        />
+        <MaterialIcons name="file-download" size={14} color={c.textPrimary} />
       </Pressable>
     </View>
   );

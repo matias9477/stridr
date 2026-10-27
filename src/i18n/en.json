@@ -412,10 +412,6 @@
       "widgets": {
         "title": "Your steps, at a glance.",
         "subtitle": "Home and lock screen widgets come with Stridr Pro."
-      },
-      "export": {
-        "title": "Your data, your file.",
-        "subtitle": "CSV export of every day comes with Stridr Pro."
       }
     },
     "features": {
@@ -426,10 +422,6 @@
       "widgets": {
         "title": "Widgets",
         "body": "Home screen and lock screen, every size"
-      },
-      "export": {
-        "title": "CSV export",
-        "body": "Every day and every logged walk, as a raw file"
       }
     },
     "unlock": "Unlock Pro · {{price}}",

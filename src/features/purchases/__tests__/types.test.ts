@@ -4,17 +4,18 @@ describe("parseProVariant", () => {
   it("accepts the known variants", () => {
     expect(parseProVariant("stats")).toBe("stats");
     expect(parseProVariant("widgets")).toBe("widgets");
-    expect(parseProVariant("export")).toBe("export");
   });
 
   it("takes the first value of a repeated search param", () => {
-    expect(parseProVariant(["export", "stats"])).toBe("export");
+    expect(parseProVariant(["widgets", "stats"])).toBe("widgets");
   });
 
   it("falls back to generic for anything else", () => {
     expect(parseProVariant(undefined)).toBeNull();
     expect(parseProVariant("")).toBeNull();
     expect(parseProVariant("STATS")).toBeNull();
+    // CSV export was Pro in the first draft; old links fall back to generic.
+    expect(parseProVariant("export")).toBeNull();
     expect(parseProVariant([])).toBeNull();
   });
 });

@@ -8,9 +8,10 @@ Workflow: commit this spec first (`chore: add pro-split spec`), then implement i
 
 | Pro | Free |
 |---|---|
-| Stats ranges 90D, All, Custom | Today, Stats 7D/30D, manual activities, pace nudges, share card |
+| Stats ranges 90D, All, Custom | Today, Stats 7D/30D, manual activities, pace nudges, share card, CSV export |
 | Home + lock screen widgets | — |
-| CSV export (Settings → Data, Stats footer) | — |
+
+**CSV export is free** (decided 2026-10-27, after the first implementation had gated it): the store listing sells "your data stays on your device", and charging to get your own data out contradicts it for almost no conversion value.
 
 Gate depth, never the core loop. A gate never loses data: it only blocks *viewing* until unlocked.
 
@@ -25,9 +26,9 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 `src/features/purchases/`:
 - `purchases-store.ts`: `devFree: boolean`, `setDevFree(on: boolean)`; `useIsPro()` reads both.
 - `use-pro-offer.ts`: `useProOffer({ onUnlocked })` → `{ status: "loading" | "error" | "ready" | "empty", pkg, priceText, purchasing, restoring, message, purchase(), restore(), retry() }`. Owns offering load (with retry), purchase → `refresh()` → `onUnlocked()`, restore → `onUnlocked()` or an inline "nothing to restore".
-- `pro-features.tsx`: `ProFeatures({ highlight?: ProVariant })` — the three unlock rows (ranges, widgets, export), the variant's row emphasized. Shared by the paywall and onboarding.
+- `pro-features.tsx`: `ProFeatures({ highlight?: ProVariant })` — the two unlock rows (ranges, widgets), the variant's row emphasized. Shared by the paywall and onboarding.
 - `pro-offer-actions.tsx`: `ProOfferActions({ offer })` — the buy button ("Unlock Pro · $X.XX"), loading/error/empty states, restore link, one-time-purchase footnote.
-- `types.ts`: `ProVariant = "stats" | "widgets" | "export"`, `parseProVariant(param)` (pure, tested).
+- `types.ts`: `ProVariant = "stats" | "widgets"` (a stale `variant=export` falls back to generic), `parseProVariant(param)` (pure, tested).
 
 ### UI
 - `app/paywall.tsx` (modal, existing route): reads `variant` search param. Headline + subtitle per variant (`paywall.variants.<v>.title/subtitle`, generic `paywall.title/subtitle` otherwise), `ProFeatures`, `ProOfferActions`. If already Pro, shows the active state and a Done button. Dismissible via the native modal swipe, like every other sheet in the app (no Close button — deviation from the first draft, for consistency). Opened cold from a widget deep link, closing replaces to `/`.
@@ -37,9 +38,8 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 
 ### Side effects
 1. **Stats** (`app/(tabs)/stats/index.tsx`): 90D / All / Custom chips push `/paywall?variant=stats` when not Pro; the chart stays on the current range. Chips stay visible (they are the upsell).
-2. **CSV export**: `useCsvExport` gains `locked` (= `!isPro`); `run()` pushes `/paywall?variant=export` when locked. Settings row trailing tag reads `PRO` instead of `RAW .CSV`; Stats footer label stays, tap routes to the paywall.
-3. **Widgets**: `WidgetSync` pushes a locked snapshot when not Pro: `hasData: false`, `emptyText` = "PRO UNLOCKS WIDGETS" (inline: same), no goal/progress, deep link `stridr://paywall?variant=widgets`. `StepsWidgetProps` gains `url: string` (all three widgets use it instead of the hardcoded `"stridr://"`) — props-only change, no app.json shape change, but a native rebuild is needed to pick up the new widget bundle.
-4. **Settings → Widget previews**: when not Pro, the previews render dimmed and an "Unlock widgets with Pro" action row under them pushes `/paywall?variant=widgets`.
+2. **Widgets**: `WidgetSync` pushes a locked snapshot when not Pro: `hasData: false`, `emptyText` = "PRO UNLOCKS WIDGETS" (inline: same), no goal/progress, deep link `stridr://paywall?variant=widgets`. `StepsWidgetProps` gains `url: string` (all three widgets use it instead of the hardcoded `"stridr://"`) — props-only change, no app.json shape change, but a native rebuild is needed to pick up the new widget bundle.
+3. **Settings → Widget previews**: when not Pro, the previews render dimmed and an "Unlock widgets with Pro" action row under them pushes `/paywall?variant=widgets`.
 
 ### Tests
 - `buildLockedWidgetProps` (pure, in `widget-snapshot.ts`): no step numbers leak, url points at the paywall.
@@ -54,11 +54,11 @@ The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `Onboar
 - Semantic tokens only; loading/error/empty for the offer.
 - Haptics: `success` on unlock (purchase or restore), nothing on cancel.
 - No `react-native-purchases` import outside `purchases-service.ts`.
-- Planned commits: `chore: add pro-split spec`, `feat(purchases): lifetime paywall with variants`, `feat(stats): gate 90D/All and CSV export behind Pro` (export folded in as it shipped), `feat(widgets): locked widget state for free users`, `feat(onboarding): Pro as step 4`, `docs(todo): ...`.
+- Planned commits: `chore: add pro-split spec`, `feat(purchases): lifetime paywall with variants`, `feat(stats): gate 90D/All behind Pro` (shipped with an export gate, then reverted by `feat(export): make CSV export free`), `feat(widgets): locked widget state for free users`, `feat(onboarding): Pro as step 4`, `docs(todo): ...`.
 
 ## Implementation order
 1. Purchases module + paywall — every gate routes into it.
-2. Stats, export, widget gates.
+2. Stats and widget gates.
 3. Onboarding step 4 (reuses the paywall pieces).
 4. TODO.md: Pro split moves to Shipped; RevenueCat setup checklist stays on the critical path with the lifetime product.
 

@@ -9,9 +9,9 @@ export const PRO_ENTITLEMENT_ID = "pro";
 export const MOCK_PRO = true;
 
 /** Which gate opened the paywall — picks its headline and the highlighted feature row. */
-export type ProVariant = "stats" | "widgets" | "export";
+export type ProVariant = "stats" | "widgets";
 
-const PRO_VARIANTS: readonly ProVariant[] = ["stats", "widgets", "export"];
+const PRO_VARIANTS: readonly ProVariant[] = ["stats", "widgets"];
 
 /** `/paywall?variant=…` comes from deep links too (widgets), so anything unknown is generic. */
 export function parseProVariant(param: unknown): ProVariant | null {

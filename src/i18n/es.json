@@ -412,10 +412,6 @@
       "widgets": {
         "title": "Tus pasos, de un vistazo.",
         "subtitle": "Los widgets de inicio y de pantalla bloqueada vienen con Stridr Pro."
-      },
-      "export": {
-        "title": "Tus datos, tu archivo.",
-        "subtitle": "La exportación CSV de todos tus días viene con Stridr Pro."
       }
     },
     "features": {
@@ -426,10 +422,6 @@
       "widgets": {
         "title": "Widgets",
         "body": "Pantalla de inicio y bloqueada, todos los tamaños"
-      },
-      "export": {
-        "title": "Exportar CSV",
-        "body": "Cada día y cada caminata registrada, en un archivo"
       }
     },
     "unlock": "Desbloquear Pro · {{price}}",

@@ -9,7 +9,6 @@ import type { ProVariant } from "./types";
 const FEATURES: { variant: ProVariant; icon: keyof typeof MaterialIcons.glyphMap }[] = [
   { variant: "stats", icon: "insights" },
   { variant: "widgets", icon: "widgets" },
-  { variant: "export", icon: "file-download" },
 ];
 
 /**
