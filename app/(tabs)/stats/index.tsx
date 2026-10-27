@@ -38,7 +38,9 @@ export default function StatsScreen() {
   const customRange = usePreferencesStore((s) => s.customRange);
   const setCustomRange = usePreferencesStore((s) => s.setCustomRange);
   // `range` only becomes "custom" once one is saved — the chart never charts a draft.
-  const [range, setRange] = useState<ChartRange>("week");
+  const [picked, setRange] = useState<ChartRange>("week");
+  // Losing Pro (refund, or the dev "simulate free" switch) drops a Pro range back to the week.
+  const range: ChartRange = isPro || picked === "week" || picked === "month" ? picked : "week";
   const [editorOpen, setEditorOpen] = useState(false);
 
   const openCustom = () => {
@@ -70,10 +72,15 @@ export default function StatsScreen() {
         <Segmented<ChartRange>
           accessibilityLabel={t("stats.range.a11y")}
           // While editing, the chip being edited reads as selected even before a first save.
-          value={editorOpen ? "custom" : range}
+          value={editorOpen && isPro ? "custom" : range}
           onChange={(value) => {
             if (value === "custom") {
               openCustom();
+              return;
+            }
+            // 90D and All are Pro (docs/spec-pro-split.md §2); the chart stays where it was.
+            if (!isPro && (value === "quarter" || value === "all")) {
+              router.push("/paywall?variant=stats");
               return;
             }
             setRange(value);
@@ -94,7 +101,7 @@ export default function StatsScreen() {
         />
         {/* Animated wrappers carry no className: NativeWind's interop on the same view
             can swallow Reanimated's entering/exiting/layout animations. */}
-        {editorOpen ? (
+        {editorOpen && isPro ? (
           <Animated.View entering={EDITOR_IN} exiting={EDITOR_OUT}>
             {/* Half the column's gap above and below: the editor belongs to the switch. */}
             <View className="-my-3">
