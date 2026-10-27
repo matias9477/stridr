@@ -30,7 +30,7 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 - `types.ts`: `ProVariant = "stats" | "widgets" | "export"`, `parseProVariant(param)` (pure, tested).
 
 ### UI
-- `app/paywall.tsx` (modal, existing route): reads `variant` search param. Headline + subtitle per variant (`paywall.variants.<v>.title/subtitle`, generic `paywall.title/subtitle` otherwise), `ProFeatures`, `ProOfferActions`. If already Pro, shows the active state and a Done button. Dismissible via the native modal swipe and a Close toolbar button.
+- `app/paywall.tsx` (modal, existing route): reads `variant` search param. Headline + subtitle per variant (`paywall.variants.<v>.title/subtitle`, generic `paywall.title/subtitle` otherwise), `ProFeatures`, `ProOfferActions`. If already Pro, shows the active state and a Done button. Dismissible via the native modal swipe, like every other sheet in the app (no Close button — deviation from the first draft, for consistency). Opened cold from a widget deep link, closing replaces to `/`.
 - States: loading (spinner + "Loading price…"), error (retry), empty ("Not available right now"), purchasing (button busy, others disabled).
 
 ## 2. Gates
@@ -42,19 +42,19 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 4. **Settings → Widget previews**: when not Pro, the previews render dimmed and an "Unlock widgets with Pro" action row under them pushes `/paywall?variant=widgets`.
 
 ### Tests
-- `buildLockedWidgetTimeline` (pure, in `widget-snapshot.ts`): no step numbers leak, url points at the paywall.
+- `buildLockedWidgetProps` (pure, in `widget-snapshot.ts`): no step numbers leak, url points at the paywall.
 - `parseProVariant`.
 
 ## 3. Onboarding step 4
 
-The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with title/body (`onboarding.pro.*`), `ProFeatures` as its panel. Bottom bar: `ProOfferActions`-style primary "Unlock Pro · $X.XX" and a "Continue free" link that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro (incl. mocked): one "Get started" button. Skip stays visible.
+The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with title/body (`onboarding.pro.*`), `ProFeatures` as its panel. Bottom bar: `ProOfferActions` with `onContinueFree` — "Unlock Pro · $X.XX", then restore and a "Continue free" link on one row, that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro (incl. mocked): one "Get started" button. Skip stays visible.
 
 ## Cross-cutting obligations
 - i18n keys in BOTH `en.json` and `es.json`, same change.
 - Semantic tokens only; loading/error/empty for the offer.
 - Haptics: `success` on unlock (purchase or restore), nothing on cancel.
 - No `react-native-purchases` import outside `purchases-service.ts`.
-- Planned commits: `chore: add pro-split spec`, `feat(purchases): lifetime paywall with variants`, `feat(stats): gate 90D/All behind Pro`, `feat(export): gate CSV export behind Pro`, `feat(widgets): locked widget state for free users`, `feat(onboarding): Pro as step 4`, `docs(todo): ...`.
+- Planned commits: `chore: add pro-split spec`, `feat(purchases): lifetime paywall with variants`, `feat(stats): gate 90D/All and CSV export behind Pro` (export folded in as it shipped), `feat(widgets): locked widget state for free users`, `feat(onboarding): Pro as step 4`, `docs(todo): ...`.
 
 ## Implementation order
 1. Purchases module + paywall — every gate routes into it.

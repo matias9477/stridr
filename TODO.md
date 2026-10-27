@@ -9,6 +9,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Steps core (docs/spec-steps-core.md): HealthKit step totals (statistics-collection queries, so iPhone + Watch never double count), manual steps and estimated walks in SQLite, goal history, and every statistic (7-day average, week total, peak, record, streaks, 30-day trend) as tested pure functions. Today / Stats / Settings tabs built from the Stitch "Monochrome Cadence" designs with per-card loading/empty/error states, Space Mono + Geist, light and dark palettes. Home-screen widgets (2×2, 4×2, 4×4 with 24h cadence and the Today bento) and lock-screen widgets (circular gauge, rectangular, inline above the clock) fed by one app-pushed timeline with HealthKit background delivery; CSV export.
 - Share card (docs/spec-share-card.md): Today's share button opens a preview of a designed 1080×1920 Story image — the step count as hero, today's hourly bars on a ruler (last 7 days when there's no hourly data), distance / active time / streak, and the stridr lockup — then shares the PNG through the system sheet. Free, follows the theme, replaces the old text-only share.
 - Custom Stats range (docs/spec-custom-range.md): a fifth range chip that expands an editor between the switch and the chart — last N days (rolls forward daily) or two fixed dates via the native date picker — applied on Save and remembered across launches; the chip reads "13D" or "3/4–4/2". The chart, range total and daily average follow it. Pro, with Pro mocked on until RevenueCat is set up.
+- Pro split (docs/spec-pro-split.md): Stridr Pro is a single lifetime unlock. It opens the 90D / All / Custom Stats ranges, the widgets and CSV export; free keeps Today, 7D/30D, manual activities, nudges and the share card. Gates route to `/paywall?variant=stats|widgets|export` (per-gate headline, store price, restore). Free users' widgets show "Pro unlocks widgets" and deep-link to the paywall, and onboarding step 4 is the Pro offer with "Continue free". `MOCK_PRO` still keeps every gate open until RevenueCat is live; DeveloperSection → "Simulate free tier" stages the locked states.
 
 ## Critical path to v1.0
 
@@ -21,7 +22,8 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ### App-store readiness
 - [ ] Final icon + splash (replace the placeholder solid-color assets in `assets/images/`)
-- [ ] RevenueCat: app created, products, entitlement `pro`, `default` offering; keys in `.env` + EAS env
+- [ ] RevenueCat (project created 2026-10-27): Paid Apps agreement active; non-consumable `com.matiasturra.stridr.pro.lifetime` in App Store Connect (en + es localizations); In-App Purchase key uploaded to RevenueCat; product attached to entitlement `pro`; `default` offering (Current) with a Lifetime package; `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in `.env` + EAS env
+- [ ] Device run after the RevenueCat setup (`npm run ios` — the widget bundle changed too): sandbox purchase, restore on a fresh install, locked widgets with "Simulate free tier"
   - [ ] tech debt: remove `MOCK_PRO` (`src/features/purchases/types.ts`) and its uses in `purchases-store.ts` once the `default` offering resolves on a sandbox account — until then every `useIsPro()` gate is open
 - [ ] Privacy policy URL (`https://www.matiasturra.dev/privacy/stridr`, live since 2026-10-25) entered in App Store Connect
 - [ ] store.config.json copy finalized (en-US + es-ES); `eas metadata:lint` then `eas metadata:push`
@@ -37,12 +39,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 
 ## Open: (unresolved decisions)
 
-- Pro split — decided: Pro unlocks the **90-day and All-time** Stats ranges (`ChartRange` `"quarter"` / `"all"`), the **widgets** and **CSV export**. Free keeps Today, Stats week/month, manual activities and pace nudges. No ads (decided 2026-10-25; AdMob removed). The gating ships together with onboarding step 4 (the paywall).
-  - [ ] gate the 90D / All chips in the Stats range switch with `useIsPro()` → `router.push("/paywall?variant=stats")` (Custom already routes there when not Pro; the paywall ignores `variant` until the copy lands)
-  - [ ] gate the widgets: free users get a locked state pointing to the paywall instead of their numbers (WidgetSync pushes an "Upgrade to Pro" snapshot), and a `variant=widgets` paywall entry from Settings → Widget previews
-  - [ ] gate CSV export (Settings → Data) → `router.push("/paywall?variant=export")`
-  - [ ] paywall copy for the three variants in en + es
-  - [ ] onboarding step 4 becomes the paywall (replaces the old "Read-only. On-device." slide, which now repeats step 1)
+_None right now._
 
 ## Known issues / tech debt
 
