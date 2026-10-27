@@ -1,3 +1,4 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useEffect, useRef, useState } from "react";
 import { type LayoutRectangle, Pressable, View } from "react-native";
 import Animated, {
@@ -9,10 +10,12 @@ import Animated, {
 import { scheduleOnRN } from "react-native-worklets";
 import { haptics } from "@/src/features/haptics/haptics";
 import { SPRING } from "./motion";
+import { useThemeColors } from "./theme-colors";
 import { T } from "./typography";
 
 interface SegmentedProps<V extends string> {
-  options: readonly { value: V; label: string }[];
+  /** `locked` draws a corner lock (e.g. a Pro range) without changing the option's size. */
+  options: readonly { value: V; label: string; locked?: boolean }[];
   value: V;
   onChange: (value: V) => void;
   /** Tap on the already-selected option (e.g. reopening a chip's editor). Ignored when absent. */
@@ -20,6 +23,8 @@ interface SegmentedProps<V extends string> {
   /** fill = stretches (range toggle); compact = hugs content (unit switch). */
   layout?: "fill" | "compact";
   accessibilityLabel: string;
+  /** Read by VoiceOver on locked options ("Requires Pro"). */
+  lockedHint?: string;
 }
 
 /**
@@ -40,7 +45,9 @@ export function Segmented<V extends string>({
   onReselect,
   layout = "fill",
   accessibilityLabel,
+  lockedHint,
 }: SegmentedProps<V>) {
+  const c = useThemeColors();
   const reduceMotion = useReducedMotion();
   const [layouts, setLayouts] = useState<Partial<Record<V, LayoutRectangle>>>({});
   const [inverted, setInverted] = useState(value);
@@ -106,6 +113,7 @@ export function Segmented<V extends string>({
             key={option.value}
             accessibilityRole="tab"
             accessibilityState={{ selected }}
+            accessibilityHint={option.locked ? lockedHint : undefined}
             onLayout={(e) => {
               const next = e.nativeEvent.layout;
               setLayouts((prev) => {
@@ -140,6 +148,12 @@ export function Segmented<V extends string>({
             >
               {option.label}
             </T>
+            {option.locked ? (
+              // Absolute in the chip's corner: locking never shifts the labels.
+              <View pointerEvents="none" className="absolute right-1 top-1">
+                <MaterialIcons name="lock" size={8} color={c.textTertiary} />
+              </View>
+            ) : null}
           </Pressable>
         );
       })}

@@ -71,6 +71,7 @@ export default function StatsScreen() {
       <View className="gap-6">
         <Segmented<ChartRange>
           accessibilityLabel={t("stats.range.a11y")}
+          lockedHint={t("stats.range.lockedHint")}
           // While editing, the chip being edited reads as selected even before a first save.
           value={editorOpen && isPro ? "custom" : range}
           onChange={(value) => {
@@ -94,9 +95,9 @@ export default function StatsScreen() {
           options={[
             { value: "week", label: t(rangeLabelKey("week", stats.weekView)) },
             { value: "month", label: t("stats.range.month") },
-            { value: "quarter", label: t("stats.range.quarter") },
-            { value: "all", label: t("stats.range.all") },
-            { value: "custom", label: customChipLabel(customRange, t) },
+            { value: "quarter", label: t("stats.range.quarter"), locked: !isPro },
+            { value: "all", label: t("stats.range.all"), locked: !isPro },
+            { value: "custom", label: customChipLabel(customRange, t), locked: !isPro },
           ]}
         />
         {/* Animated wrappers carry no className: NativeWind's interop on the same view

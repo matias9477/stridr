@@ -157,7 +157,8 @@
       "month": "30D",
       "quarter": "90D",
       "all": "Todo",
-      "custom": "Personalizado"
+      "custom": "Personalizado",
+      "lockedHint": "Requiere Stridr Pro"
     },
     "custom": {
       "a11y": "Rango personalizado",
