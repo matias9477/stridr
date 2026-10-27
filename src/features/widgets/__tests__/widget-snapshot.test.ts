@@ -1,6 +1,6 @@
 import type { DailyTotal } from "@/src/features/stats/stats";
 import { addDaysToKey, type DayKey } from "@/src/lib/day";
-import { buildWidgetTimeline, normalizeSeries } from "../widget-snapshot";
+import { buildLockedWidgetProps, buildWidgetTimeline, normalizeSeries } from "../widget-snapshot";
 
 const TODAY: DayKey = "2026-10-21";
 // Echo keys + params so assertions don't depend on copy.
@@ -125,4 +125,33 @@ describe("buildWidgetTimeline", () => {
     expect(midnight.hourly.every((v) => v === -1)).toBe(true);
     expect(midnight.metrics[0]?.value).toBe("—");
   });
+});
+
+describe("buildLockedWidgetProps", () => {
+  const locked = buildLockedWidgetProps(t);
+
+  it("opens the widgets paywall", () => {
+    expect(locked.url).toBe("stridr://paywall?variant=widgets");
+  });
+
+  it("carries no step data", () => {
+    expect(locked.hasData).toBe(false);
+    expect(locked.steps).toBe("—");
+    expect(locked.progress).toBe(-1);
+    expect(locked.hourly.every((v) => v === -1)).toBe(true);
+    expect(locked.weekBars.every((v) => v === -1)).toBe(true);
+    expect(locked.metrics).toEqual([]);
+  });
+
+  it("shows the Pro line in every empty slot, same shape as a live snapshot", () => {
+    expect(locked.emptyText).toBe("WIDGET.LOCKED");
+    expect(locked.inlineText).toBe("WIDGET.LOCKED");
+    const live = buildWidgetTimeline(input(6000)).now;
+    expect(Object.keys(locked).sort()).toEqual(Object.keys(live).sort());
+    expect(locked.hourly).toHaveLength(live.hourly.length);
+  });
+});
+
+it("live snapshots open the app", () => {
+  expect(buildWidgetTimeline(input(6000)).now.url).toBe("stridr://");
 });

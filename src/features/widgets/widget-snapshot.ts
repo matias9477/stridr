@@ -117,6 +117,7 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
   ];
 
   const current: StepsWidgetProps = {
+    url: "stridr://",
     hasData: total !== null,
     steps: total === null ? "—" : formatSteps(total),
     // Exact below 10K ("6,143" matches the app; "6.1k" reads as a different number),
@@ -176,4 +177,42 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
   };
 
   return { now: current, midnight };
+}
+
+/**
+ * Free tier (docs/spec-pro-split.md §2): every family shows the "Pro unlocks
+ * widgets" line instead of numbers, and a tap opens the widgets paywall. No
+ * step data goes into the payload at all — a locked widget can't leak it.
+ */
+export function buildLockedWidgetProps(t: Translate): StepsWidgetProps {
+  const text = t("widget.locked").toUpperCase();
+  return {
+    url: "stridr://paywall?variant=widgets",
+    hasData: false,
+    steps: "—",
+    stepsCompact: "—",
+    stepsLabel: t("widget.steps").toUpperCase(),
+    totalLabel: t("widget.total").toUpperCase(),
+    timeText: "",
+    updatedText: "",
+    paceText: "",
+    paceAhead: true,
+    progress: -1,
+    percentText: "",
+    goalShort: "",
+    goalFull: "",
+    goalStatus: "",
+    hourly: Array.from({ length: WIDGET_HOURS.to - WIDGET_HOURS.from + 1 }, () => -1),
+    weekBars: Array.from({ length: 7 }, () => -1),
+    weekMet: Array.from({ length: 7 }, () => false),
+    weekGoal: -1,
+    weekGoalText: "",
+    weekToday: -1,
+    dayLetters: Array.from({ length: 7 }, () => ""),
+    weekLabel: "",
+    weekAvgText: "",
+    metrics: [],
+    inlineText: text,
+    emptyText: text,
+  };
 }

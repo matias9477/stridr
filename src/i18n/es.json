@@ -389,7 +389,8 @@
       "rectangular": "Rectangular",
       "small": "Cuadrado pequeño",
       "lockA11y": "Vista previa del widget de pantalla bloqueada",
-      "homeA11y": "Vista previa del widget de inicio"
+      "homeA11y": "Vista previa del widget de inicio",
+      "unlock": "Desbloquea los widgets con Pro"
     },
     "data": {
       "export": "Exportar pasos en CSV",
@@ -477,7 +478,8 @@
     "movingTime": "En movimiento est.",
     "perMin": "Pasos / min",
     "spm": "ppm",
-    "inlinePace": "{{steps}} pasos · {{pace}}"
+    "inlinePace": "{{steps}} pasos · {{pace}}",
+    "locked": "Pro desbloquea widgets"
   },
   "nudges": {
     "notification": {

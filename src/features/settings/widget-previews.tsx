@@ -1,25 +1,30 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { useEstimationSettings } from "@/src/features/activity/use-estimation-settings";
+import { useIsPro } from "@/src/features/purchases/purchases-store";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
 import { buildWidgetTimeline } from "@/src/features/widgets/widget-snapshot";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { SettingsCard } from "./settings-row";
+import { ActionRow, SettingsCard } from "./settings-row";
 
 /**
  * Live previews of the lock-screen (accessoryRectangular) and home-screen
  * (systemSmall) widgets. Built from the same snapshot WidgetSync pushes, so
  * the strings match; the layout mirrors widgets/steps-widget.tsx — keep the
- * two visually in step.
+ * two visually in step. Free users see them dimmed under an unlock row —
+ * their own numbers, as a preview of what Pro puts on the home screen.
  */
 export function WidgetPreviews({ stats }: { stats: StepStats }) {
   const { t } = useTranslation();
   const c = useThemeColors();
   const unit = usePreferencesStore((s) => s.distanceUnit);
   const { strideMeters } = useEstimationSettings();
+  const router = useRouter();
+  const isPro = useIsPro();
   const w = buildWidgetTimeline({ stats, unit, strideMeters, now: new Date(), t }).now;
   const hasGoal = w.progress >= 0;
   const fill = `${Math.min(1, Math.max(0, w.progress)) * 100}%` as const;
@@ -39,7 +44,7 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
         </T>
       }
     >
-      <View className="mt-2 flex-row gap-2">
+      <View className={`mt-2 flex-row gap-2 ${isPro ? "" : "opacity-40"}`}>
         <View
           className="flex-1 items-center rounded-lg bg-surface-raised p-2"
           accessible
@@ -111,6 +116,14 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
           </T>
         </View>
       </View>
+      {isPro ? null : (
+        <ActionRow
+          icon="lock-outline"
+          title={t("settings.widgets.unlock")}
+          trailing="PRO"
+          onPress={() => router.push("/paywall?variant=widgets")}
+        />
+      )}
     </SettingsCard>
   );
 }

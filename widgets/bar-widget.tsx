@@ -15,7 +15,14 @@ import type { StepsWidgetProps } from "./steps-widget";
 /** The bar reads a slice of the Steps snapshot — WidgetSync pushes the same payload to all widgets. */
 export type BarWidgetProps = Pick<
   StepsWidgetProps,
-  "hasData" | "stepsCompact" | "percentText" | "progress" | "goalShort" | "paceText" | "emptyText"
+  | "url"
+  | "hasData"
+  | "stepsCompact"
+  | "percentText"
+  | "progress"
+  | "goalShort"
+  | "paceText"
+  | "emptyText"
 >;
 
 /**
@@ -50,7 +57,7 @@ const BarWidgetComponent = (props: BarWidgetProps, env: WidgetEnvironment) => {
     <VStack
       alignment="leading"
       spacing={6}
-      modifiers={[widgetURL("stridr://"), containerBackground(theme.page, "widget")]}
+      modifiers={[widgetURL(props.url), containerBackground(theme.page, "widget")]}
     >
       <HStack>
         {micro(props.hasData ? props.percentText : "", theme.tertiary)}

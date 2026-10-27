@@ -3,10 +3,11 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import { useEstimationSettings } from "@/src/features/activity/use-estimation-settings";
+import { useIsPro } from "@/src/features/purchases/purchases-store";
 import { useStepStats } from "@/src/features/stats/use-step-stats";
 import { nextMidnight } from "@/src/lib/day";
 import { usePreferencesStore } from "@/src/stores/preferences";
-import { buildWidgetTimeline } from "./widget-snapshot";
+import { buildLockedWidgetProps, buildWidgetTimeline } from "./widget-snapshot";
 
 type Widgets = {
   steps: typeof import("@/widgets/steps-widget").default;
@@ -41,13 +42,16 @@ function loadWidgets(): Widgets | null {
  *
  * One payload feeds every family (home 2×2 / 4×2 / 4×4 and the three lock
  * screen slots); the widget picks what its size shows. Widget sync must never
- * break the app, hence the catch-all.
+ * break the app, hence the catch-all. Free users get the locked snapshot
+ * instead (docs/spec-pro-split.md §2) — a widget already on their screen
+ * turns into a paywall link rather than going stale.
  */
 export function WidgetSync(): null {
   const { t } = useTranslation();
   const stats = useStepStats();
   const unit = usePreferencesStore((s) => s.distanceUnit);
   const { strideMeters } = useEstimationSettings();
+  const isPro = useIsPro();
 
   const { isLoading, todayTotal, currentGoal, days, today, weekView, access, hourly, activity } =
     stats;
@@ -59,6 +63,13 @@ export function WidgetSync(): null {
     const native = loadWidgets();
     if (!native) return;
     try {
+      if (!isPro) {
+        const entries = [{ date: new Date(), props: buildLockedWidgetProps(t) }];
+        native.steps.updateTimeline(entries);
+        native.ring.updateTimeline(entries);
+        native.bar.updateTimeline(entries);
+        return;
+      }
       const { now, midnight } = buildWidgetTimeline({
         stats: {
           todayTotal,
@@ -88,6 +99,7 @@ export function WidgetSync(): null {
       console.error("[widgets/widget-sync] timeline update failed", error);
     }
   }, [
+    isPro,
     isLoading,
     todayTotal,
     currentGoal,

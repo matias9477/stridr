@@ -17,7 +17,7 @@ import type { StepsWidgetProps } from "./steps-widget";
 /** The ring reads a slice of the Steps snapshot — WidgetSync pushes the same payload to both. */
 export type RingWidgetProps = Pick<
   StepsWidgetProps,
-  "hasData" | "stepsCompact" | "percentText" | "progress" | "emptyText"
+  "url" | "hasData" | "stepsCompact" | "percentText" | "progress" | "emptyText"
 >;
 
 /**
@@ -60,7 +60,7 @@ const RingWidgetComponent = (props: RingWidgetProps, env: WidgetEnvironment) => 
   return (
     <VStack
       spacing={0}
-      modifiers={[widgetURL("stridr://"), containerBackground(theme.page, "widget")]}
+      modifiers={[widgetURL(props.url), containerBackground(theme.page, "widget")]}
     >
       <Spacer />
       <Gauge

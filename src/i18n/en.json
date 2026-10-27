@@ -389,7 +389,8 @@
       "rectangular": "Rectangular",
       "small": "Small square",
       "lockA11y": "Lock screen widget preview",
-      "homeA11y": "Home screen widget preview"
+      "homeA11y": "Home screen widget preview",
+      "unlock": "Unlock widgets with Pro"
     },
     "data": {
       "export": "Export steps as CSV",
@@ -477,7 +478,8 @@
     "movingTime": "Moving time est.",
     "perMin": "Steps / min",
     "spm": "spm",
-    "inlinePace": "{{steps}} steps · {{pace}}"
+    "inlinePace": "{{steps}} steps · {{pace}}",
+    "locked": "Pro unlocks widgets"
   },
   "nudges": {
     "notification": {

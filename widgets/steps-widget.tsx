@@ -45,6 +45,8 @@ export type WidgetMetric = {
  * and pre-formatted on the JS side — the widget never sees raw data or i18n keys.
  */
 export type StepsWidgetProps = {
+  /** Tap target: "stridr://", or the paywall while the widget is locked (free tier). */
+  url: string;
   /** False before HealthKit access / any data: show `emptyText`. */
   hasData: boolean;
   /** "14,832" */
@@ -127,7 +129,7 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
   const HOT_HOUR = 0.6;
   const theme = env.colorScheme === "light" ? THEME.light : THEME.dark;
   const family = env.widgetFamily ?? "systemSmall";
-  const url = widgetURL("stridr://");
+  const url = widgetURL(props.url);
   const hasGoal = props.progress >= 0;
   const progress = Math.min(1, Math.max(0, props.progress));
   const mono = (size: number, weight: "regular" | "bold" = "bold") =>
