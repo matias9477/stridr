@@ -32,8 +32,6 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "getStarted": "Conectar Salud",
-    "readyTitle": "Solo lectura. En tu dispositivo.",
-    "readyBody": "Stridr solo lee tus pasos. Nada sale de tu teléfono — sin cuenta, sin rastreo.",
     "calibrate": {
       "title": "Calibra tu largo de paso.",
       "body": "Tu altura define el largo de tu paso, que convierte las caminatas que registras por distancia en pasos estimados — sin GPS.",
@@ -82,6 +80,10 @@
       "body": "Nada de ánimos genéricos. Un aviso por la tarde, solo si vas por detrás del ritmo de tu propio objetivo.",
       "enable": "Activar avisos inteligentes →",
       "later": "Quizás luego"
+    },
+    "pro": {
+      "title": "Un pago. Para siempre.",
+      "body": "Todo lo que viste hasta ahora es gratis. Stridr Pro suma la vista a largo plazo — pagas una vez, sin suscripción."
     }
   },
   "today": {
@@ -439,7 +441,8 @@
     "loadError": "No se pudo cargar el precio — reintentar",
     "noOffers": "Pro no está disponible ahora. Inténtalo más tarde.",
     "purchaseError": "La compra falló. No se te cobró.",
-    "terms": "Pago único, cobrado a tu Apple ID. Vale para todos los dispositivos con ese Apple ID."
+    "terms": "Pago único, cobrado a tu Apple ID. Vale para todos los dispositivos con ese Apple ID.",
+    "continueFree": "Seguir gratis →"
   },
   "validation": {
     "stepsRequired": "Ingresa una cantidad de pasos",

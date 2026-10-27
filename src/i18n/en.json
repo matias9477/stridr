@@ -32,8 +32,6 @@
     "skip": "Skip",
     "next": "Next",
     "getStarted": "Connect Apple Health",
-    "readyTitle": "Read-only. On-device.",
-    "readyBody": "Stridr only reads step counts. Nothing leaves your phone — no account, no tracking.",
     "calibrate": {
       "title": "Calibrate your step length.",
       "body": "Your height sets your step length, which turns walks you log by distance into step estimates — no GPS needed.",
@@ -82,6 +80,10 @@
       "body": "No generic encouragement. One alert in the evening, only when you're falling behind your own target's pace.",
       "enable": "Enable smart notifications →",
       "later": "Maybe later"
+    },
+    "pro": {
+      "title": "One unlock. Yours for good.",
+      "body": "Everything you've seen so far is free. Stridr Pro adds the long view — pay once, no subscription."
     }
   },
   "today": {
@@ -439,7 +441,8 @@
     "loadError": "Couldn't load the price — retry",
     "noOffers": "Pro isn't available right now. Try again later.",
     "purchaseError": "Purchase failed. You were not charged.",
-    "terms": "One-time purchase, charged to your Apple ID. Covers every device on that Apple ID."
+    "terms": "One-time purchase, charged to your Apple ID. Covers every device on that Apple ID.",
+    "continueFree": "Continue free →"
   },
   "validation": {
     "stepsRequired": "Enter a step count",

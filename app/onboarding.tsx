@@ -1,4 +1,3 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +7,6 @@ import {
   Pressable,
   ScrollView,
   type ScrollViewInstance,
-  Text,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -21,28 +19,24 @@ import { useEnableNudges } from "@/src/features/notifications/use-enable-nudges"
 import { HealthContract } from "@/src/features/onboarding/health-contract";
 import { OnboardingSlide } from "@/src/features/onboarding/onboarding-slide";
 import { DEFAULT_HEIGHT_CM, StrideCalibration } from "@/src/features/onboarding/stride-calibration";
+import { ProFeatures } from "@/src/features/purchases/pro-features";
+import { ProOfferActions } from "@/src/features/purchases/pro-offer-actions";
+import { useIsPro } from "@/src/features/purchases/purchases-store";
+import { useProOffer } from "@/src/features/purchases/use-pro-offer";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ActionButton } from "@/src/ui/action-button";
-import { Button } from "@/src/ui/button";
 import { DURATION } from "@/src/ui/motion";
 import { PulseDot } from "@/src/ui/pulse-dot";
-import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
 
-type SlideIcon = keyof typeof Ionicons.glyphMap;
-
-const SLIDES: { key: string; icon: SlideIcon }[] = [
-  { key: "health", icon: "heart-outline" },
-  { key: "calibrate", icon: "resize-outline" },
-  { key: "nudges", icon: "notifications-outline" },
-  { key: "ready", icon: "heart-outline" },
-];
+const SLIDES = ["health", "calibrate", "nudges", "pro"] as const;
 
 /**
  * Skippable at all times (Skip stays visible on every slide). Step 1 explains
  * the read-only Health contract and its CTA asks for access right there — the
  * moment the user understands why it's needed (spec §3.1, §11). The last
- * slide asks again only if step 1 was swiped past. Skipping leaves the
+ * slide is Pro (docs/spec-pro-split.md §3): buying or continuing free both
+ * finish, and finishing asks for Health again only if step 1 was swiped past. Skipping leaves the
  * connect CTA on Today. Revisits from Settings just dismiss. The calibrate
  * slide only saves the height on "Confirm" — swiping past it keeps the default
  * stride (spec decision 4).
@@ -50,7 +44,6 @@ const SLIDES: { key: string; icon: SlideIcon }[] = [
 export default function OnboardingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const c = useThemeColors();
   const { width } = useWindowDimensions();
   const scrollRef = useRef<ScrollViewInstance>(null);
   const [page, setPage] = useState(0);
@@ -65,8 +58,9 @@ export default function OnboardingScreen() {
   const setHeightCm = usePreferencesStore((s) => s.setHeightCm);
   const setStrideCm = usePreferencesStore((s) => s.setStrideCm);
   const [heightCm, setDraftHeightCm] = useState(storedHeightCm ?? DEFAULT_HEIGHT_CM);
+  const isPro = useIsPro();
   const isLast = page === SLIDES.length - 1;
-  const slideKey = SLIDES[page]?.key;
+  const slideKey = SLIDES[page];
   // Already asked (or no HealthKit at all): connecting again would be a no-op.
   const canConnect = healthAccess === "notRequested";
 
@@ -80,6 +74,8 @@ export default function OnboardingScreen() {
     router.replace("/");
     if (connectHealth) void requestHealthAccess();
   };
+
+  const offer = useProOffer({ onUnlocked: () => finish(canConnect), enabled: !isPro });
 
   const onNext = () => {
     if (isLast) {
@@ -144,45 +140,33 @@ export default function OnboardingScreen() {
         onMomentumScrollEnd={onScrollEnd}
         className="flex-1"
       >
-        {SLIDES.map((slide, i) =>
-          slide.key !== "ready" ? (
-            <OnboardingSlide
-              key={slide.key}
-              width={width}
-              step={i + 1}
-              total={SLIDES.length}
-              title={t(`onboarding.${slide.key}.title`)}
-              body={t(`onboarding.${slide.key}.body`)}
-            >
-              {slide.key === "health" ? (
-                <HealthContract />
-              ) : slide.key === "calibrate" ? (
-                <StrideCalibration heightCm={heightCm} onChange={setDraftHeightCm} />
-              ) : (
-                <NudgePreview />
-              )}
-            </OnboardingSlide>
-          ) : (
-            <View key={slide.key} style={{ width }} className="items-center justify-center px-10">
-              <View className="h-24 w-24 items-center justify-center rounded-3xl border border-border-hairline bg-surface-card">
-                <Ionicons name={slide.icon} size={44} color={c.accentFg} />
-              </View>
-              <Text className="mt-6 text-center text-3xl font-bold text-text-primary">
-                {t(`onboarding.${slide.key}Title`)}
-              </Text>
-              <Text className="mt-4 text-center text-base leading-6 text-text-secondary">
-                {t(`onboarding.${slide.key}Body`)}
-              </Text>
-            </View>
-          ),
-        )}
+        {SLIDES.map((slide, i) => (
+          <OnboardingSlide
+            key={slide}
+            width={width}
+            step={i + 1}
+            total={SLIDES.length}
+            title={t(`onboarding.${slide}.title`)}
+            body={t(`onboarding.${slide}.body`)}
+          >
+            {slide === "health" ? (
+              <HealthContract />
+            ) : slide === "calibrate" ? (
+              <StrideCalibration heightCm={heightCm} onChange={setDraftHeightCm} />
+            ) : slide === "nudges" ? (
+              <NudgePreview />
+            ) : (
+              <ProFeatures />
+            )}
+          </OnboardingSlide>
+        ))}
       </ScrollView>
 
       <View className="gap-6 px-8 pb-6">
         <View className="flex-row items-center justify-center gap-2.5">
           {SLIDES.map((slide, i) => (
             <Animated.View
-              key={slide.key}
+              key={slide}
               layout={LinearTransition.duration(DURATION.layout)}
               className={`h-2.5 rounded-full ${i === page ? "w-6 bg-accent-fg" : "w-2.5 bg-border-hairline"}`}
             />
@@ -221,17 +205,13 @@ export default function OnboardingScreen() {
               </Pressable>
             )}
           </View>
-        ) : (
-          <Button
-            label={
-              !isLast
-                ? t("onboarding.next")
-                : canConnect
-                  ? t("onboarding.getStarted")
-                  : t("onboarding.finish")
-            }
+        ) : isPro ? (
+          <ActionButton
+            label={canConnect ? t("onboarding.getStarted") : t("onboarding.finish")}
             onPress={onNext}
           />
+        ) : (
+          <ProOfferActions offer={offer} onContinueFree={onNext} />
         )}
       </View>
     </SafeAreaView>

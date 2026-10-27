@@ -9,7 +9,14 @@ import type { ProOffer } from "./use-pro-offer";
  * Buy button + restore + footnote for the lifetime unlock, with the offer's
  * loading / error / empty states in the button's slot so the layout never jumps.
  */
-export function ProOfferActions({ offer }: { offer: ProOffer }) {
+export function ProOfferActions({
+  offer,
+  onContinueFree,
+}: {
+  offer: ProOffer;
+  /** Onboarding: a "Continue free" link beside restore — the paywall is dismissed by swipe instead. */
+  onContinueFree?: () => void;
+}) {
   const { t } = useTranslation();
   const c = useThemeColors();
   const busy = offer.purchasing || offer.restoring;
@@ -51,18 +58,33 @@ export function ProOfferActions({ offer }: { offer: ProOffer }) {
         </T>
       ) : null}
 
-      <Pressable
-        onPress={() => void offer.restore()}
-        disabled={busy}
-        hitSlop={8}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: busy, busy: offer.restoring }}
-        className="items-center py-1 active:opacity-60"
-      >
-        <T variant="label" tone="secondary">
-          {offer.restoring ? t("common.loading") : t("paywall.restore")}
-        </T>
-      </Pressable>
+      <View className={`flex-row ${onContinueFree ? "justify-between" : "justify-center"}`}>
+        <Pressable
+          onPress={() => void offer.restore()}
+          disabled={busy}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: busy, busy: offer.restoring }}
+          className="py-1 active:opacity-60"
+        >
+          <T variant="label" tone="secondary">
+            {offer.restoring ? t("common.loading") : t("paywall.restore")}
+          </T>
+        </Pressable>
+        {onContinueFree ? (
+          <Pressable
+            onPress={onContinueFree}
+            disabled={busy}
+            hitSlop={8}
+            accessibilityRole="button"
+            className="py-1 active:opacity-60"
+          >
+            <T variant="label" tone="primary">
+              {t("paywall.continueFree")}
+            </T>
+          </Pressable>
+        ) : null}
+      </View>
 
       <T variant="micro" tone="tertiary" className="text-center normal-case">
         {t("paywall.terms")}

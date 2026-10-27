@@ -12,6 +12,7 @@ import {
   requestNotificationPermission,
   schedulePaceNudge,
 } from "@/src/features/notifications/notifications-service";
+import { usePurchasesStore } from "@/src/features/purchases/purchases-store";
 import { addDaysToKey, todayKey } from "@/src/lib/day";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ListRow } from "@/src/ui/list-row";
@@ -29,6 +30,8 @@ export function DeveloperSection() {
   const [hapticSound, setHapticSound] = useState(false);
   const setMockData = useHealthStore((s) => s.setMockData);
   const [healthMock, setHealthMock] = useState<"off" | "recent" | "years">("off");
+  const devFree = usePurchasesStore((s) => s.devFree);
+  const setDevFree = usePurchasesStore((s) => s.setDevFree);
 
   if (!__DEV__) return null;
 
@@ -105,6 +108,11 @@ export function DeveloperSection() {
     <>
       <ListSection title="Developer (dev builds only)">
         <ListRow title="Reset onboarding flag" onPress={resetOnboarding} />
+        <ListRow
+          title="Simulate free tier"
+          subtitle="Locks every Pro gate (MOCK_PRO keeps it open otherwise) — not persisted"
+          right={<Switch value={devFree} onValueChange={setDevFree} />}
+        />
         <ListRow
           title="Mock HealthKit data"
           subtitle="120 days + per-minute data for the last 8 — not persisted"
