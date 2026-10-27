@@ -477,7 +477,10 @@
     "perMin": "Steps / min",
     "spm": "spm",
     "inlinePace": "{{steps}} steps · {{pace}}",
-    "locked": "Pro unlocks widgets"
+    "lockedTitle": "Stridr Pro",
+    "lockedCta": "Unlock widgets",
+    "lockedBody": "Today's steps, right on your home screen",
+    "lockedTap": "Tap to unlock"
   },
   "nudges": {
     "notification": {

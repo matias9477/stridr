@@ -118,6 +118,11 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
 
   const current: StepsWidgetProps = {
     url: "stridr://",
+    locked: false,
+    lockedTitle: "",
+    lockedCta: "",
+    lockedBody: "",
+    lockedTap: "",
     hasData: total !== null,
     steps: total === null ? "—" : formatSteps(total),
     // Exact below 10K ("6,143" matches the app; "6.1k" reads as a different number),
@@ -180,14 +185,22 @@ export function buildWidgetTimeline({ stats, unit, strideMeters, now, t }: Widge
 }
 
 /**
- * Free tier (docs/spec-pro-split.md §2): every family shows the "Pro unlocks
- * widgets" line instead of numbers, and a tap opens the widgets paywall. No
- * step data goes into the payload at all — a locked widget can't leak it.
+ * Free tier (docs/spec-pro-split.md §2): every family draws its locked view
+ * (lock, "STRIDR PRO", the pitch) and a tap opens the widgets paywall. No step
+ * data goes into the payload at all — a locked widget can't leak it.
  */
 export function buildLockedWidgetProps(t: Translate): StepsWidgetProps {
-  const text = t("widget.locked").toUpperCase();
+  const title = t("widget.lockedTitle").toUpperCase();
+  const tap = t("widget.lockedTap").toUpperCase();
+  // Inline lock screen slot (one line beside the clock) and any empty-state fallback.
+  const text = `${title} · ${tap}`;
   return {
     url: "stridr://paywall?variant=widgets",
+    locked: true,
+    lockedTitle: title,
+    lockedCta: t("widget.lockedCta").toUpperCase(),
+    lockedBody: t("widget.lockedBody"),
+    lockedTap: tap,
     hasData: false,
     steps: "—",
     stepsCompact: "—",

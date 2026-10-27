@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import { useEstimationSettings } from "@/src/features/activity/use-estimation-settings";
-import { useIsPro } from "@/src/features/purchases/purchases-store";
+import { useIsPro, usePurchasesStore } from "@/src/features/purchases/purchases-store";
 import { useStepStats } from "@/src/features/stats/use-step-stats";
 import { nextMidnight } from "@/src/lib/day";
 import { usePreferencesStore } from "@/src/stores/preferences";
@@ -44,7 +44,10 @@ function loadWidgets(): Widgets | null {
  * screen slots); the widget picks what its size shows. Widget sync must never
  * break the app, hence the catch-all. Free users get the locked snapshot
  * instead (docs/spec-pro-split.md §2) — a widget already on their screen
- * turns into a paywall link rather than going stale.
+ * turns into a paywall link rather than going stale. Nothing is pushed until
+ * the entitlement check has settled (isPro starts false), so a Pro user's
+ * widget never flashes locked on launch; a failed check (offline, TLS) keeps
+ * whatever the widget already shows.
  */
 export function WidgetSync(): null {
   const { t } = useTranslation();
@@ -52,6 +55,7 @@ export function WidgetSync(): null {
   const unit = usePreferencesStore((s) => s.distanceUnit);
   const { strideMeters } = useEstimationSettings();
   const isPro = useIsPro();
+  const entitlementKnown = usePurchasesStore((s) => s.isReady && s.error === null);
 
   const { isLoading, todayTotal, currentGoal, days, today, weekView, access, hourly, activity } =
     stats;
@@ -59,7 +63,7 @@ export function WidgetSync(): null {
   // Explicit fields, not `stats`: the hook returns a fresh object every render,
   // and unrelated health-store updates (lastSyncedAt) shouldn't re-push the timeline.
   useEffect(() => {
-    if (Platform.OS !== "ios" || isLoading) return;
+    if (Platform.OS !== "ios" || isLoading || !entitlementKnown) return;
     const native = loadWidgets();
     if (!native) return;
     try {
@@ -99,6 +103,7 @@ export function WidgetSync(): null {
       console.error("[widgets/widget-sync] timeline update failed", error);
     }
   }, [
+    entitlementKnown,
     isPro,
     isLoading,
     todayTotal,

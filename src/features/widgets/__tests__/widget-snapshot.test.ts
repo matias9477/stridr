@@ -144,8 +144,11 @@ describe("buildLockedWidgetProps", () => {
   });
 
   it("shows the Pro line in every empty slot, same shape as a live snapshot", () => {
-    expect(locked.emptyText).toBe("WIDGET.LOCKED");
-    expect(locked.inlineText).toBe("WIDGET.LOCKED");
+    expect(locked.locked).toBe(true);
+    expect(locked.lockedTitle).toBe("WIDGET.LOCKEDTITLE");
+    expect(locked.lockedCta).toBe("WIDGET.LOCKEDCTA");
+    expect(locked.inlineText).toBe("WIDGET.LOCKEDTITLE · WIDGET.LOCKEDTAP");
+    expect(locked.emptyText).toBe(locked.inlineText);
     const live = buildWidgetTimeline(input(6000)).now;
     expect(Object.keys(locked).sort()).toEqual(Object.keys(live).sort());
     expect(locked.hourly).toHaveLength(live.hourly.length);
@@ -153,5 +156,8 @@ describe("buildLockedWidgetProps", () => {
 });
 
 it("live snapshots open the app", () => {
-  expect(buildWidgetTimeline(input(6000)).now.url).toBe("stridr://");
+  const live = buildWidgetTimeline(input(6000));
+  expect(live.now.url).toBe("stridr://");
+  expect(live.now.locked).toBe(false);
+  expect(live.midnight.locked).toBe(false);
 });

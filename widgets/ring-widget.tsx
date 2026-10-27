@@ -17,7 +17,15 @@ import type { StepsWidgetProps } from "./steps-widget";
 /** The ring reads a slice of the Steps snapshot — WidgetSync pushes the same payload to both. */
 export type RingWidgetProps = Pick<
   StepsWidgetProps,
-  "url" | "hasData" | "stepsCompact" | "percentText" | "progress" | "emptyText"
+  | "url"
+  | "locked"
+  | "lockedTitle"
+  | "lockedTap"
+  | "hasData"
+  | "stepsCompact"
+  | "percentText"
+  | "progress"
+  | "emptyText"
 >;
 
 /**
@@ -56,6 +64,39 @@ const RingWidgetComponent = (props: RingWidgetProps, env: WidgetEnvironment) => 
       </Text>
     </VStack>
   );
+
+  // Free tier: an empty ring with the lock where the steps would be; tap opens the paywall.
+  if (props.locked) {
+    return (
+      <VStack
+        spacing={0}
+        modifiers={[widgetURL(props.url), containerBackground(theme.page, "widget")]}
+      >
+        <Spacer />
+        <Gauge
+          value={0}
+          modifiers={[gaugeStyle("circularCapacity"), tint(theme.primary), scaleEffect(RING_SCALE)]}
+          currentValueLabel={
+            <VStack spacing={1}>
+              <Image systemName="lock.fill" size={12} color={theme.primary} />
+              <Text modifiers={[mono(9), foregroundStyle(theme.primary), lineLimit(1)]}>PRO</Text>
+            </VStack>
+          }
+        />
+        <Spacer />
+        <Text
+          modifiers={[
+            mono(9),
+            foregroundStyle(theme.tertiary),
+            lineLimit(1),
+            minimumScaleFactor(0.7),
+          ]}
+        >
+          {props.lockedTap}
+        </Text>
+      </VStack>
+    );
+  }
 
   return (
     <VStack

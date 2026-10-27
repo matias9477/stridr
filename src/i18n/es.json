@@ -477,7 +477,10 @@
     "perMin": "Pasos / min",
     "spm": "ppm",
     "inlinePace": "{{steps}} pasos · {{pace}}",
-    "locked": "Pro desbloquea widgets"
+    "lockedTitle": "Stridr Pro",
+    "lockedCta": "Desbloquea widgets",
+    "lockedBody": "Tus pasos de hoy, en tu pantalla de inicio",
+    "lockedTap": "Toca para desbloquear"
   },
   "nudges": {
     "notification": {

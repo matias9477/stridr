@@ -47,6 +47,16 @@ export type WidgetMetric = {
 export type StepsWidgetProps = {
   /** Tap target: "stridr://", or the paywall while the widget is locked (free tier). */
   url: string;
+  /** Free tier: every family draws its locked view instead of data (docs/spec-pro-split.md §2). */
+  locked: boolean;
+  /** "STRIDR PRO" — locked views only, like the three below. */
+  lockedTitle: string;
+  /** "UNLOCK WIDGETS" */
+  lockedCta: string;
+  /** "Today's steps, right on your home screen" */
+  lockedBody: string;
+  /** "TAP TO UNLOCK" */
+  lockedTap: string;
   /** False before HealthKit access / any data: show `emptyText`. */
   hasData: boolean;
   /** "14,832" */
@@ -141,11 +151,23 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
   if (family === "accessoryInline") {
     return (
       <HStack modifiers={[url]}>
-        <Image systemName="figure.walk" />
+        <Image systemName={props.locked ? "lock.fill" : "figure.walk"} />
         <Text modifiers={[monospacedDigit()]}>
           {props.hasData ? props.inlineText : props.emptyText}
         </Text>
       </HStack>
+    );
+  }
+
+  if (family === "accessoryCircular" && props.locked) {
+    return (
+      <ZStack modifiers={[url, containerBackground("clear", "widget")]}>
+        <AccessoryWidgetBackground />
+        <VStack spacing={2}>
+          <Image systemName="lock.fill" size={14} />
+          <Text modifiers={[mono(9), lineLimit(1), minimumScaleFactor(0.6)]}>PRO</Text>
+        </VStack>
+      </ZStack>
     );
   }
 
@@ -173,6 +195,25 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
         // circularCapacity draws the current-value label inside the ring.
         currentValueLabel={center}
       />
+    );
+  }
+
+  if (family === "accessoryRectangular" && props.locked) {
+    return (
+      <VStack
+        alignment="leading"
+        spacing={4}
+        modifiers={[url, containerBackground("clear", "widget")]}
+      >
+        <HStack spacing={6}>
+          <Image systemName="lock.fill" size={13} />
+          <Text modifiers={[mono(12), lineLimit(1)]}>{props.lockedTitle}</Text>
+          <Spacer />
+        </HStack>
+        <Text modifiers={[mono(10, "regular"), lineLimit(2), minimumScaleFactor(0.8)]}>
+          {props.lockedTap}
+        </Text>
+      </VStack>
     );
   }
 
@@ -245,6 +286,134 @@ const StepsWidgetComponent = (props: StepsWidgetProps, env: WidgetEnvironment) =
         {micro(props.paceText, theme.primary, 10)}
       </HStack>
     );
+
+  // Free tier: the brand header, a lock and the pitch, over a ghost chart in
+  // track color that hints at what unlocks. No step data is in this snapshot.
+  if (props.locked) {
+    const GHOST = [0.35, 0.6, 0.45, 0.8, 0.55, 0.95, 0.7];
+    const large = family === "systemLarge";
+    const ghost = (height: number, width: number, spacing: number) => (
+      <HStack alignment="bottom" spacing={spacing}>
+        {GHOST.map((value, i) => (
+          <Rectangle
+            key={String(i)}
+            modifiers={[
+              frame({ width, height: Math.max(3, value * height) }),
+              foregroundStyle(theme.track),
+            ]}
+          />
+        ))}
+      </HStack>
+    );
+    const pitch = (
+      <VStack alignment="leading" spacing={4}>
+        <Text
+          modifiers={[
+            mono(large ? 26 : 17),
+            foregroundStyle(theme.primary),
+            lineLimit(2),
+            minimumScaleFactor(0.7),
+          ]}
+        >
+          {props.lockedCta}
+        </Text>
+        <Text
+          modifiers={[
+            font({ size: large ? 13 : 11 }),
+            foregroundStyle(theme.secondary),
+            lineLimit(2),
+            minimumScaleFactor(0.8),
+          ]}
+        >
+          {props.lockedBody}
+        </Text>
+      </VStack>
+    );
+    const tapChip = (
+      <HStack
+        spacing={5}
+        modifiers={[
+          padding({ horizontal: 8, vertical: 5 }),
+          background(theme.primary, shapes.roundedRectangle({ cornerRadius: 4 })),
+        ]}
+      >
+        <Image systemName="lock.open.fill" size={9} color={theme.page} />
+        {micro(props.lockedTap, theme.page, 9)}
+      </HStack>
+    );
+    const header = (
+      <HStack spacing={5}>
+        {micro("STRIDR", theme.primary, 12)}
+        <Spacer />
+        <Image systemName="lock.fill" size={11} color={theme.primary} />
+        {micro(props.lockedTitle, theme.primary)}
+      </HStack>
+    );
+
+    if (family === "systemSmall") {
+      return (
+        <VStack
+          alignment="leading"
+          spacing={6}
+          modifiers={[url, containerBackground(theme.page, "widget")]}
+        >
+          <HStack>
+            {micro("STRIDR", theme.primary, 12)}
+            <Spacer />
+            <Image systemName="lock.fill" size={11} color={theme.primary} />
+          </HStack>
+          <Spacer />
+          {pitch}
+          <Spacer />
+          {tapChip}
+        </VStack>
+      );
+    }
+
+    if (family === "systemMedium") {
+      return (
+        <VStack spacing={10} modifiers={[url, containerBackground(theme.page, "widget")]}>
+          {header}
+          <HStack alignment="bottom" spacing={16}>
+            <VStack
+              alignment="leading"
+              spacing={8}
+              modifiers={[frame({ maxWidth: 10000, alignment: "leading" })]}
+            >
+              {pitch}
+              <Spacer />
+              {tapChip}
+            </VStack>
+            {ghost(64, 10, 5)}
+          </HStack>
+        </VStack>
+      );
+    }
+
+    return (
+      <VStack
+        alignment="leading"
+        spacing={14}
+        modifiers={[url, containerBackground(theme.page, "widget")]}
+      >
+        {header}
+        <Spacer />
+        {pitch}
+        <VStack
+          alignment="leading"
+          spacing={8}
+          modifiers={[
+            padding({ all: 12 }),
+            background(theme.card, shapes.roundedRectangle({ cornerRadius: 8 })),
+          ]}
+        >
+          {ghost(70, 24, 12)}
+        </VStack>
+        <Spacer />
+        {tapChip}
+      </VStack>
+    );
+  }
 
   if (family === "systemSmall") {
     return (

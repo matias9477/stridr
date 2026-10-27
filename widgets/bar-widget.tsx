@@ -5,6 +5,7 @@ import {
   foregroundStyle,
   frame,
   lineLimit,
+  minimumScaleFactor,
   monospacedDigit,
   tint,
   widgetURL,
@@ -16,6 +17,10 @@ import type { StepsWidgetProps } from "./steps-widget";
 export type BarWidgetProps = Pick<
   StepsWidgetProps,
   | "url"
+  | "locked"
+  | "lockedTitle"
+  | "lockedCta"
+  | "lockedTap"
   | "hasData"
   | "stepsCompact"
   | "percentText"
@@ -52,6 +57,45 @@ const BarWidgetComponent = (props: BarWidgetProps, env: WidgetEnvironment) => {
   const micro = (text: string, color: string) => (
     <Text modifiers={[mono(10), foregroundStyle(color), lineLimit(1)]}>{text}</Text>
   );
+
+  // Free tier: the walker parked at the start of an empty bar, the pitch above it.
+  if (props.locked) {
+    return (
+      <VStack
+        alignment="leading"
+        spacing={6}
+        modifiers={[widgetURL(props.url), containerBackground(theme.page, "widget")]}
+      >
+        <HStack spacing={6}>
+          <Image systemName="lock.fill" size={12} color={theme.primary} />
+          {micro(props.lockedTitle, theme.primary)}
+          <Spacer />
+        </HStack>
+        <Text
+          modifiers={[
+            mono(18),
+            foregroundStyle(theme.primary),
+            lineLimit(1),
+            minimumScaleFactor(0.7),
+          ]}
+        >
+          {props.lockedCta}
+        </Text>
+        <Spacer />
+        <HStack spacing={0} alignment="bottom">
+          <Image
+            systemName="figure.walk"
+            size={WALKER}
+            color={theme.tertiary}
+            modifiers={[frame({ width: WALKER })]}
+          />
+          <Spacer />
+        </HStack>
+        <ProgressView value={0} modifiers={[tint(theme.primary)]} />
+        {micro(props.lockedTap, theme.tertiary)}
+      </VStack>
+    );
+  }
 
   return (
     <VStack
