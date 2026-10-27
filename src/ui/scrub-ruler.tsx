@@ -10,7 +10,11 @@ import { haptics } from "@/src/features/haptics/haptics";
 import { playTick } from "@/src/features/haptics/tick-sound";
 import { T } from "./typography";
 
-/** One unit of the ruler in points — must match the tick column's `w-3`. */
+/**
+ * One unit of the ruler in points. The tick column is sized from this constant
+ * directly — not a Tailwind width — because NativeWind's native rem is 14, so
+ * `w-3` is 10.5pt and the needle drifted ~1 unit per 7 away from `min`.
+ */
 const TICK = 12;
 
 interface ScrubRulerProps {
@@ -108,7 +112,7 @@ export function ScrubRuler({
           {ticks.map((tick) => {
             const major = tick % labelEvery === 0;
             return (
-              <View key={tick} className="w-3 items-center pt-3">
+              <View key={tick} style={{ width: TICK }} className="items-center pt-3">
                 <View className={major ? "h-8 w-0.5 bg-text-primary" : "h-4 w-px bg-text-quiet"} />
                 {major ? (
                   <T
