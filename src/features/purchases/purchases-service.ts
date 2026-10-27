@@ -41,6 +41,8 @@ export async function getCustomerInfo(): Promise<CustomerInfo> {
 }
 
 export async function getCurrentOffering(): Promise<PurchasesOffering | null> {
+  // No key yet (or Expo Go): nothing to sell, and the SDK would throw "not configured".
+  if (!configured) return null;
   const offerings = await Purchases.getOfferings();
   return offerings.current;
 }

@@ -399,17 +399,46 @@
     "nudgesCaption": "One evening alert when you're behind your target"
   },
   "paywall": {
-    "title": "Go Pro",
-    "subtitle": "Unlock everything, forever.",
-    "featureOne": "Every chart range, all-time history",
-    "featureTwo": "Home and lock screen widgets",
-    "featureThree": "Support an indie developer",
-    "purchase": "Continue",
-    "restore": "Restore purchases",
-    "loading": "Loading offers…",
-    "noOffers": "No offers available right now. Try again later.",
+    "title": "Stridr Pro",
+    "subtitle": "One payment, yours for good. No subscription.",
+    "variants": {
+      "stats": {
+        "title": "See the long run.",
+        "subtitle": "90 days, all-time and custom ranges come with Stridr Pro."
+      },
+      "widgets": {
+        "title": "Your steps, at a glance.",
+        "subtitle": "Home and lock screen widgets come with Stridr Pro."
+      },
+      "export": {
+        "title": "Your data, your file.",
+        "subtitle": "CSV export of every day comes with Stridr Pro."
+      }
+    },
+    "features": {
+      "stats": {
+        "title": "Every Stats range",
+        "body": "90 days, all-time and any custom range"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "body": "Home screen and lock screen, every size"
+      },
+      "export": {
+        "title": "CSV export",
+        "body": "Every day and every logged walk, as a raw file"
+      }
+    },
+    "unlock": "Unlock Pro · {{price}}",
+    "active": "Pro is active",
+    "done": "Done",
+    "restore": "Restore purchase",
+    "restoreNone": "No previous purchase found for this Apple ID.",
+    "loading": "Loading price…",
+    "loadError": "Couldn't load the price — retry",
+    "noOffers": "Pro isn't available right now. Try again later.",
     "purchaseError": "Purchase failed. You were not charged.",
-    "terms": "Payment is charged to your Apple ID. Subscriptions renew automatically unless cancelled."
+    "terms": "One-time purchase, charged to your Apple ID. Covers every device on that Apple ID."
   },
   "validation": {
     "stepsRequired": "Enter a step count",

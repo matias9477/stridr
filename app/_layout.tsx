@@ -51,7 +51,7 @@ function RootStack() {
         options={{ presentation: "modal", title: t("activity.newTitle") }}
       />
       <Stack.Screen name="activity/[id]" options={{ title: t("activity.editTitle") }} />
-      <Stack.Screen name="paywall" options={{ presentation: "modal", title: t("paywall.title") }} />
+      <Stack.Screen name="paywall" options={{ presentation: "modal", title: t("settings.pro") }} />
       <Stack.Screen
         name="calibrate"
         options={{ presentation: "modal", title: t("today.stride.calibrate") }}

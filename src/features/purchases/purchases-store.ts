@@ -14,6 +14,9 @@ interface PurchasesState {
   isPro: boolean;
   customerInfo: CustomerInfo | null;
   error: string | null;
+  /** __DEV__ only (DeveloperSection): reads as free on top of MOCK_PRO to stage locked states. */
+  devFree: boolean;
+  setDevFree: (on: boolean) => void;
   /** Configure the SDK and load entitlements. Called once from app/_layout.tsx. */
   initialize: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -25,6 +28,8 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
   isPro: MOCK_PRO,
   customerInfo: null,
   error: null,
+  devFree: false,
+  setDevFree: (on) => set({ devFree: __DEV__ && on }),
 
   initialize: async () => {
     try {
@@ -69,4 +74,4 @@ export const usePurchasesStore = create<PurchasesState>()((set) => ({
  * Use this selector in components instead of the whole store —
  * it only re-renders on entitlement flips.
  */
-export const useIsPro = (): boolean => usePurchasesStore((s) => s.isPro);
+export const useIsPro = (): boolean => usePurchasesStore((s) => s.isPro && !s.devFree);

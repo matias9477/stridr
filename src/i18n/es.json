@@ -399,17 +399,46 @@
     "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo"
   },
   "paywall": {
-    "title": "Hazte Pro",
-    "subtitle": "Desbloquea todo, para siempre.",
-    "featureOne": "Todos los rangos y el historial completo",
-    "featureTwo": "Widgets de inicio y bloqueo",
-    "featureThree": "Apoya a un desarrollador independiente",
-    "purchase": "Continuar",
-    "restore": "Restaurar compras",
-    "loading": "Cargando ofertas…",
-    "noOffers": "No hay ofertas disponibles ahora. Inténtalo más tarde.",
-    "purchaseError": "La compra falló. No se te cobró nada.",
-    "terms": "El pago se carga a tu Apple ID. Las suscripciones se renuevan automáticamente salvo que las canceles."
+    "title": "Stridr Pro",
+    "subtitle": "Un solo pago, para siempre. Sin suscripción.",
+    "variants": {
+      "stats": {
+        "title": "Mira el largo plazo.",
+        "subtitle": "Los rangos de 90 días, todo el historial y personalizados vienen con Stridr Pro."
+      },
+      "widgets": {
+        "title": "Tus pasos, de un vistazo.",
+        "subtitle": "Los widgets de inicio y de pantalla bloqueada vienen con Stridr Pro."
+      },
+      "export": {
+        "title": "Tus datos, tu archivo.",
+        "subtitle": "La exportación CSV de todos tus días viene con Stridr Pro."
+      }
+    },
+    "features": {
+      "stats": {
+        "title": "Todos los rangos",
+        "body": "90 días, todo el historial y cualquier rango personalizado"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "body": "Pantalla de inicio y bloqueada, todos los tamaños"
+      },
+      "export": {
+        "title": "Exportar CSV",
+        "body": "Cada día y cada caminata registrada, en un archivo"
+      }
+    },
+    "unlock": "Desbloquear Pro · {{price}}",
+    "active": "Pro está activo",
+    "done": "Listo",
+    "restore": "Restaurar compra",
+    "restoreNone": "No encontramos una compra anterior para este Apple ID.",
+    "loading": "Cargando precio…",
+    "loadError": "No se pudo cargar el precio — reintentar",
+    "noOffers": "Pro no está disponible ahora. Inténtalo más tarde.",
+    "purchaseError": "La compra falló. No se te cobró.",
+    "terms": "Pago único, cobrado a tu Apple ID. Vale para todos los dispositivos con ese Apple ID."
   },
   "validation": {
     "stepsRequired": "Ingresa una cantidad de pasos",
