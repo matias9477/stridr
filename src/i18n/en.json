@@ -319,8 +319,11 @@
     "restoreNone": "No purchases to restore",
     "about": "About",
     "leaveReview": "Leave a review",
+    "leaveReviewCaption": "App Store",
     "privacyPolicy": "Privacy policy",
+    "privacyPolicyCaption": "On-device · zero analytics",
     "viewOnboarding": "View intro again",
+    "viewOnboardingCaption": "The 4-step setup",
     "version": "Version",
     "display": "Display & feel",
     "target": {
@@ -395,8 +398,7 @@
       "unlock": "Unlock widgets with Pro"
     },
     "data": {
-      "export": "Export steps as CSV",
-      "privacy": "Privacy & zero analytics"
+      "export": "Export steps as CSV"
     },
     "nudges": "Pace nudges",
     "nudgesCaption": "One evening alert when you're behind your target"

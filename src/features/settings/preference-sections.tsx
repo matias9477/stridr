@@ -19,7 +19,7 @@ import {
 import { Segmented } from "@/src/ui/segmented";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { ActionRow, SettingsCard, SettingsRow } from "./settings-row";
+import { ActionRow, RowIcon, SettingsCard, SettingsRow } from "./settings-row";
 
 export const PRIVACY_POLICY_URL = "https://www.matiasturra.dev/privacy/stridr";
 
@@ -29,21 +29,18 @@ function openPrivacyPolicy() {
   );
 }
 
-/** Export CSV + privacy manifesto — the design's two bare action rows. */
+/** Export CSV — the design's bare action row. The privacy policy lives once, in About. */
 export function DataActions({ stats }: { stats: StepStats }) {
   const { t } = useTranslation();
   const csv = useCsvExport(stats);
   return (
-    <View className="gap-1">
-      <ActionRow
-        icon="file-download"
-        title={csv.busy ? t("common.loading") : t("settings.data.export")}
-        trailing="RAW .CSV"
-        disabled={csv.disabled || csv.busy}
-        onPress={() => void csv.run()}
-      />
-      <ActionRow icon="shield" title={t("settings.data.privacy")} onPress={openPrivacyPolicy} />
-    </View>
+    <ActionRow
+      icon="file-download"
+      title={csv.busy ? t("common.loading") : t("settings.data.export")}
+      trailing="RAW .CSV"
+      disabled={csv.disabled || csv.busy}
+      onPress={() => void csv.run()}
+    />
   );
 }
 
@@ -161,11 +158,20 @@ export function PreferenceSections() {
       <SettingsCard label={t("settings.about")}>
         <SettingsRow
           title={t("settings.leaveReview")}
+          subtitle={t("settings.leaveReviewCaption")}
+          right={<RowIcon icon="open-in-new" />}
           onPress={() => void requestReviewExplicitly()}
         />
-        <SettingsRow title={t("settings.privacyPolicy")} onPress={openPrivacyPolicy} />
+        <SettingsRow
+          title={t("settings.privacyPolicy")}
+          subtitle={t("settings.privacyPolicyCaption")}
+          right={<RowIcon icon="open-in-new" />}
+          onPress={openPrivacyPolicy}
+        />
         <SettingsRow
           title={t("settings.viewOnboarding")}
+          subtitle={t("settings.viewOnboardingCaption")}
+          right={<RowIcon />}
           onPress={() => router.push("/onboarding")}
         />
       </SettingsCard>

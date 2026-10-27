@@ -319,8 +319,11 @@
     "restoreNone": "No hay compras para restaurar",
     "about": "Acerca de",
     "leaveReview": "Deja una reseña",
+    "leaveReviewCaption": "App Store",
     "privacyPolicy": "Política de privacidad",
+    "privacyPolicyCaption": "En el dispositivo · cero analíticas",
     "viewOnboarding": "Ver introducción de nuevo",
+    "viewOnboardingCaption": "La configuración de 4 pasos",
     "version": "Versión",
     "display": "Pantalla y sensación",
     "target": {
@@ -395,8 +398,7 @@
       "unlock": "Desbloquea los widgets con Pro"
     },
     "data": {
-      "export": "Exportar pasos en CSV",
-      "privacy": "Privacidad y cero analíticas"
+      "export": "Exportar pasos en CSV"
     },
     "nudges": "Avisos de ritmo",
     "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo"
