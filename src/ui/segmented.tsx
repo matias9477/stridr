@@ -28,6 +28,10 @@ interface SegmentedProps<V extends string> {
  * option's measured x, scaleX from the first option's width (compact options
  * differ in width) — transform-only. The labels flip to the inverted tone when
  * the pill lands, so the new label never sits inverted on the bare track.
+ * At rest the selected option also paints its own fill: release builds were seen
+ * dropping the measured pill, which left an inverted label on a bare track. The
+ * hairline frame keeps the track visible on sunken Settings/Today cards, whose
+ * fill matches the track's.
  */
 export function Segmented<V extends string>({
   options,
@@ -75,7 +79,7 @@ export function Segmented<V extends string>({
     <View
       accessibilityRole="tablist"
       accessibilityLabel={accessibilityLabel}
-      className={`flex-row rounded-lg bg-surface-sunken p-1 ${layout === "fill" ? "w-full" : "self-start"}`}
+      className={`flex-row rounded-lg border border-border-hairline bg-surface-sunken p-1 ${layout === "fill" ? "w-full" : "self-start"}`}
     >
       {base && target ? (
         <Animated.View
@@ -122,8 +126,12 @@ export function Segmented<V extends string>({
               onChange(option.value);
             }}
             className={`items-center rounded py-1.5 ${layout === "fill" ? "flex-1" : "px-4"} ${
-              // Until measured there's no pill, so the selected option fills itself.
-              selected && !(base && target) ? "bg-accent-fg" : selected ? "" : "active:opacity-60"
+              // Unmeasured or at rest, the selected option fills itself; mid-slide only the pill does.
+              onPill || (selected && !(base && target))
+                ? "bg-accent-fg"
+                : selected
+                  ? ""
+                  : "active:opacity-60"
             }`}
           >
             <T
