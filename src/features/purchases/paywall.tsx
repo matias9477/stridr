@@ -7,7 +7,7 @@ import { ActionButton } from "@/src/ui/action-button";
 import { Screen } from "@/src/ui/screen";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { ProFeatures } from "./pro-features";
+import { PaywallGallery } from "./paywall-gallery";
 import { ProOfferActions } from "./pro-offer-actions";
 import { useIsPro } from "./purchases-store";
 import { parseProVariant } from "./types";
@@ -44,7 +44,7 @@ export function Paywall() {
           </T>
         </View>
 
-        <ProFeatures highlight={variant} />
+        <PaywallGallery variant={variant} />
 
         {isPro ? (
           <View className="gap-3">

@@ -437,7 +437,24 @@
     "noOffers": "Pro no está disponible ahora. Inténtalo más tarde.",
     "purchaseError": "La compra falló. No se te cobró.",
     "terms": "Pago único, cobrado a tu Apple ID. Vale para todos los dispositivos con ese Apple ID.",
-    "continueFree": "Seguir gratis →"
+    "continueFree": "Seguir gratis →",
+    "slides": {
+      "widgets": {
+        "eyebrow": "Pantalla de inicio",
+        "title": "Widgets de todo tamaño",
+        "a11y": "Widgets de Stridr en la pantalla de inicio: anillo, pasos, barra de meta y ritmo por hora"
+      },
+      "lockScreen": {
+        "eyebrow": "Pantalla bloqueada",
+        "title": "Tus pasos bajo la hora",
+        "a11y": "Widgets de barra de meta y anillo de Stridr en la pantalla bloqueada"
+      },
+      "stats": {
+        "eyebrow": "Estadísticas",
+        "title": "90 días, todo, a medida",
+        "a11y": "Estadísticas con un gráfico de pasos de 90 días y la línea de meta"
+      }
+    }
   },
   "validation": {
     "stepsRequired": "Ingresa una cantidad de pasos",

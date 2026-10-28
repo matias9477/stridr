@@ -437,7 +437,24 @@
     "noOffers": "Pro isn't available right now. Try again later.",
     "purchaseError": "Purchase failed. You were not charged.",
     "terms": "One-time purchase, charged to your Apple ID. Covers every device on that Apple ID.",
-    "continueFree": "Continue free →"
+    "continueFree": "Continue free →",
+    "slides": {
+      "widgets": {
+        "eyebrow": "Home screen",
+        "title": "Every widget size",
+        "a11y": "Stridr widgets on an iPhone home screen: ring, steps, goal bar and hourly cadence"
+      },
+      "lockScreen": {
+        "eyebrow": "Lock screen",
+        "title": "Steps under the clock",
+        "a11y": "Stridr goal bar and ring widgets on the iPhone lock screen"
+      },
+      "stats": {
+        "eyebrow": "Stats",
+        "title": "90 days, all-time, custom",
+        "a11y": "Stats showing a 90-day step chart with the goal line"
+      }
+    }
   },
   "validation": {
     "stepsRequired": "Enter a step count",
