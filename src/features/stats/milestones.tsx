@@ -34,10 +34,11 @@ function RecordTile({ stats }: { stats: StepStats }) {
     baseCardStatus(stats) ??
     (record === null ? { kind: "empty", message: t("stats.milestones.recordEmpty") } : READY);
 
-  // Spec §6.6: say when the record only covers part of the user's history.
-  const basis = stats.limitedFrom
-    ? t("stats.milestones.limitedSince", { date: dayLabel(stats.limitedFrom, "MMM d, yyyy") })
-    : t("stats.milestones.since", { date: dayLabel(stats.historyFrom, "MMM d, yyyy") });
+  // Spec decision 2: only flag the basis when access is limited — with full
+  // history "since 2019" is clutter; it earns its space explaining a low record.
+  const limited = stats.limitedFrom
+    ? ` · ${t("stats.milestones.limitedSince", { date: dayLabel(stats.limitedFrom, "MMM d, yyyy") })}`
+    : "";
 
   return (
     <Panel surface="sunken" className="flex-row items-center justify-between">
@@ -62,7 +63,8 @@ function RecordTile({ stats }: { stats: StepStats }) {
                   {t("stats.milestones.recordValue", { steps: formatSteps(record.total) })}
                 </T>
                 <T variant="micro" tone="tertiary">
-                  {dayLabel(record.day, "MMMM d, yyyy")} · {basis}
+                  {dayLabel(record.day, "MMMM d, yyyy")}
+                  {limited}
                 </T>
               </View>
             ) : null}
@@ -81,7 +83,16 @@ function StreakTile({ stats }: { stats: StepStats }) {
   const { current, longest } = stats.streaks;
   const status: CardStatus =
     baseCardStatus(stats) ??
-    (goal === null ? { kind: "empty", message: t("stats.milestones.streakNoGoal") } : READY);
+    (goal === null
+      ? {
+          kind: "empty",
+          // Goal-off days pause the streak (decision 5) — say it's waiting, not gone.
+          message:
+            current > 0
+              ? t("stats.milestones.streakPaused", { count: current })
+              : t("stats.milestones.streakNoGoal"),
+        }
+      : READY);
   return (
     <StatTile
       surface="sunken"

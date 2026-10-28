@@ -178,6 +178,20 @@ describe("goalStreaks", () => {
   it("does not count without a goal", () => {
     expect(goalStreaks(build(run(5, 20000)), TODAY).current).toBe(0);
   });
+
+  it("pauses across days with the goal turned off", () => {
+    const days = buildDailyTotals({
+      health: { ...run(3, 12000), ...run(5, 500, 4), ...run(4, 12000, 9) },
+      manual: {},
+      goals: [
+        { effectiveFrom: ago(12), steps: 10000 },
+        { effectiveFrom: ago(8), steps: null },
+        { effectiveFrom: ago(3), steps: 10000 },
+      ],
+      today: TODAY,
+    });
+    expect(goalStreaks(days, TODAY)).toMatchObject({ current: 7, longest: 7 });
+  });
 });
 
 describe("todayProgress", () => {

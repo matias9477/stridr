@@ -249,7 +249,9 @@ export interface Streaks {
 /**
  * Goal streaks (spec §6.7). Rules:
  * - a completed day with total ≥ goal extends the streak; below goal breaks it;
- * - a day with no goal ends the streak (nothing to meet);
+ * - a day with the goal off pauses it: skipped with no limit, so a vacation
+ *   week with the goal switched off doesn't cost a long streak (decision 5,
+ *   changed 2026-10-28 — turning the goal off used to end it);
  * - a no-data day is skipped — up to maxSkippableGapDays in a row; a longer gap breaks it;
  * - today extends the streak once the goal is reached and never breaks it before midnight.
  * `days` must be chronological and end with today.
@@ -268,11 +270,8 @@ export function goalStreaks(days: readonly DailyTotal[], today: DayKey): Streaks
       }
       break;
     }
-    if (day.goal === null) {
-      current = 0;
-      gap = 0;
-      continue;
-    }
+    // Paused days don't touch the no-data gap either — they aren't missing data.
+    if (day.goal === null) continue;
     if (day.total === null) {
       gap++;
       if (gap > STATS_RULES.maxSkippableGapDays) current = 0;
