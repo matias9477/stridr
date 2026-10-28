@@ -21,7 +21,16 @@ const SAVE_DELAY_MS = 400;
  * VoiceOver adjusts the ruler directly. Holds a local draft so a scrub isn't fighting
  * live-query echoes of its own earlier writes.
  */
-export function GoalPicker({ goal, onSave }: { goal: number; onSave: (steps: number) => void }) {
+export function GoalPicker({
+  goal,
+  onSave,
+  saveDelay = SAVE_DELAY_MS,
+}: {
+  goal: number;
+  onSave: (steps: number) => void;
+  /** Debounce before onSave; 0 for a local draft that must never lag. */
+  saveDelay?: number;
+}) {
   const { t } = useTranslation();
   const inputRef = useRef<TextInputInstance>(null);
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -41,7 +50,7 @@ export function GoalPicker({ goal, onSave }: { goal: number; onSave: (steps: num
     [],
   );
 
-  function change(next: number, delay = SAVE_DELAY_MS) {
+  function change(next: number, delay = saveDelay) {
     const value = snapGoal(next);
     setDraft(value);
     if (pending.current !== null) clearTimeout(pending.current);

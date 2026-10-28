@@ -40,7 +40,14 @@ const DEVICE_FRACTION = 0.62;
  * it (pattern from since's PaywallGallery). Widths are measured from the
  * window at runtime, like the onboarding pager; everything else is tokens.
  */
-export function PaywallGallery({ variant }: { variant: ProVariant | null }) {
+export function PaywallGallery({
+  variant,
+  bleedClass = "-mx-4",
+}: {
+  variant: ProVariant | null;
+  /** Negative margin cancelling the host's side padding (Screen p-4; onboarding px-6). */
+  bleedClass?: string;
+}) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const cardWidth = width - SIDE * 2;
@@ -63,8 +70,8 @@ export function PaywallGallery({ variant }: { variant: ProVariant | null }) {
   };
 
   return (
-    // Bleeds past Screen's p-4 so cards can peek from the screen edges.
-    <View className="-mx-4 gap-3">
+    // Bleeds past the host's padding so cards can peek from the screen edges.
+    <View className={`${bleedClass} gap-3`}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

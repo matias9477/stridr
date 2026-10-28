@@ -26,12 +26,12 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 `src/features/purchases/`:
 - `purchases-store.ts`: `devFree: boolean`, `setDevFree(on: boolean)`; `useIsPro()` reads both.
 - `use-pro-offer.ts`: `useProOffer({ onUnlocked })` → `{ status: "loading" | "error" | "ready" | "empty", pkg, priceText, purchasing, restoring, message, purchase(), restore(), retry() }`. Owns offering load (with retry), purchase → `refresh()` → `onUnlocked()`, restore → `onUnlocked()` or an inline "nothing to restore".
-- `pro-features.tsx`: `ProFeatures({ highlight?: ProVariant })` — the two unlock rows (ranges, widgets), the variant's row emphasized. Shared by the paywall and onboarding.
+- `paywall-gallery.tsx`: `PaywallGallery({ variant, bleedClass? })` — snapping carousel of real screenshots, the variant's card first. Shared by the paywall and onboarding (2026-10-28: replaced the `ProFeatures` rows, which were removed).
 - `pro-offer-actions.tsx`: `ProOfferActions({ offer })` — the buy button ("Unlock Pro · $X.XX"), loading/error/empty states, restore link, one-time-purchase footnote.
 - `types.ts`: `ProVariant = "stats" | "widgets"` (a stale `variant=export` falls back to generic), `parseProVariant(param)` (pure, tested).
 
 ### UI
-- `app/paywall.tsx` (modal, existing route): reads `variant` search param. Headline + subtitle per variant (`paywall.variants.<v>.title/subtitle`, generic `paywall.title/subtitle` otherwise), `ProFeatures`, `ProOfferActions`. If already Pro, shows the active state and a Done button. Dismissible via the native modal swipe, like every other sheet in the app (no Close button — deviation from the first draft, for consistency). Opened cold from a widget deep link, closing replaces to `/`.
+- `app/paywall.tsx` (modal, existing route): reads `variant` search param. Headline + subtitle per variant (`paywall.variants.<v>.title/subtitle`, generic `paywall.title/subtitle` otherwise), `PaywallGallery`, `ProOfferActions`. If already Pro, shows the active state and a Done button. Dismissible via the native modal swipe, like every other sheet in the app (no Close button — deviation from the first draft, for consistency). Opened cold from a widget deep link, closing replaces to `/`.
 - States: loading (spinner + "Loading price…"), error (retry), empty ("Not available right now"), purchasing (button busy, others disabled).
 
 ## 2. Gates
@@ -45,9 +45,9 @@ Gate depth, never the core loop. A gate never loses data: it only blocks *viewin
 - `buildLockedWidgetProps` (pure, in `widget-snapshot.ts`): no step numbers leak, url points at the paywall.
 - `parseProVariant`.
 
-## 3. Onboarding step 4
+## 3. Onboarding Pro step (last)
 
-The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with title/body (`onboarding.pro.*`), `ProFeatures` as its panel. Bottom bar: `ProOfferActions` with `onContinueFree` — "Unlock Pro · $X.XX", then restore and a "Continue free" link on one row, that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro: one "Get started" button. Skip stays visible.
+The old "Read-only. On-device." slide (repeated step 1) becomes **Pro**: `OnboardingSlide` with the paywall's own copy (`paywall.title/subtitle`) and `PaywallGallery` as its panel, so onboarding and the paywall can't drift (2026-10-28; it was `onboarding.pro.*` + `ProFeatures`). Since 2026-10-28 it's step 5 — a daily-target step sits between calibrate and nudges. Bottom bar: `ProOfferActions` with `onContinueFree` — "Unlock Pro · $X.XX", then restore and a "Continue free" link on one row, that finishes onboarding (and still asks for Health if step 1 was swiped past — the old last-slide behaviour). A successful purchase/restore finishes onboarding. Already Pro: one "Get started" button. Skip stays visible.
 
 ## Cross-cutting obligations
 - i18n keys in BOTH `en.json` and `es.json`, same change.

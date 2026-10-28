@@ -5,8 +5,9 @@ import { T } from "@/src/ui/typography";
 
 /**
  * Page-width, vertically scrollable onboarding slide: "Step n of N" eyebrow,
- * mono title, body, then the slide's panels. Scrolls so tall slides still fit
- * small phones.
+ * mono title, body, then the slide's panels. Top-aligned, not centered, so the
+ * eyebrow and title sit at the same height on every step while paging. Scrolls
+ * so tall slides still fit small phones.
  */
 export function OnboardingSlide({
   width,
@@ -27,7 +28,7 @@ export function OnboardingSlide({
   return (
     <ScrollView
       style={{ width }}
-      contentContainerClassName="flex-grow justify-center px-6 py-4"
+      contentContainerClassName="px-6 pb-4 pt-6"
       showsVerticalScrollIndicator={false}
     >
       <View className="mb-3 flex-row items-center gap-1.5">

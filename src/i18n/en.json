@@ -47,6 +47,13 @@
       "confirm": "Confirm height →",
       "later": "Adjust manually later in Settings"
     },
+    "goal": {
+      "title": "Pick a daily target.",
+      "body": "Your streaks, pace and nudges all measure against it. Start near what you walk now — you can raise it anytime.",
+      "label": "Daily target",
+      "confirm": "Set target →",
+      "later": "Change it anytime in Settings"
+    },
     "step": "Step {{step}} of {{total}}",
     "finish": "Get started",
     "health": {
@@ -80,10 +87,6 @@
       "body": "No generic encouragement. One alert in the evening, only when you're falling behind your own target's pace.",
       "enable": "Enable smart notifications →",
       "later": "Maybe later"
-    },
-    "pro": {
-      "title": "One unlock. Yours for good.",
-      "body": "Everything you've seen so far is free. Stridr Pro adds the long view — pay once, no subscription."
     }
   },
   "today": {
@@ -330,7 +333,7 @@
     "privacyPolicy": "Privacy policy",
     "privacyPolicyCaption": "On-device · zero analytics",
     "viewOnboarding": "View intro again",
-    "viewOnboardingCaption": "The 4-step setup",
+    "viewOnboardingCaption": "The 5-step setup",
     "version": "Version",
     "display": "Display & feel",
     "target": {

@@ -47,6 +47,13 @@
       "confirm": "Confirmar altura →",
       "later": "Puedes ajustarlo luego en Ajustes"
     },
+    "goal": {
+      "title": "Elige una meta diaria.",
+      "body": "Tus rachas, tu ritmo y los avisos se miden contra ella. Empieza cerca de lo que caminas hoy — puedes subirla cuando quieras.",
+      "label": "Meta diaria",
+      "confirm": "Fijar meta →",
+      "later": "Cámbiala cuando quieras en Ajustes"
+    },
     "step": "Paso {{step}} de {{total}}",
     "finish": "Empezar",
     "health": {
@@ -80,10 +87,6 @@
       "body": "Nada de ánimos genéricos. Un aviso por la tarde, solo si vas por detrás del ritmo de tu propio objetivo.",
       "enable": "Activar avisos inteligentes →",
       "later": "Quizás luego"
-    },
-    "pro": {
-      "title": "Un pago. Para siempre.",
-      "body": "Todo lo que viste hasta ahora es gratis. Stridr Pro suma la vista a largo plazo — pagas una vez, sin suscripción."
     }
   },
   "today": {
@@ -330,7 +333,7 @@
     "privacyPolicy": "Política de privacidad",
     "privacyPolicyCaption": "En el dispositivo · cero analíticas",
     "viewOnboarding": "Ver introducción de nuevo",
-    "viewOnboardingCaption": "La configuración de 4 pasos",
+    "viewOnboardingCaption": "La configuración de 5 pasos",
     "version": "Versión",
     "display": "Pantalla y sensación",
     "target": {

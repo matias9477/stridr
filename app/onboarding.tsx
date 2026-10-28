@@ -12,24 +12,28 @@ import {
 } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GOAL_LIMITS } from "@/src/features/goal/goal-rules";
+import { setGoalFromToday } from "@/src/features/goal/queries";
 import { haptics } from "@/src/features/haptics/haptics";
 import { useHealthStore } from "@/src/features/health/health-store";
 import { NudgePreview } from "@/src/features/notifications/nudge-preview";
 import { useEnableNudges } from "@/src/features/notifications/use-enable-nudges";
+import { GoalStep } from "@/src/features/onboarding/goal-step";
 import { HealthContract } from "@/src/features/onboarding/health-contract";
 import { OnboardingSlide } from "@/src/features/onboarding/onboarding-slide";
 import { DEFAULT_HEIGHT_CM, StrideCalibration } from "@/src/features/onboarding/stride-calibration";
-import { ProFeatures } from "@/src/features/purchases/pro-features";
+import { PaywallGallery } from "@/src/features/purchases/paywall-gallery";
 import { ProOfferActions } from "@/src/features/purchases/pro-offer-actions";
 import { useIsPro } from "@/src/features/purchases/purchases-store";
 import { useProOffer } from "@/src/features/purchases/use-pro-offer";
+import { useStepStats } from "@/src/features/stats/use-step-stats";
 import { usePreferencesStore } from "@/src/stores/preferences";
 import { ActionButton } from "@/src/ui/action-button";
 import { DURATION } from "@/src/ui/motion";
 import { PulseDot } from "@/src/ui/pulse-dot";
 import { T } from "@/src/ui/typography";
 
-const SLIDES = ["health", "calibrate", "nudges", "pro"] as const;
+const SLIDES = ["health", "calibrate", "goal", "nudges", "pro"] as const;
 
 /**
  * Skippable at all times (Skip stays visible on every slide). Step 1 explains
@@ -39,7 +43,9 @@ const SLIDES = ["health", "calibrate", "nudges", "pro"] as const;
  * finish, and finishing asks for Health again only if step 1 was swiped past. Skipping leaves the
  * connect CTA on Today. Revisits from Settings just dismiss. The calibrate
  * slide only saves the height on "Confirm" — swiping past it keeps the default
- * stride (spec decision 4).
+ * stride (spec decision 4). The goal slide works the same way: only "Set
+ * target" writes it, so swiping past leaves the goal as it was. The Pro slide
+ * shows the paywall's own copy and screenshot gallery, so the two never drift.
  */
 export default function OnboardingScreen() {
   const { t } = useTranslation();
@@ -58,6 +64,10 @@ export default function OnboardingScreen() {
   const setHeightCm = usePreferencesStore((s) => s.setHeightCm);
   const setStrideCm = usePreferencesStore((s) => s.setStrideCm);
   const [heightCm, setDraftHeightCm] = useState(storedHeightCm ?? DEFAULT_HEIGHT_CM);
+  const stats = useStepStats();
+  const [goal, setDraftGoal] = useState<number | null>(null);
+  // Until touched, the draft follows what's saved (a revisit from Settings) or the default.
+  const goalDraft = goal ?? stats.currentGoal ?? GOAL_LIMITS.suggested;
   const isPro = useIsPro();
   const isLast = page === SLIDES.length - 1;
   const slideKey = SLIDES[page];
@@ -106,6 +116,13 @@ export default function OnboardingScreen() {
     onNext();
   };
 
+  const onConfirmGoal = () => {
+    setGoalFromToday(goalDraft).catch((error) =>
+      console.error("[onboarding/setGoal] failed", error),
+    );
+    onNext();
+  };
+
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const next = Math.round(e.nativeEvent.contentOffset.x / width);
     if (next !== page) haptics.tick();
@@ -146,23 +163,29 @@ export default function OnboardingScreen() {
             width={width}
             step={i + 1}
             total={SLIDES.length}
-            title={t(`onboarding.${slide}.title`)}
-            body={t(`onboarding.${slide}.body`)}
+            // The Pro slide speaks with the paywall's voice — one source for both.
+            title={slide === "pro" ? t("paywall.title") : t(`onboarding.${slide}.title`)}
+            body={slide === "pro" ? t("paywall.subtitle") : t(`onboarding.${slide}.body`)}
           >
             {slide === "health" ? (
               <HealthContract />
             ) : slide === "calibrate" ? (
               <StrideCalibration heightCm={heightCm} onChange={setDraftHeightCm} />
+            ) : slide === "goal" ? (
+              <GoalStep goal={goalDraft} onChange={setDraftGoal} median={stats.sevenDayMedian} />
             ) : slide === "nudges" ? (
               <NudgePreview />
             ) : (
-              <ProFeatures />
+              <PaywallGallery variant={null} bleedClass="-mx-6" />
             )}
           </OnboardingSlide>
         ))}
       </ScrollView>
 
-      <View className="gap-6 px-8 pb-6">
+      {/* Fixed-height footer, top-aligned: dots and the primary button land on the same
+          spot on every step; what's under the button (hint, "Maybe later", restore +
+          terms) fills the reserved space instead of pushing them up. Sized to the Pro step. */}
+      <View className="min-h-40 gap-5 px-8">
         <View className="flex-row items-center justify-center gap-2.5">
           {SLIDES.map((slide, i) => (
             <Animated.View
@@ -183,6 +206,13 @@ export default function OnboardingScreen() {
             <ActionButton label={t("onboarding.calibrate.confirm")} onPress={onConfirmHeight} />
             <T variant="bodySm" tone="secondary" className="text-center">
               {t("onboarding.calibrate.later")}
+            </T>
+          </View>
+        ) : slideKey === "goal" ? (
+          <View className="gap-3">
+            <ActionButton label={t("onboarding.goal.confirm")} onPress={onConfirmGoal} />
+            <T variant="bodySm" tone="secondary" className="text-center">
+              {t("onboarding.goal.later")}
             </T>
           </View>
         ) : slideKey === "nudges" ? (
