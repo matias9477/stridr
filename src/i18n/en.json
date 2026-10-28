@@ -333,15 +333,16 @@
       "off": "Off",
       "toggleA11y": "Daily target",
       "steps": "Steps",
-      "decrease": "Decrease target by 500",
-      "increase": "Increase target by 500",
       "a11y": "Daily target {{steps}} steps",
       "offA11y": "No daily target",
       "median": "Use your 7-day median",
       "medianEmpty": "Median appears after a few days",
       "medianValue": "{{steps}} steps",
       "useMedianHint": "Sets the target to your recent median",
-      "startAt": "Start at {{steps}}"
+      "startAt": "Start at {{steps}}",
+      "fine": "Drag the ruler or tap the number",
+      "typeHint": "Type an exact target",
+      "done": "Done"
     },
     "metrics": {
       "title": "Biomechanics & metrics",

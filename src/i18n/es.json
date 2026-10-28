@@ -333,15 +333,16 @@
       "off": "Apagada",
       "toggleA11y": "Meta diaria",
       "steps": "Pasos",
-      "decrease": "Bajar la meta 500",
-      "increase": "Subir la meta 500",
       "a11y": "Meta diaria {{steps}} pasos",
       "offA11y": "Sin meta diaria",
       "median": "Usa tu mediana de 7 días",
       "medianEmpty": "La mediana aparece tras unos días",
       "medianValue": "{{steps}} pasos",
       "useMedianHint": "Fija la meta en tu mediana reciente",
-      "startAt": "Empezar en {{steps}}"
+      "startAt": "Empezar en {{steps}}",
+      "fine": "Arrastra la regla o toca el número",
+      "typeHint": "Escribe una meta exacta",
+      "done": "Listo"
     },
     "metrics": {
       "title": "Biomecánica y métricas",

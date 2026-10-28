@@ -26,8 +26,9 @@ describe("goalForDay", () => {
 });
 
 describe("snapGoal", () => {
-  it("clamps and snaps to the 500-step grid", () => {
-    expect(snapGoal(10_240)).toBe(10_000);
+  it("clamps and snaps to the 100-step grid", () => {
+    expect(snapGoal(10_240)).toBe(10_200);
+    expect(snapGoal(7_350)).toBe(7_400);
     expect(snapGoal(10)).toBe(1000);
     expect(snapGoal(99_999)).toBe(50_000);
   });

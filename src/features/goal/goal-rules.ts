@@ -8,7 +8,8 @@ import type { DayKey } from "@/src/lib/day";
  * and goal markers immediately instead of "no goal" everywhere.
  */
 
-export const GOAL_LIMITS = { min: 1000, max: 50_000, step: 500, suggested: 10_000 } as const;
+/** `grid` = the finest goal the picker can land on (one ruler tick). */
+export const GOAL_LIMITS = { min: 1000, max: 50_000, grid: 100, suggested: 10_000 } as const;
 
 export interface GoalChange {
   effectiveFrom: DayKey;
@@ -27,8 +28,8 @@ export function goalForDay(changes: readonly GoalChange[], day: DayKey): number 
   return goal;
 }
 
-/** Clamp and snap a stepper value to the goal grid. */
+/** Clamp and snap a picked or typed value to the goal grid. */
 export function snapGoal(value: number): number {
-  const snapped = Math.round(value / GOAL_LIMITS.step) * GOAL_LIMITS.step;
+  const snapped = Math.round(value / GOAL_LIMITS.grid) * GOAL_LIMITS.grid;
   return Math.min(GOAL_LIMITS.max, Math.max(GOAL_LIMITS.min, snapped));
 }
