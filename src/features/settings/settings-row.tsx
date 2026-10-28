@@ -29,6 +29,7 @@ interface SettingsRowProps {
   right?: ReactNode;
   onPress?: () => void;
   accessibilityHint?: string;
+  disabled?: boolean;
 }
 
 /** Title + micro caption on the left, control on the right. */
@@ -38,6 +39,7 @@ export function SettingsRow({
   right,
   onPress,
   accessibilityHint,
+  disabled = false,
 }: SettingsRowProps) {
   const content = (
     <View className="min-h-12 flex-row items-center justify-between gap-3 py-1">
@@ -59,8 +61,10 @@ export function SettingsRow({
     <Pressable
       accessibilityRole="button"
       accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
-      className="active:opacity-60"
+      className={disabled ? "opacity-40" : "active:opacity-60"}
     >
       {content}
     </Pressable>
@@ -80,51 +84,8 @@ export function ValueTag({ label }: { label: string }) {
 export function RowIcon({
   icon = "chevron-right",
 }: {
-  icon?: "chevron-right" | "open-in-new" | "restore";
+  icon?: "chevron-right" | "open-in-new" | "restore" | "file-download";
 }) {
   const c = useThemeColors();
   return <MaterialIcons name={icon} size={16} color={c.textTertiary} />;
-}
-
-/** Full-width action row ("Export Steps as CSV … RAW .CSV"). */
-export function ActionRow({
-  icon,
-  title,
-  trailing,
-  onPress,
-  disabled = false,
-}: {
-  icon: keyof typeof MaterialIcons.glyphMap;
-  title: string;
-  /** Mono tag text; omit for a chevron. */
-  trailing?: string;
-  onPress: () => void;
-  disabled?: boolean;
-}) {
-  const c = useThemeColors();
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ disabled }}
-      disabled={disabled}
-      onPress={onPress}
-      className={`flex-row items-center justify-between rounded-lg bg-surface-sunken p-4 active:bg-surface-raised ${
-        disabled ? "opacity-40" : ""
-      }`}
-    >
-      <View className="flex-1 flex-row items-center gap-2">
-        <MaterialIcons name={icon} size={20} color={c.textPrimary} />
-        <T variant="bodyMdMedium" tone="primary" className="flex-1">
-          {title}
-        </T>
-      </View>
-      {trailing ? (
-        <T variant="label" tone="tertiary">
-          {trailing}
-        </T>
-      ) : (
-        <MaterialIcons name="chevron-right" size={16} color={c.textTertiary} />
-      )}
-    </Pressable>
-  );
 }

@@ -7,9 +7,10 @@ import { useIsPro } from "@/src/features/purchases/purchases-store";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
 import { buildWidgetTimeline } from "@/src/features/widgets/widget-snapshot";
 import { usePreferencesStore } from "@/src/stores/preferences";
+import { Chip } from "@/src/ui/chip";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { ActionRow, SettingsCard } from "./settings-row";
+import { RowIcon, SettingsCard, SettingsRow } from "./settings-row";
 
 /**
  * Live previews of the lock-screen (accessoryRectangular) and home-screen
@@ -38,11 +39,7 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
   return (
     <SettingsCard
       label={t("settings.widgets.title")}
-      right={
-        <T variant="micro" tone="tertiary">
-          iOS 17+
-        </T>
-      }
+      right={<Chip variant="ghost" label="iOS 17+" />}
     >
       <View className={`mt-2 flex-row gap-2 ${isPro ? "" : "opacity-40"}`}>
         <View
@@ -117,10 +114,10 @@ export function WidgetPreviews({ stats }: { stats: StepStats }) {
         </View>
       </View>
       {isPro ? null : (
-        <ActionRow
-          icon="lock-outline"
+        <SettingsRow
           title={t("settings.widgets.unlock")}
-          trailing="PRO"
+          subtitle={t("settings.widgets.unlockCaption")}
+          right={<RowIcon />}
           onPress={() => router.push("/paywall?variant=widgets")}
         />
       )}

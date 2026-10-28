@@ -7,7 +7,7 @@ import { ActionButton } from "@/src/ui/action-button";
 import { Chip } from "@/src/ui/chip";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { SettingsCard } from "./settings-row";
+import { SettingsCard, SettingsRow } from "./settings-row";
 
 /**
  * Apple Health connection status + how to manage it (spec §8, §11). iOS never
@@ -16,7 +16,6 @@ import { SettingsCard } from "./settings-row";
  */
 export function HealthCard({ stats }: { stats: StepStats }) {
   const { t } = useTranslation();
-  const c = useThemeColors();
   const requestAccess = useHealthStore((s) => s.requestAccess);
   const access = stats.access;
   const noHealthData = access === "requested" && !stats.days.some((d) => d.healthSteps !== null);
@@ -31,37 +30,28 @@ export function HealthCard({ stats }: { stats: StepStats }) {
           : { label: t("common.loading"), dot: false };
 
   return (
-    <SettingsCard label={t("settings.health.title")} right={<Chip variant="raised" {...chip} />}>
-      <View className="flex-row items-center justify-between py-1">
-        <View className="flex-1 flex-row items-center gap-2">
-          <View className="h-9 w-9 items-center justify-center rounded bg-surface-raised">
-            <MaterialIcons name="favorite" size={20} color={c.textPrimary} />
-          </View>
-          <View>
-            <T variant="bodyMdMedium" tone="primary">
-              {t("settings.health.name")}
+    <SettingsCard label={t("settings.health.title")} right={<Chip variant="ghost" {...chip} />}>
+      <SettingsRow
+        title={t("settings.health.name")}
+        subtitle={t("settings.health.readOnly")}
+        right={
+          access === "notRequested" ? (
+            <ActionButton
+              size="sm"
+              label={t("settings.health.connect")}
+              onPress={() => void requestAccess()}
+            />
+          ) : (
+            <T variant="label" tone="tertiary">
+              {access === "requested"
+                ? stats.healthError
+                  ? t("settings.health.syncFailed")
+                  : t("settings.health.synced")
+                : "—"}
             </T>
-            <T variant="micro" tone="tertiary">
-              {t("settings.health.readOnly")}
-            </T>
-          </View>
-        </View>
-        {access === "notRequested" ? (
-          <ActionButton
-            size="sm"
-            label={t("settings.health.connect")}
-            onPress={() => void requestAccess()}
-          />
-        ) : (
-          <T variant="label" tone="tertiary">
-            {access === "requested"
-              ? stats.healthError
-                ? t("settings.health.syncFailed")
-                : t("settings.health.synced")
-              : "—"}
-          </T>
-        )}
-      </View>
+          )
+        }
+      />
 
       {access === "unavailable" ? (
         <Note icon="info-outline" text={t("settings.health.unavailableBody")} />

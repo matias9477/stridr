@@ -403,10 +403,13 @@
       "small": "Cuadrado pequeño",
       "lockA11y": "Vista previa del widget de pantalla bloqueada",
       "homeA11y": "Vista previa del widget de inicio",
-      "unlock": "Desbloquea los widgets con Pro"
+      "unlock": "Desbloquea los widgets con Pro",
+      "unlockCaption": "Pantalla bloqueada y de inicio, todos los tamaños"
     },
     "data": {
-      "export": "Exportar pasos en CSV"
+      "title": "Tus datos",
+      "export": "Exportar pasos",
+      "exportCaption": "Totales diarios y caminatas registradas, en CSV"
     },
     "nudges": "Avisos de ritmo",
     "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo",

@@ -16,7 +16,7 @@ import {
 import { Segmented } from "@/src/ui/segmented";
 import { useThemeColors } from "@/src/ui/theme-colors";
 import { T } from "@/src/ui/typography";
-import { ActionRow, RowIcon, SettingsCard, SettingsRow } from "./settings-row";
+import { RowIcon, SettingsCard, SettingsRow } from "./settings-row";
 
 export const PRIVACY_POLICY_URL = "https://www.matiasturra.dev/privacy/stridr";
 
@@ -26,18 +26,20 @@ function openPrivacyPolicy() {
   );
 }
 
-/** Export CSV — the design's bare action row. The privacy policy lives once, in About. */
+/** Your data out, as a CSV (never paywalled). The privacy policy lives once, in About. */
 export function DataActions({ stats }: { stats: StepStats }) {
   const { t } = useTranslation();
   const csv = useCsvExport(stats);
   return (
-    <ActionRow
-      icon="file-download"
-      title={csv.busy ? t("common.loading") : t("settings.data.export")}
-      trailing="RAW .CSV"
-      disabled={csv.disabled || csv.busy}
-      onPress={() => void csv.run()}
-    />
+    <SettingsCard label={t("settings.data.title")}>
+      <SettingsRow
+        title={csv.busy ? t("common.loading") : t("settings.data.export")}
+        subtitle={t("settings.data.exportCaption")}
+        right={<RowIcon icon="file-download" />}
+        disabled={csv.disabled || csv.busy}
+        onPress={() => void csv.run()}
+      />
+    </SettingsCard>
   );
 }
 

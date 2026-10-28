@@ -403,10 +403,13 @@
       "small": "Small square",
       "lockA11y": "Lock screen widget preview",
       "homeA11y": "Home screen widget preview",
-      "unlock": "Unlock widgets with Pro"
+      "unlock": "Unlock widgets with Pro",
+      "unlockCaption": "Lock screen and home screen, every size"
     },
     "data": {
-      "export": "Export steps as CSV"
+      "title": "Your data",
+      "export": "Export steps",
+      "exportCaption": "Daily totals and logged walks, as a CSV"
     },
     "nudges": "Pace nudges",
     "nudgesCaption": "One evening alert when you're behind your target",
