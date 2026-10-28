@@ -34,6 +34,27 @@ export interface Bar {
   value: number | null;
   tone: BarTone;
   accessibilityLabel: string;
+  /** Goal reference for this bar; consecutive equal goals join into one dashed segment. */
+  goal?: number | null;
+}
+
+interface GoalRun {
+  value: number;
+  start: number;
+  length: number;
+}
+
+/** Consecutive bars sharing a goal → one segment each; goal-off bars leave a gap. */
+function goalRuns(bars: readonly Bar[]): GoalRun[] {
+  const runs: GoalRun[] = [];
+  bars.forEach((bar, i) => {
+    const goal = bar.goal ?? null;
+    if (goal === null) return;
+    const last = runs[runs.length - 1];
+    if (last && last.value === goal && last.start + last.length === i) last.length++;
+    else runs.push({ value: goal, start: i, length: 1 });
+  });
+  return runs;
 }
 
 interface BarChartProps {
@@ -42,7 +63,8 @@ interface BarChartProps {
   max: number;
   /** Tailwind height class of the plot area. */
   heightClass: string;
-  goal?: { value: number; label: string } | null;
+  /** Label for the goal line, given the labelled segment's value. Omit to hide the line. */
+  goalLabel?: (value: number) => string;
   /** Small inverse tag above one bar ("MAX"). */
   tag?: { key: string; label: string } | null;
   selectedKey?: string | null;
@@ -60,37 +82,47 @@ export function BarChart({
   bars,
   max,
   heightClass,
-  goal,
+  goalLabel,
   tag,
   selectedKey,
   onSelect,
   gapClass = "gap-1",
 }: BarChartProps) {
   const safeMax = max > 0 ? max : 1;
-  const goalPct = goal ? Math.min(100, (goal.value / safeMax) * 100) : null;
   const barPct = (value: number | null) =>
     value === null ? NO_DATA_STUB : Math.max(MIN_VISIBLE, Math.min(100, (value / safeMax) * 100));
   const tagIndex = tag ? bars.findIndex((b) => b.key === tag.key) : -1;
   // The goal label sits on the side away from the tag, so a peak near the goal can't cover it.
-  const goalLabelSide = tagIndex >= bars.length / 2 ? "left-0" : "right-0";
+  const labelLeft = tagIndex >= bars.length / 2;
+  const runs = goalLabel ? goalRuns(bars) : [];
+  const labelled = labelLeft ? runs[0] : runs[runs.length - 1];
 
   return (
     <View className={`relative ${heightClass}`}>
-      {goalPct !== null && goal ? (
+      {runs.map((run) => (
         // Percent offsets are layout geometry, not spacing tokens.
         <View
+          key={run.start}
           pointerEvents="none"
-          className="absolute inset-x-0 z-10"
-          style={{ bottom: `${goalPct}%` }}
+          className="absolute z-10"
+          style={{
+            bottom: `${Math.min(100, (run.value / safeMax) * 100)}%`,
+            left: `${(run.start / bars.length) * 100}%`,
+            width: `${(run.length / bars.length) * 100}%`,
+          }}
         >
           <View className="border-t border-dashed border-text-quiet" />
-          <View className={`absolute -top-4 ${goalLabelSide} rounded-sm bg-surface-sunken px-1`}>
-            <T variant="micro" tone="tertiary">
-              {goal.label}
-            </T>
-          </View>
+          {run === labelled && goalLabel ? (
+            <View
+              className={`absolute -top-4 ${labelLeft ? "left-0" : "right-0"} rounded-sm bg-surface-sunken px-1`}
+            >
+              <T variant="micro" tone="tertiary" numberOfLines={1}>
+                {goalLabel(run.value)}
+              </T>
+            </View>
+          ) : null}
         </View>
-      ) : null}
+      ))}
       <View className={`h-full flex-row items-end ${gapClass}`}>
         {bars.map((bar, i) => {
           const pct = barPct(bar.value);

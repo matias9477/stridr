@@ -75,7 +75,7 @@ describe("averages", () => {
   it("7-day average uses the last 7 completed days, excluding today", () => {
     const days = build({ ...run(7, 8000), [TODAY]: 100, ...run(7, 4000, 8) });
     const result = sevenDayAverage(indexDays(days), TODAY);
-    expect(result).toMatchObject({ average: 8000, validDays: 7, baseline: 4000 });
+    expect(result).toMatchObject({ average: 8000, validDays: 7, baseline: 4000, baselineDays: 7 });
     expect(result.changePct).toBeCloseTo(100);
   });
 
@@ -254,6 +254,8 @@ describe("chart", () => {
       "2026-10-25",
     ]);
     expect(monday.slice(3).every((d) => d.total === null)).toBe(true);
+    const ahead = rangeDays(build({ [TODAY]: 3000 }, { goal: 9000 }), "week", TODAY, "monday");
+    expect(ahead.every((d) => d.goal === 9000)).toBe(true);
     expect(rangeDays(days, "week", TODAY, "sunday")[0]?.day).toBe("2026-10-18");
     expect(rangeDays(days, "week", TODAY, "rolling")[0]?.day).toBe("2026-10-15");
   });
@@ -292,6 +294,21 @@ describe("chart", () => {
     expect(customRangeBounds({ kind: "last", days: 7 }, tomorrow).to).toBe(tomorrow);
     const fixed = { kind: "between", from: ago(5), to: ago(2) } as const;
     expect(customRangeBounds(fixed, tomorrow)).toEqual({ from: ago(5), to: ago(2) });
+  });
+
+  it("gives each bar the goal in effect that day", () => {
+    const days = buildDailyTotals({
+      health: run(7, 9000),
+      manual: {},
+      goals: [
+        { effectiveFrom: ago(7), steps: 8000 },
+        { effectiveFrom: ago(3), steps: null },
+        { effectiveFrom: ago(1), steps: 10000 },
+      ],
+      today: TODAY,
+    });
+    const bars = chartBars(rangeDays(days, "week", TODAY, "rolling"), TODAY);
+    expect(bars.map((b) => b.goal)).toEqual([8000, 8000, 8000, null, null, 10000, 10000]);
   });
 
   it("aggregates long histories into weekly averages", () => {

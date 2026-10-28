@@ -41,10 +41,33 @@ describe("buildCsv", () => {
           updatedAt: "2026-10-20 10:00:00",
         } satisfies ManualActivityRow,
       ],
+      "2026-10-22",
     );
     const lines = csv.trim().split("\n");
     expect(lines[1]).toBe("2026-10-20,5000,1000,6000,5000,1");
     expect(lines).not.toContain(expect.stringContaining("2026-10-21,"));
     expect(lines.at(-1)).toBe("2026-10-20,walk,1000,1100,800,,2026-10-20 10:00:00");
+  });
+
+  it("leaves today's goal_met blank until it's met", () => {
+    const today = (total: number) =>
+      buildCsv(
+        [
+          {
+            day: "2026-10-22",
+            healthSteps: total,
+            manualSteps: 0,
+            total,
+            goal: 5000,
+            goalMet: total >= 5000,
+          },
+        ],
+        [],
+        "2026-10-22",
+      )
+        .trim()
+        .split("\n")[1];
+    expect(today(1200)).toBe("2026-10-22,1200,0,1200,5000,");
+    expect(today(6000)).toBe("2026-10-22,6000,0,6000,5000,1");
   });
 });

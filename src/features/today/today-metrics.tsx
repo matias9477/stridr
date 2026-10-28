@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { distanceForSteps } from "@/src/features/activity/estimate";
 import { useEstimationSettings } from "@/src/features/activity/use-estimation-settings";
 import { baseCardStatus } from "@/src/features/stats/card-status";
+import { STATS_RULES } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
 import {
   formatCompact,
@@ -41,7 +42,7 @@ function Icon({ name }: { name: keyof typeof MaterialIcons.glyphMap }) {
 
 function AverageTile({ stats }: { stats: StepStats }) {
   const { t } = useTranslation();
-  const { average, changePct, baseline } = stats.sevenDay;
+  const { average, changePct, baseline, baselineDays } = stats.sevenDay;
   const status: CardStatus =
     baseCardStatus(stats) ??
     (average === null ? { kind: "empty", message: t("today.metrics.averageEmpty") } : READY);
@@ -59,7 +60,12 @@ function AverageTile({ stats }: { stats: StepStats }) {
       value={average === null ? "—" : formatSteps(average)}
       caption={
         baseline !== null
-          ? t("today.metrics.baseline", { value: formatCompact(baseline) })
+          ? baselineDays < STATS_RULES.averageWindowDays
+            ? t("today.metrics.baselinePartial", {
+                value: formatCompact(baseline),
+                days: baselineDays,
+              })
+            : t("today.metrics.baseline", { value: formatCompact(baseline) })
           : t("today.metrics.averageDays", { count: stats.sevenDay.validDays })
       }
       status={status}

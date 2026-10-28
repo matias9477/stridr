@@ -144,6 +144,8 @@ export function peakDay(days: readonly DailyTotal[]): DailyTotal | null {
 export interface SevenDayAverage extends AverageResult {
   /** The previous 7 completed days — the "baseline" shown under the number. */
   baseline: number | null;
+  /** Valid days behind `baseline` — the caption says when it's fewer than 7. */
+  baselineDays: number;
   changePct: number | null;
 }
 
@@ -156,6 +158,7 @@ export function sevenDayAverage(index: DayIndex, today: DayKey): SevenDayAverage
   return {
     ...current,
     baseline: previous.average,
+    baselineDays: previous.validDays,
     changePct: percentChange(current.average, previous.average),
   };
 }
@@ -414,6 +417,10 @@ export function rangeDays(
   if (bounds === null) return [...days];
   const { from, to } = bounds;
   const index = indexDays(days);
+  // Padded slots carry the goal in force there — today's ahead, the first goal
+  // before history (it applies backwards) — so the chart's goal line spans them.
+  const goalAhead = index.get(today)?.goal ?? null;
+  const goalBefore = days[0]?.goal ?? null;
   // Pad before history start (and after today) so a week chart always has 7 slots.
   return dayRange(from, to).map(
     (day) =>
@@ -422,7 +429,7 @@ export function rangeDays(
         healthSteps: null,
         manualSteps: 0,
         total: null,
-        goal: null,
+        goal: day > today ? goalAhead : goalBefore,
         goalMet: null,
       },
   );
@@ -437,6 +444,12 @@ export interface ChartBar {
   bucket: ChartBucket;
   containsToday: boolean;
   isPeak: boolean;
+  /**
+   * The goal in effect for the bar (folded bars: the average of their days'
+   * goals). The chart's goal line steps with it, so past bars are read
+   * against the goal they actually had. Null = goal off.
+   */
+  goal: number | null;
 }
 
 function bucketKey(day: DayKey, bucket: ChartBucket, weekStart: WeekStart): DayKey {
@@ -492,6 +505,7 @@ export function chartBars(
     bucket,
     containsToday: group.some((d) => d.day === today),
     isPeak: false,
+    goal: averageOf(group.map((d) => d.goal)).average,
   }));
   let peak: ChartBar | null = null;
   for (const bar of bars) {

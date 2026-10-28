@@ -116,6 +116,7 @@
     "metrics": {
       "average": "7-day average",
       "baseline": "Prev. 7 days {{value}}",
+      "baselinePartial": "Prev. {{days}} of 7 days {{value}}",
       "averageDays_one": "From {{count}} day",
       "averageDays_other": "From {{count}} days",
       "averageEmpty": "Needs a few days of history.",

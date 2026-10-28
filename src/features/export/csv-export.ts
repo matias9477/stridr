@@ -2,7 +2,7 @@ import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import type { ManualActivityRow } from "@/src/db/schema";
 import type { DailyTotal } from "@/src/features/stats/stats";
-import { todayKey } from "@/src/lib/day";
+import { type DayKey, todayKey } from "@/src/lib/day";
 
 /**
  * Raw CSV export (Settings / Stats → "Export"). Built on-device and handed to
@@ -21,6 +21,7 @@ function cell(value: string | number | null): string {
 export function buildCsv(
   days: readonly DailyTotal[],
   entries: readonly ManualActivityRow[],
+  today: DayKey,
 ): string {
   const lines = ["date,healthkit_steps,manual_steps,total_steps,goal,goal_met"];
   for (const d of days) {
@@ -32,7 +33,8 @@ export function buildCsv(
         d.manualSteps,
         d.total,
         d.goal,
-        d.goalMet === null ? null : d.goalMet ? 1 : 0,
+        // Today isn't over: met is a fact, not-yet-met is unknown (blank), never a miss.
+        d.goalMet === null || (d.day === today && !d.goalMet) ? null : d.goalMet ? 1 : 0,
       ]
         .map(cell)
         .join(","),
@@ -57,7 +59,7 @@ export async function shareCsv(
   const file = new File(Paths.cache, `stridr-steps-${todayKey()}.csv`);
   if (file.exists) file.delete();
   file.create();
-  file.write(buildCsv(days, entries));
+  file.write(buildCsv(days, entries, todayKey()));
   if (!(await Sharing.isAvailableAsync())) throw new Error("sharing unavailable");
   await Sharing.shareAsync(file.uri, {
     mimeType: "text/csv",

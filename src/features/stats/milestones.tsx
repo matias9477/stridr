@@ -116,19 +116,15 @@ function TrendTile({ stats }: { stats: StepStats }) {
   const status: CardStatus =
     baseCardStatus(stats) ??
     (trend === null ? { kind: "empty", message: t("stats.milestones.trendEmpty") } : READY);
-  const up = (trend?.difference ?? 0) >= 0;
+  // A zero change gets a flat arrow — "up" on no change overclaims.
+  const diff = Math.round(trend?.difference ?? 0);
+  const icon = diff > 0 ? "trending-up" : diff < 0 ? "trending-down" : "trending-flat";
   return (
     <StatTile
       surface="sunken"
       size="headline"
       label={t("stats.milestones.trend")}
-      accessory={
-        <MaterialIcons
-          name={up ? "trending-up" : "trending-down"}
-          size={14}
-          color={c.textPrimary}
-        />
-      }
+      accessory={<MaterialIcons name={icon} size={14} color={c.textPrimary} />}
       value={
         trend === null
           ? "—"

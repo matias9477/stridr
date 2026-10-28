@@ -116,6 +116,7 @@
     "metrics": {
       "average": "Promedio 7 días",
       "baseline": "7 días previos {{value}}",
+      "baselinePartial": "{{days}} de 7 días previos {{value}}",
       "averageDays_one": "De {{count}} día",
       "averageDays_other": "De {{count}} días",
       "averageEmpty": "Necesita unos días de historial.",

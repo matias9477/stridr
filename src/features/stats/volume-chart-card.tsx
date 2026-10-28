@@ -63,7 +63,7 @@ export function VolumeChartCard({
     baseCardStatus(stats) ??
     (peak === null ? { kind: "empty", message: t("stats.chart.empty") } : READY);
 
-  const max = Math.max(stats.currentGoal ?? 0, ...bars.map((b) => b.value ?? 0));
+  const max = Math.max(...bars.map((b) => Math.max(b.value ?? 0, b.goal ?? 0)));
   const bucket = bars[0]?.bucket ?? "day";
   const selected = bars.find((b) => b.key === selectedKey) ?? bars.find((b) => b.isPeak) ?? null;
   const first = days[0]?.day;
@@ -90,6 +90,7 @@ export function VolumeChartCard({
     return {
       key: bar.key,
       value: bar.value,
+      goal: bar.goal,
       tone,
       accessibilityLabel:
         bar.value === null
@@ -142,14 +143,7 @@ export function VolumeChartCard({
             max={max}
             heightClass="h-40"
             gapClass={bars.length > 45 ? "gap-px" : bars.length > 14 ? "gap-0.5" : "gap-2"}
-            goal={
-              stats.currentGoal !== null
-                ? {
-                    value: stats.currentGoal,
-                    label: t("stats.chart.goal", { value: formatCompact(stats.currentGoal) }),
-                  }
-                : null
-            }
+            goalLabel={(value) => t("stats.chart.goal", { value: formatCompact(value) })}
             tag={range === "week" && peak ? { key: peak.day, label: t("stats.chart.max") } : null}
             selectedKey={selectedKey}
             onSelect={setSelectedKey}
