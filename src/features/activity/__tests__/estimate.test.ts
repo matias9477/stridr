@@ -11,7 +11,7 @@ const defaults = { strideMeters: ESTIMATION_DEFAULTS.strideMeters, cadenceSpm: 1
 
 describe("estimateSteps", () => {
   it("uses distance / stride", () => {
-    expect(estimateSteps({ distanceMeters: 1500 }, defaults)).toEqual({
+    expect(estimateSteps({ distanceMeters: 1400 }, defaults)).toEqual({
       steps: 2000,
       basis: "distance",
     });

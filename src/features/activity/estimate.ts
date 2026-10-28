@@ -4,13 +4,14 @@ import type { DistanceUnit } from "@/src/stores/preferences";
  * Step estimation for logged walks (spec §4). Pure — the preferences store
  * resolves the user's assumptions, this module only does arithmetic.
  *
- * Defaults are deliberately conservative: a typical adult walking step is
- * ~0.70–0.80 m, and 100 steps/min is the research threshold for "moderate"
- * walking (most people walk 100–120), so duration-only estimates err low
- * rather than inflate totals.
+ * Stride 0.70 m is the adult average — it also turns HealthKit steps into the
+ * distance shown everywhere, which 0.75 m read ~7% high (spec decision 4,
+ * changed 2026-10-28). Cadence stays conservative: 100 steps/min is the
+ * research threshold for "moderate" walking (most people walk 100–120), so
+ * duration-only estimates err low rather than inflate totals.
  */
 export const ESTIMATION_DEFAULTS = {
-  strideMeters: 0.75,
+  strideMeters: 0.7,
   cadenceSpm: 100,
 } as const;
 
