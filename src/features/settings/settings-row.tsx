@@ -76,8 +76,12 @@ export function ValueTag({ label }: { label: string }) {
   );
 }
 
-/** Trailing affordance for a tappable row: chevron for in-app, open-in-new for the browser/App Store. */
-export function RowIcon({ icon = "chevron-right" }: { icon?: "chevron-right" | "open-in-new" }) {
+/** Trailing affordance for a tappable row: chevron for in-app, open-in-new for the browser/App Store, restore for an in-place action. */
+export function RowIcon({
+  icon = "chevron-right",
+}: {
+  icon?: "chevron-right" | "open-in-new" | "restore";
+}) {
   const c = useThemeColors();
   return <MaterialIcons name={icon} size={16} color={c.textTertiary} />;
 }

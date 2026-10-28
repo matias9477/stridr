@@ -315,8 +315,12 @@
     "hapticsCaption": "Taps as you use the app",
     "pro": "Pro",
     "proActive": "Pro is active",
-    "proInactive": "Free plan",
     "goPro": "Go Pro",
+    "proFree": "Free",
+    "proOn": "Active",
+    "proActiveCaption": "Lifetime unlock · thanks for the support",
+    "goProCaption": "90D, All-time and custom stats, plus widgets",
+    "restoreCaption": "Already bought Pro with this Apple ID?",
     "restorePurchases": "Restore purchases",
     "restoreSuccess": "Purchases restored",
     "restoreNone": "No purchases to restore",
@@ -405,7 +409,8 @@
       "export": "Export steps as CSV"
     },
     "nudges": "Pace nudges",
-    "nudgesCaption": "One evening alert when you're behind your target"
+    "nudgesCaption": "One evening alert when you're behind your target",
+    "nudgesNeedsGoal": "Turn on a daily target to get these"
   },
   "paywall": {
     "title": "Stridr Pro",

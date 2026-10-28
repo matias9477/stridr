@@ -11,6 +11,7 @@ import { Chip } from "@/src/ui/chip";
 import { DURATION } from "@/src/ui/motion";
 import { T } from "@/src/ui/typography";
 import { GoalPicker } from "./goal-picker";
+import { NudgesRow } from "./nudges-row";
 import { SettingsCard } from "./settings-row";
 
 /**
@@ -108,6 +109,7 @@ export function TargetCard({ stats }: { stats: StepStats }) {
             </T>
           ) : null}
         </Pressable>
+        <NudgesRow hasGoal={goal !== null} />
       </CardStateBody>
     </SettingsCard>
   );

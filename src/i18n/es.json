@@ -315,8 +315,12 @@
     "hapticsCaption": "Vibraciones al usar la app",
     "pro": "Pro",
     "proActive": "Pro está activo",
-    "proInactive": "Plan gratuito",
     "goPro": "Hazte Pro",
+    "proFree": "Gratis",
+    "proOn": "Activo",
+    "proActiveCaption": "Desbloqueo de por vida · gracias por el apoyo",
+    "goProCaption": "Estadísticas de 90D, histórico y a medida, más widgets",
+    "restoreCaption": "¿Ya compraste Pro con este Apple ID?",
     "restorePurchases": "Restaurar compras",
     "restoreSuccess": "Compras restauradas",
     "restoreNone": "No hay compras para restaurar",
@@ -405,7 +409,8 @@
       "export": "Exportar pasos en CSV"
     },
     "nudges": "Avisos de ritmo",
-    "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo"
+    "nudgesCaption": "Un aviso por la tarde si vas por detrás de tu objetivo",
+    "nudgesNeedsGoal": "Activa una meta diaria para recibirlos"
   },
   "paywall": {
     "title": "Stridr Pro",
