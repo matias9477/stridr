@@ -10,18 +10,16 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Share card (docs/spec-share-card.md): Today's share button opens a preview of a designed 1080×1920 Story image — the step count as hero, today's hourly bars on a ruler (last 7 days when there's no hourly data), distance / active time / streak, and the stridr lockup — then shares the PNG through the system sheet. Free, follows the theme, replaces the old text-only share.
 - Custom Stats range (docs/spec-custom-range.md): a fifth range chip that expands an editor between the switch and the chart — last N days (rolls forward daily) or two fixed dates via the native date picker — applied on Save and remembered across launches; the chip reads "13D" or "3/4–4/2". The chart, range total and daily average follow it. Pro.
 - Pro split (docs/spec-pro-split.md): Stridr Pro is a single lifetime unlock. It opens the 90D / All / Custom Stats ranges, and the widgets; free keeps Today, 7D/30D, manual activities, nudges, the share card and CSV export (your own data is never paywalled). Gates route to `/paywall?variant=stats|widgets` (per-gate headline, store price, restore). Free users' widgets show "Pro unlocks widgets" and deep-link to the paywall, and onboarding step 4 is the Pro offer with "Continue free". The `MOCK_PRO` dev bypass is gone, so gates lock for real; DeveloperSection → "Simulate free tier" stages the locked states on a build that owns Pro.
-- Verified on device (2026-10-28): HealthKit totals match the Health app, background delivery refreshes the widget, pace nudges fire and cancel correctly, the share card posts cleanly. Final icon + splash are in `assets/images/`.
+- Verified on device (2026-10-28): HealthKit totals match the Health app, background delivery refreshes the widget, pace nudges fire and cancel correctly, the share card posts cleanly. Final icon + splash are in `assets/images/`. Spec decisions reviewed after real use: manual steps add on top, no-data days are skipped, cadence stays 100 spm, the stride default dropped to 0.70 m, the record's "since" line only shows for limited access, and turning the goal off pauses a streak instead of ending it. RevenueCat is live: the lifetime product, `pro` entitlement and `default` offering are set up and a sandbox purchase unlocks Pro.
 - Daily target picker: a scrub ruler (100 steps per tick) plus tap-the-number to type an exact goal, replacing the ±500 stepper that took 10 taps to reach 5K and couldn't land on odd values.
 
 ## Critical path to v1.0
 
 ### Product
-- [ ] Review the defaults chosen for the product spec's open questions (docs/spec-steps-core.md → Decisions)
 - [ ] Write DESIGN.md → Voice & tone (the section doesn't exist yet) and the 4 screenshot headlines
 
 ### App-store readiness
-- [ ] RevenueCat (project created 2026-10-27): Paid Apps agreement active; non-consumable `com.matiasturra.stridr.pro.lifetime` in App Store Connect (en + es localizations); In-App Purchase key uploaded to RevenueCat; product attached to entitlement `pro`; `default` offering (Current) with a Lifetime package; `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in `.env` + EAS env
-- [ ] Device run after the RevenueCat setup (`npm run ios` — the widget bundle changed too): sandbox purchase, restore on a fresh install, locked widgets with "Simulate free tier"
+- [ ] Restore on a fresh install, and the locked widgets with DeveloperSection → "Simulate free tier" (sandbox purchase verified 2026-10-28)
 - [ ] Privacy policy URL (`https://www.matiasturra.dev/privacy/stridr`, live since 2026-10-25) entered in App Store Connect
 - [ ] store.config.json copy finalized (en-US + es-ES); `eas metadata:lint` then `eas metadata:push`
 - [ ] 4 screenshots per DESIGN.md headlines (stage states with the __DEV__ DeveloperSection; upload manually in App Store Connect — EAS metadata does not cover screenshots)
@@ -43,7 +41,6 @@ _None right now._
 - Items here carry removal instructions written the moment the scaffolding is added (e.g. "remove X before v1.0 ships").
 - Stats accuracy, minor (audit 2026-10-25; the serious ones are fixed):
   - Activity log recomputes past days' distance with today's step length; spec decision 4 says preference changes don't rewrite history. Store the step length per day (or show a logged walk's own distance).
-  - Default step length is 0.75 m (spec's conservative choice for walk→steps); for steps→distance the adult average is ~0.70 m, so distance reads a bit high. Revisit with the spec.
   - Stats chart goal line uses today's goal across the whole history (bars and streaks already use each day's own goal).
   - "Active mins" only exist for the last 8 days (`RECENT_WINDOW_DAYS`); older log rows just omit them.
   - Today's 7-day average caption shows "Prev. 7 days X" even when only some of those days have data.
