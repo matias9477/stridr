@@ -12,7 +12,8 @@
       "!drizzle",
       "!expo-env.d.ts",
       "!nativewind-env.d.ts",
-      "!global.css"
+      "!global.css",
+      "!app.json"
     ]
   },
   "formatter": {
