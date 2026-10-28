@@ -10,18 +10,16 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Share card (docs/spec-share-card.md): Today's share button opens a preview of a designed 1080×1920 Story image — the step count as hero, today's hourly bars on a ruler (last 7 days when there's no hourly data), distance / active time / streak, and the stridr lockup — then shares the PNG through the system sheet. Free, follows the theme, replaces the old text-only share.
 - Custom Stats range (docs/spec-custom-range.md): a fifth range chip that expands an editor between the switch and the chart — last N days (rolls forward daily) or two fixed dates via the native date picker — applied on Save and remembered across launches; the chip reads "13D" or "3/4–4/2". The chart, range total and daily average follow it. Pro.
 - Pro split (docs/spec-pro-split.md): Stridr Pro is a single lifetime unlock. It opens the 90D / All / Custom Stats ranges, and the widgets; free keeps Today, 7D/30D, manual activities, nudges, the share card and CSV export (your own data is never paywalled). Gates route to `/paywall?variant=stats|widgets` (per-gate headline, store price, restore). Free users' widgets show "Pro unlocks widgets" and deep-link to the paywall, and onboarding step 4 is the Pro offer with "Continue free". The `MOCK_PRO` dev bypass is gone, so gates lock for real; DeveloperSection → "Simulate free tier" stages the locked states on a build that owns Pro.
+- Verified on device (2026-10-28): HealthKit totals match the Health app, background delivery refreshes the widget, pace nudges fire and cancel correctly, the share card posts cleanly. Final icon + splash are in `assets/images/`.
+- Daily target picker: a scrub ruler (100 steps per tick) plus tap-the-number to type an exact goal, replacing the ±500 stepper that took 10 taps to reach 5K and couldn't land on odd values.
 
 ## Critical path to v1.0
 
 ### Product
 - [ ] Review the defaults chosen for the product spec's open questions (docs/spec-steps-core.md → Decisions)
-- [ ] First device run (`npm run ios`): grant Health access, check totals against the Health app, confirm background delivery refreshes the widget without opening the app
-- [ ] Pace nudges on device (needs a new dev-client build for expo-notifications): enable in onboarding step 3, check the 18:00 alert fires when behind pace and is cancelled once the pace mark is reached (DeveloperSection → test nudge for the banner)
-- [ ] Share card on device (new dev-client build for react-native-view-shot): check the PNG is 1080×1920 and crisp, fonts are Space Mono (not system), both themes and es; post one to Instagram Stories to confirm nothing sits under its UI
-- [ ] Fill DESIGN.md → Voice & tone and App Store visual direction
+- [ ] Write DESIGN.md → Voice & tone (the section doesn't exist yet) and the 4 screenshot headlines
 
 ### App-store readiness
-- [ ] Final icon + splash (replace the placeholder solid-color assets in `assets/images/`)
 - [ ] RevenueCat (project created 2026-10-27): Paid Apps agreement active; non-consumable `com.matiasturra.stridr.pro.lifetime` in App Store Connect (en + es localizations); In-App Purchase key uploaded to RevenueCat; product attached to entitlement `pro`; `default` offering (Current) with a Lifetime package; `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in `.env` + EAS env
 - [ ] Device run after the RevenueCat setup (`npm run ios` — the widget bundle changed too): sandbox purchase, restore on a fresh install, locked widgets with "Simulate free tier"
 - [ ] Privacy policy URL (`https://www.matiasturra.dev/privacy/stridr`, live since 2026-10-25) entered in App Store Connect
