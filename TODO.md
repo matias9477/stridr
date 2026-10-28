@@ -10,7 +10,7 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Share card (docs/spec-share-card.md): Today's share button opens a preview of a designed 1080×1920 Story image — the step count as hero, today's hourly bars on a ruler (last 7 days when there's no hourly data), distance / active time / streak, and the stridr lockup — then shares the PNG through the system sheet. Free, follows the theme, replaces the old text-only share.
 - Custom Stats range (docs/spec-custom-range.md): a fifth range chip that expands an editor between the switch and the chart — last N days (rolls forward daily) or two fixed dates via the native date picker — applied on Save and remembered across launches; the chip reads "13D" or "3/4–4/2". The chart, range total and daily average follow it. Pro.
 - Pro split (docs/spec-pro-split.md): Stridr Pro is a single lifetime unlock. It opens the 90D / All / Custom Stats ranges, and the widgets; free keeps Today, 7D/30D, manual activities, nudges, the share card and CSV export (your own data is never paywalled). Gates route to `/paywall?variant=stats|widgets` (per-gate headline, store price, restore). Free users' widgets show "Pro unlocks widgets" and deep-link to the paywall, and onboarding step 4 is the Pro offer with "Continue free". The `MOCK_PRO` dev bypass is gone, so gates lock for real; DeveloperSection → "Simulate free tier" stages the locked states on a build that owns Pro.
-- Verified on device (2026-10-28): HealthKit totals match the Health app, background delivery refreshes the widget, pace nudges fire and cancel correctly, the share card posts cleanly. Final icon + splash are in `assets/images/`. Spec decisions reviewed after real use: manual steps add on top, no-data days are skipped, cadence stays 100 spm, the stride default dropped to 0.70 m, the record's "since" line only shows for limited access, and turning the goal off pauses a streak instead of ending it. RevenueCat is live: the lifetime product, `pro` entitlement and `default` offering are set up and a sandbox purchase unlocks Pro.
+- Verified on device (2026-10-28): HealthKit totals match the Health app, background delivery refreshes the widget, pace nudges fire and cancel correctly, the share card posts cleanly. Final icon + splash are in `assets/images/`. Spec decisions reviewed after real use: manual steps add on top, no-data days are skipped, cadence stays 100 spm, the stride default dropped to 0.70 m, the record's "since" line only shows for limited access, and turning the goal off pauses a streak instead of ending it. Decided 2026-10-28: light mode stays a color swap of the dark design (same shapes and fonts) — `DESIGN_light mode.md`'s square corners and Space Grotesk are not planned; the activity log's per-day distance follows the current stride on purpose, like Today and Stats. RevenueCat is live: the lifetime product, `pro` entitlement and `default` offering are set up and a sandbox purchase unlocks Pro.
 - Daily target picker: a scrub ruler (100 steps per tick) plus tap-the-number to type an exact goal, replacing the ±500 stepper that took 10 taps to reach 5K and couldn't land on odd values.
 
 ## Critical path to v1.0
@@ -30,7 +30,6 @@ Living roadmap. Anything under **Critical path to v1.0** has to land before v1.0
 - Hourly tab (Stitch `hourly_cadence`): idle-stretch detection, hourly reminders, intraday timeline. Deferred — not in the product spec MVP; Today's cadence card covers the intraday view.
 - Share card for past days (from Stats) — needs hourly minutes for arbitrary dates; `buildShareCard({ day })` already takes the day.
 - Stride calibration walk (spec §4 "future version").
-- Light-mode shape language: "DESIGN_light mode.md" specifies 0px corners and Space Grotesk headings; the app currently shares the dark design's shapes/fonts and only swaps colors.
 
 ## Open: (unresolved decisions)
 
@@ -40,7 +39,6 @@ _None right now._
 
 - Items here carry removal instructions written the moment the scaffolding is added (e.g. "remove X before v1.0 ships").
 - Stats accuracy, minor (audit 2026-10-25; the serious ones are fixed):
-  - Activity log recomputes past days' distance with today's step length; spec decision 4 says preference changes don't rewrite history. Store the step length per day (or show a logged walk's own distance).
   - "Active mins" only exist for the last 8 days (`RECENT_WINDOW_DAYS`); older log rows just omit them.
   - DST days: the repeated hour merges into one hourly bar (fall back) or one hour is empty (spring forward).
   - Time-zone travel re-buckets HealthKit history while manual entries keep their stored day (same as Apple Health).
