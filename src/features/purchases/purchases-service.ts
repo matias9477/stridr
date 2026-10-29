@@ -56,6 +56,16 @@ export async function restorePurchases(): Promise<CustomerInfo> {
   return Purchases.restorePurchases();
 }
 
+/**
+ * Apple's offer-code sheet (iOS only — Play redeems codes in its own store app).
+ * Resolves once the sheet is shown, not when a code is redeemed: the redemption
+ * reaches us through the CustomerInfo listener, which flips isPro.
+ */
+export async function presentCodeRedemption(): Promise<void> {
+  if (Platform.OS !== "ios" || !configured) return;
+  await Purchases.presentCodeRedemptionSheet();
+}
+
 export function addCustomerInfoListener(listener: (info: CustomerInfo) => void): void {
   Purchases.addCustomerInfoUpdateListener(listener);
 }

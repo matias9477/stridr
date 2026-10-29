@@ -84,7 +84,7 @@ export function ValueTag({ label }: { label: string }) {
 export function RowIcon({
   icon = "chevron-right",
 }: {
-  icon?: "chevron-right" | "open-in-new" | "restore" | "file-download";
+  icon?: "chevron-right" | "open-in-new" | "restore" | "file-download" | "redeem";
 }) {
   const c = useThemeColors();
   return <MaterialIcons name={icon} size={16} color={c.textTertiary} />;
