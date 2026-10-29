@@ -1,21 +1,142 @@
 {
   "configVersion": 0,
   "apple": {
+    "release": {
+      "automaticRelease": true
+    },
     "info": {
       "en-US": {
-        "title": "Stridr",
-        "subtitle": "",
-        "description": "TODO: App Store description",
-        "keywords": [],
-        "releaseNotes": "Initial release"
+        "keywords": [
+          "widget",
+          "streak",
+          "goal",
+          "daily",
+          "distance",
+          "miles",
+          "km",
+          "activity",
+          "stride",
+          "cadence",
+          "watch",
+          "private",
+          "move",
+          "walker",
+          "habit"
+        ],
+        "title": "Stridr: Step Counter",
+        "subtitle": "Pedometer & Walking Tracker",
+        "privacyPolicyUrl": "https://www.matiasturra.dev/privacy/stridr",
+        "screenshots": {
+          "APP_IPHONE_61": [
+            "store/apple/screenshot/en-US/APP_IPHONE_61/Slice 1.jpg",
+            "store/apple/screenshot/en-US/APP_IPHONE_61/Slice 2.jpg",
+            "store/apple/screenshot/en-US/APP_IPHONE_61/Slice 3.jpg",
+            "store/apple/screenshot/en-US/APP_IPHONE_61/Slice 4.jpg"
+          ],
+          "APP_IPAD_PRO_3GEN_129": [
+            "store/apple/screenshot/en-US/APP_IPAD_PRO_3GEN_129/Slice 5.jpg",
+            "store/apple/screenshot/en-US/APP_IPAD_PRO_3GEN_129/Slice 2.jpg",
+            "store/apple/screenshot/en-US/APP_IPAD_PRO_3GEN_129/Slice 3.jpg",
+            "store/apple/screenshot/en-US/APP_IPAD_PRO_3GEN_129/Slice 4.jpg"
+          ]
+        },
+        "description": "Stridr counts your steps and tells you plainly where you stand today.\n\nIt reads your step count from the Health app, so steps from your iPhone and Apple Watch add up without anything being counted twice. Open it and you see today's total, whether you're ahead of or behind your goal's pace, the distance, your active minutes and how your steps spread across the day.\n\nTODAY\n• Your steps against a daily goal you set\n• Pace: ahead or behind for this time of day\n• Distance from your own stride, calibrated from your height\n• Streaks that survive a day with no data\n\nSTATS\n• Week and 30-day charts with your goal line\n• 7-day average, weekly total, best day and 30-day trend\n\nADD WHAT YOUR PHONE MISSED\nLeft your phone on the desk? Add steps by hand, or log a walk by distance or time and Stridr estimates the steps. Manual entries are labelled as yours and never written to Health.\n\nONE NUDGE, NO NAGGING\nTurn on a single quiet notification at 6 pm on days you're behind pace. No sound, no badge, and it stays off until you turn it on.\n\nSHARE AND EXPORT\n• Share your day as an image for your Stories\n• Export your history as CSV, free. It's your data.\n\nSTRIDR PRO\nOne payment, no subscription. Pro adds 90-day, all-time and custom ranges to Stats, plus home screen and lock screen widgets in every size.\n\nPRIVATE BY DESIGN\nNo account. No ads. No analytics or tracking. Stridr only reads your step count from Health, and everything stays on your device.\n\nIn English and Spanish, light and dark.",
+        "promoText": "Steps from your iPhone and Apple Watch, counted once. Set a daily goal, check your pace, keep your streak. No account, no ads, no tracking. Your data stays on your phone."
+      },
+      "es-MX": {
+        "title": "Stridr: Contador de Pasos",
+        "privacyPolicyUrl": "https://www.matiasturra.dev/privacy/stridr",
+        "screenshots": {
+          "APP_IPHONE_61": [
+            "store/apple/screenshot/es-MX/APP_IPHONE_61/Slice 11.jpg",
+            "store/apple/screenshot/es-MX/APP_IPHONE_61/Slice 12.jpg",
+            "store/apple/screenshot/es-MX/APP_IPHONE_61/Slice 13.jpg",
+            "store/apple/screenshot/es-MX/APP_IPHONE_61/Slice 14.jpg"
+          ]
+        },
+        "subtitle": "Podómetro y Caminatas Diarias",
+        "keywords": [
+          "racha",
+          "meta",
+          "distancia",
+          "km",
+          "actividad",
+          "zancada",
+          "reloj",
+          "privado",
+          "caminar",
+          "hábito",
+          "widget",
+          "walk",
+          "hiking",
+          "offline"
+        ],
+        "description": "Stridr cuenta tus pasos y te dice sin rodeos cómo vas hoy.\n\nLee tus pasos desde la app Salud, así que los del iPhone y los del Apple Watch se suman sin contar nada dos veces. Al abrirla ves el total de hoy, si vas por delante o por detrás del ritmo de tu meta, la distancia, tus minutos activos y cómo se reparten tus pasos a lo largo del día.\n\nHOY\n• Tus pasos frente a la meta diaria que elijas\n• Ritmo: por delante o por detrás para esta hora del día\n• Distancia según tu zancada, calibrada con tu altura\n• Rachas que aguantan un día sin datos\n\nESTADÍSTICAS\n• Gráficas de la semana y de 30 días con la línea de tu meta\n• Promedio de 7 días, total semanal, mejor día y tendencia de 30 días\n\nAGREGA LO QUE TU TELÉFONO NO CONTÓ\n¿Dejaste el teléfono en el escritorio? Agrega pasos a mano, o registra una caminata por distancia o por tiempo y Stridr calcula los pasos. Las entradas manuales quedan marcadas como tuyas y nunca se escriben en Salud.\n\nUN AVISO, SIN INSISTIR\nActiva una sola notificación silenciosa a las 18:00 los días que vas por detrás del ritmo. Sin sonido ni globo, y está apagada hasta que tú la actives.\n\nCOMPARTE Y EXPORTA\n• Comparte tu día como imagen para tus historias\n• Exporta tu historial en CSV, gratis. Tus datos son tuyos.\n\nSTRIDR PRO\nUn solo pago, sin suscripción. Pro agrega los rangos de 90 días, todo el historial y personalizado en Estadísticas, además de widgets para la pantalla de inicio y la pantalla bloqueada en todos los tamaños.\n\nPRIVADA POR DISEÑO\nSin cuenta. Sin anuncios. Sin analíticas ni rastreo. Stridr solo lee tus pasos de Salud, y todo se queda en tu dispositivo.\n\nEn español e inglés, en modo claro y oscuro.",
+        "promoText": "Los pasos de tu iPhone y tu Apple Watch, contados una sola vez. Fija una meta diaria, mira tu ritmo y mantén tu racha. Sin cuenta, sin anuncios, sin rastreo."
       },
       "es-ES": {
-        "title": "Stridr",
-        "subtitle": "",
-        "description": "TODO: descripción para el App Store",
-        "keywords": [],
-        "releaseNotes": "Primera versión"
+        "title": "Stridr: Contador de Pasos",
+        "privacyPolicyUrl": "https://www.matiasturra.dev/privacy/stridr",
+        "screenshots": {
+          "APP_IPHONE_61": [
+            "store/apple/screenshot/es-ES/APP_IPHONE_61/Slice 11.jpg",
+            "store/apple/screenshot/es-ES/APP_IPHONE_61/Slice 12.jpg",
+            "store/apple/screenshot/es-ES/APP_IPHONE_61/Slice 13.jpg",
+            "store/apple/screenshot/es-ES/APP_IPHONE_61/Slice 14.jpg"
+          ]
+        },
+        "subtitle": "Podómetro y Caminatas Diarias",
+        "keywords": [
+          "widget",
+          "racha",
+          "meta",
+          "objetivo",
+          "distancia",
+          "km",
+          "actividad",
+          "zancada",
+          "reloj",
+          "privado",
+          "caminar",
+          "andar",
+          "hábito"
+        ],
+        "description": "Stridr cuenta tus pasos y te dice sin rodeos cómo vas hoy.\n\nLee tus pasos desde la app Salud, así que los del iPhone y los del Apple Watch se suman sin contar nada dos veces. Al abrirla ves el total de hoy, si vas por delante o por detrás del ritmo de tu meta, la distancia, tus minutos activos y cómo se reparten tus pasos a lo largo del día.\n\nHOY\n• Tus pasos frente a la meta diaria que elijas\n• Ritmo: por delante o por detrás para esta hora del día\n• Distancia según tu zancada, calibrada con tu altura\n• Rachas que aguantan un día sin datos\n\nESTADÍSTICAS\n• Gráficas de la semana y de 30 días con la línea de tu meta\n• Promedio de 7 días, total semanal, mejor día y tendencia de 30 días\n\nAÑADE LO QUE TU TELÉFONO NO CONTÓ\n¿Dejaste el teléfono en la mesa? Añade pasos a mano, o registra una caminata por distancia o por tiempo y Stridr calcula los pasos. Las entradas manuales quedan marcadas como tuyas y nunca se escriben en Salud.\n\nUN AVISO, SIN INSISTIR\nActiva una sola notificación silenciosa a las 18:00 los días que vas por detrás del ritmo. Sin sonido ni globo, y está apagada hasta que tú la actives.\n\nCOMPARTE Y EXPORTA\n• Comparte tu día como imagen para tus historias\n• Exporta tu historial en CSV, gratis. Tus datos son tuyos.\n\nSTRIDR PRO\nUn solo pago, sin suscripción. Pro añade los rangos de 90 días, todo el historial y personalizado en Estadísticas, además de widgets para la pantalla de inicio y la pantalla bloqueada en todos los tamaños.\n\nPRIVADA POR DISEÑO\nSin cuenta. Sin anuncios. Sin analíticas ni rastreo. Stridr solo lee tus pasos de Salud, y todo se queda en tu dispositivo.\n\nEn español e inglés, en modo claro y oscuro.",
+        "promoText": "Los pasos de tu iPhone y tu Apple Watch, contados una sola vez. Fija una meta diaria, mira tu ritmo y mantén tu racha. Sin cuenta, sin anuncios, sin rastreo."
       }
+    },
+    "categories": [
+      "HEALTH_AND_FITNESS",
+      "LIFESTYLE"
+    ],
+    "advisory": {
+      "ageRatingOverride": "NONE",
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "kidsAgeBand": null,
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false,
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "advertising": false,
+      "ageAssurance": false,
+      "ageRatingOverrideV2": "NONE",
+      "developerAgeRatingInfoUrl": null,
+      "gunsOrOtherWeapons": "NONE",
+      "healthOrWellnessTopics": true,
+      "messagingAndChat": false,
+      "parentalControls": false,
+      "userGeneratedContent": false
     }
   }
 }
