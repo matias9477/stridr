@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
-    "@matias9477/expo-release": "github:matias9477/expo-release#v1.0.0",
+    "@matias9477/expo-release": "github:matias9477/expo-release#v1.4.0",
     "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
     "babel-plugin-inline-import": "^3.0.0",
