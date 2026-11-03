@@ -13,9 +13,10 @@ import { useHealthStore } from "@/src/features/health/health-store";
 import { baseCardStatus } from "@/src/features/stats/card-status";
 import { todayProgress } from "@/src/features/stats/stats";
 import type { StepStats } from "@/src/features/stats/use-step-stats";
+import { HeroSkeleton } from "@/src/features/today/hero-skeleton";
 import { formatGoalPercent, formatSteps } from "@/src/lib/format";
 import { ActionButton } from "@/src/ui/action-button";
-import { CardStateMessage, Skeleton } from "@/src/ui/card-state";
+import { CardStateMessage, SkeletonText } from "@/src/ui/card-state";
 import { DURATION } from "@/src/ui/motion";
 import { RollingNumber } from "@/src/ui/rolling-number";
 import { useThemeColors } from "@/src/ui/theme-colors";
@@ -39,7 +40,9 @@ export function HeroSteps({ stats, now }: { stats: StepStats; now: Date }) {
         <T variant="micro" tone="tertiary">
           {t("today.hero.label")}
         </T>
-        {progress.percent !== null && !base ? (
+        {base?.kind === "loading" ? (
+          <SkeletonText variant="label" ghost="00%" />
+        ) : progress.percent !== null && !base ? (
           <RollingNumber
             variant="label"
             value={formatGoalPercent(progress.percent, progress.goalMet)}
@@ -48,10 +51,7 @@ export function HeroSteps({ stats, now }: { stats: StepStats; now: Date }) {
       </View>
 
       {base?.kind === "loading" ? (
-        <View className="gap-3 py-2">
-          <Skeleton className="h-14 w-3/5" />
-          <Skeleton className="h-3 w-full" />
-        </View>
+        <HeroSkeleton />
       ) : (
         <>
           <RollingNumber

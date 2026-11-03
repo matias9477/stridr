@@ -28,6 +28,8 @@ export const DURATION = {
   blinkHold: 900,
   /** Live-status blink: each half of the quick off/on flick. */
   blink: 220,
+  /** Loading skeleton breath: each half of the fade out/in (Reduce Motion off only). */
+  pulse: 800,
 } as const;
 
 export const SPRING = {

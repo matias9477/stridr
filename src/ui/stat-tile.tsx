@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { CardStateBody, type CardStatus, Skeleton } from "./card-state";
+import { CardStateBody, type CardStatus, SkeletonText } from "./card-state";
 import { Panel, PanelHeader } from "./panel";
 import { RollingNumber } from "./rolling-number";
 import { T } from "./typography";
@@ -39,7 +40,9 @@ export function StatTile({
   surface = "card",
   accessibilityLabel,
 }: StatTileProps) {
+  const { t } = useTranslation();
   const valueRole = size === "stat" ? "stat" : "headline";
+  const captionGap = size === "stat" ? "mt-0.5" : "mt-3";
   return (
     <Panel surface={surface} className="flex-1 justify-between">
       <PanelHeader label={label} right={status.kind === "ready" && accessory ? accessory : icon} />
@@ -49,39 +52,46 @@ export function StatTile({
         accessibilityLabel={
           status.kind === "ready"
             ? (accessibilityLabel ?? `${label} ${value} ${unit ?? ""} ${caption ?? ""}`)
-            : undefined
+            : status.kind === "loading"
+              ? t("common.loading")
+              : undefined
         }
       >
-        <CardStateBody
-          status={status}
-          minHeightClass={size === "stat" ? "min-h-12" : "min-h-10"}
-          loading={
-            <>
-              <Skeleton className={size === "stat" ? "h-7 w-3/4" : "h-4 w-1/2"} />
-              <Skeleton className="h-2 w-1/2" />
-            </>
-          }
-        >
-          <View className="flex-row items-baseline gap-1">
-            {/* The wrapper is already one accessible sentence; the digits stay silent. */}
-            <RollingNumber variant={valueRole} value={value} accessibilityLabel="" />
-            {unit ? (
-              <T variant="labelPlain" tone="secondary">
-                {unit}
+        {status.kind === "loading" ? (
+          // Mirrors the ready layout line for line so the data lands without a jump —
+          // bypassing CardStateBody's loading wrapper, whose min-height and gap add space.
+          <>
+            <View className="flex-row items-baseline gap-1">
+              <SkeletonText variant={valueRole} ghost="0,000" />
+              {unit ? (
+                <T variant="labelPlain" tone="secondary">
+                  {unit}
+                </T>
+              ) : null}
+            </View>
+            {/* Always reserved: tiles share a row, which sizes to its tallest (captioned) tile. */}
+            <View className={captionGap}>
+              <SkeletonText variant="micro" ghost="00,000 · 0000" />
+            </View>
+          </>
+        ) : (
+          <CardStateBody status={status} minHeightClass={size === "stat" ? "min-h-12" : "min-h-10"}>
+            <View className="flex-row items-baseline gap-1">
+              {/* The wrapper is already one accessible sentence; the digits stay silent. */}
+              <RollingNumber variant={valueRole} value={value} accessibilityLabel="" />
+              {unit ? (
+                <T variant="labelPlain" tone="secondary">
+                  {unit}
+                </T>
+              ) : null}
+            </View>
+            {caption ? (
+              <T variant="micro" tone="tertiary" className={captionGap} numberOfLines={2}>
+                {caption}
               </T>
             ) : null}
-          </View>
-          {caption ? (
-            <T
-              variant="micro"
-              tone="tertiary"
-              className={size === "stat" ? "mt-0.5" : "mt-3"}
-              numberOfLines={2}
-            >
-              {caption}
-            </T>
-          ) : null}
-        </CardStateBody>
+          </CardStateBody>
+        )}
       </View>
     </Panel>
   );

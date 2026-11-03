@@ -1,9 +1,20 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
+import { DURATION } from "./motion";
 import { useThemeColors } from "./theme-colors";
-import { T } from "./typography";
+import { T, type TypeRole } from "./typography";
 
 /**
  * Per-card data states (CLAUDE.md → Data states): every card that renders
@@ -18,9 +29,63 @@ export type CardStatus =
 
 export const READY: CardStatus = { kind: "ready" };
 
-/** Static placeholder bar — no shimmer: motion is for state changes, not idling (DESIGN/CLAUDE.md). */
-export function Skeleton({ className = "" }: { className?: string }) {
-  return <View className={`rounded-sm bg-surface-high ${className}`} />;
+/**
+ * Placeholder block that breathes while data loads — the pulse says "working",
+ * so it's a state signal, not idle decoration. Every skeleton mounts in the
+ * same frame, so they pulse in step. Reduce Motion holds it still. Children
+ * are invisible sizers (see `SkeletonText`, `HeroSkeleton`'s chip).
+ */
+export function Skeleton({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children?: ReactNode;
+}) {
+  const reduceMotion = useReducedMotion();
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      opacity.set(1);
+      return;
+    }
+    const ease = { duration: DURATION.pulse, easing: Easing.inOut(Easing.ease) };
+    opacity.set(withRepeat(withSequence(withTiming(0.4, ease), withTiming(1, ease)), -1));
+  }, [reduceMotion, opacity]);
+
+  const style = useAnimatedStyle(() => ({ opacity: opacity.get() }));
+  return (
+    <Animated.View
+      accessible={false}
+      className={`rounded-sm bg-surface-high ${className}`}
+      style={style}
+    >
+      {children}
+    </Animated.View>
+  );
+}
+
+/**
+ * A skeleton bar the exact size of a line of `variant` text: an invisible
+ * `ghost` string reserves the real line box (font, tracking, Dynamic Type),
+ * so swapping in the data can't move anything. Pass a ghost shaped like the
+ * real value ("0,000", a translated label with placeholder digits). Works
+ * inside `items-baseline` rows — the ghost carries the baseline.
+ */
+export function SkeletonText({ variant, ghost }: { variant: TypeRole; ghost: string }) {
+  return (
+    <View className="flex-row" accessible={false}>
+      <View>
+        <T variant={variant} className="opacity-0">
+          {ghost}
+        </T>
+        {/* Inset to roughly cap height: a full line box reads as a slab, not text.
+            Percent offsets are layout geometry, not spacing tokens. */}
+        <Skeleton className="absolute inset-x-0 top-[15%] bottom-[15%]" />
+      </View>
+    </View>
+  );
 }
 
 /** Inline empty/error message for compact tiles. */

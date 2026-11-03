@@ -54,23 +54,37 @@ export function CadenceCard({ stats, now }: { stats: StepStats; now: Date }) {
           {t("today.cadence.current", { time: timeLabel(now) })}
         </T>
       </View>
-      <CardStateBody
-        status={status}
-        minHeightClass="min-h-16"
-        loading={<Skeleton className="h-12 w-full" />}
-      >
-        <View className="pt-1">
-          <BarChart bars={bars} max={max} heightClass="h-12" gapClass="gap-1" />
-          <View className="mt-0.5 h-px bg-surface-raised" />
-        </View>
-        <View className="flex-row justify-between pt-1">
-          {AXIS.map((label) => (
-            <T key={label} variant="micro" tone="tertiary">
-              {label}
-            </T>
-          ))}
-        </View>
-      </CardStateBody>
+      {status.kind === "loading" ? (
+        // Same plot box, baseline and axis as the ready chart (the axis is static copy, so
+        // it renders for real) — bypassing CardStateBody's min-height wrapper keeps it exact.
+        <>
+          <View className="pt-1" accessible accessibilityLabel={t("common.loading")}>
+            <Skeleton className="h-12 w-full" />
+            <View className="mt-0.5 h-px bg-surface-raised" />
+          </View>
+          <Axis />
+        </>
+      ) : (
+        <CardStateBody status={status} minHeightClass="min-h-16">
+          <View className="pt-1">
+            <BarChart bars={bars} max={max} heightClass="h-12" gapClass="gap-1" />
+            <View className="mt-0.5 h-px bg-surface-raised" />
+          </View>
+          <Axis />
+        </CardStateBody>
+      )}
     </Panel>
+  );
+}
+
+function Axis() {
+  return (
+    <View className="flex-row justify-between pt-1">
+      {AXIS.map((label) => (
+        <T key={label} variant="micro" tone="tertiary">
+          {label}
+        </T>
+      ))}
+    </View>
   );
 }
