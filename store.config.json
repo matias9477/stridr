@@ -75,10 +75,7 @@
         "promoText": "Los pasos de tu iPhone y tu Apple Watch, contados una sola vez. Fija una meta diaria, mira tu ritmo y mantén tu racha. Sin cuenta, sin anuncios, sin rastreo."
       }
     },
-    "categories": [
-      "HEALTH_AND_FITNESS",
-      "LIFESTYLE"
-    ],
+    "categories": ["HEALTH_AND_FITNESS", "LIFESTYLE"],
     "advisory": {
       "ageRatingOverride": "NONE",
       "alcoholTobaccoOrDrugUseOrReferences": "NONE",
